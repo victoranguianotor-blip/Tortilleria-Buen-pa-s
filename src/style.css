@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+
+/* Base táctil: texto grande y sin zoom por doble toque en tablet */
+html {
+  font-size: 18px;
+  touch-action: manipulation;
+}
+
+body {
+  @apply bg-amber-50 text-stone-900 antialiased;
+}
