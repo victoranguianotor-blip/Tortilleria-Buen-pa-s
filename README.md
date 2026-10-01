@@ -1,48 +1,23 @@
-# vue-project
+# Reparto de Tortillas
 
-This template should help get you started developing with Vue 3 in Vite.
+PWA para que los repartidores registren los kg de tortilla de su ruta y el admin vea el resumen
+diario y genere reportes. Vue 3 + Vite + Supabase.
 
-## Recommended IDE Setup
+## Puesta en marcha
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+1. `npm install`
+2. Copia `.env.example` a `.env` y llena los valores de tu proyecto Supabase.
+3. Aplica el esquema (ver comandos de Supabase en `CLAUDE.md`).
+4. En Supabase > Authentication > Sign In / Providers: desactiva **Allow new users to sign up**.
+5. `npm run dev`
 
-## Recommended Browser Setup
+### Primer admin
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+Supabase > Authentication > Users > **Add user** con email `tuusuario@reparto.local`, contraseña y
+**Auto Confirm User** marcado. Luego en el SQL Editor:
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+```sql
+update public.profiles set rol = 'admin', nombre = 'Tu nombre' where usuario = 'tuusuario';
 ```
 
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+Los demás usuarios se crean desde la app.
