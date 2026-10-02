@@ -7,7 +7,8 @@ diario y genere reportes. Vue 3 + Vite + Supabase.
 
 1. `npm install`
 2. Copia `.env.example` a `.env` y llena los valores de tu proyecto Supabase.
-3. Aplica el esquema (ver comandos de Supabase en `CLAUDE.md`).
+3. Aplica las migraciones de `supabase/migrations/` en orden (SQL Editor o MCP de Supabase) y
+   verifica con `supabase/tests/rls_test.sql`.
 4. En Supabase > Authentication > Sign In / Providers: desactiva **Allow new users to sign up**.
 5. `npm run dev`
 

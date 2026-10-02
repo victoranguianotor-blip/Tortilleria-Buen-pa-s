@@ -25,18 +25,15 @@ npx vitest run src/utils/kg.test.ts   # un solo archivo
 npx vitest run -t "formatea"          # un solo test por nombre
 ```
 
-Supabase (CLI instalada como devDependency). Las credenciales de la CLI viven en `.env` sin prefijo
-`VITE_`; cárgalas antes de usarla (Git Bash):
+Supabase se administra con el **MCP de Supabase** (scope local, proyecto `gmbixckrajmrpovsrymi`):
 
-```sh
-set -a; . ./.env; set +a
-npx supabase link --project-ref "$SUPABASE_PROJECT_REF" -p "$SUPABASE_DB_PASSWORD"   # una vez
-npm run db:push        # aplica supabase/migrations/ al proyecto remoto
-npm run db:types       # regenera src/types/database.ts desde el esquema remoto
-```
-
-Tras cambiar el esquema: nueva migración en `supabase/migrations/` (nunca editar una ya aplicada),
-`db:push`, `db:types`.
+- Cambio de esquema: crear un archivo nuevo en `supabase/migrations/`, aplicarlo con
+  `apply_migration` y renombrar el archivo al `version` que devuelve `list_migrations` (así el repo
+  y el remoto coinciden). Nunca editar una migración ya aplicada.
+- Después de cada cambio: correr `supabase/tests/rls_test.sql` completo con `execute_sql` (debe
+  devolver `OK: ...`; hace ROLLBACK y no deja datos), revisar `get_advisors` (security y
+  performance) y regenerar `src/types/database.ts` con `generate_typescript_types`.
+- Los datos propios del entorno (p. ej. promover un admin) van por `execute_sql`, no en migraciones.
 
 ## Arquitectura
 
@@ -46,13 +43,16 @@ Tras cambiar el esquema: nueva migración en `supabase/migrations/` (nunca edita
   cliente (`crypto.randomUUID()`) para que reintentar una escritura encolada sea idempotente.
 - **Roles y seguridad en la BD, no en el cliente.** `profiles.rol` es `repartidor | admin`. Las
   políticas RLS (`supabase/migrations/*_esquema_inicial.sql`) son la fuente de verdad: el repartidor
-  solo ve lo suyo y solo escribe entregas en su ruta **de hoy y abierta** (`es_mi_ruta_abierta`);
-  el admin lee todo vía `is_admin()`. Además hay GRANTs por columna (p. ej. en `rutas` solo se
-  actualizan `kg_iniciales` y `cerrada_at`). Los guards del router son solo UX.
+  (activo) solo ve lo suyo y solo escribe entregas en su ruta **de hoy y abierta**; el admin lee
+  todo, no captura datos, no edita su propio perfil y reabre rutas con `rpc('reabrir_ruta')`. Hay
+  GRANTs por columna (p. ej. en `rutas` solo se actualizan `kg_iniciales` y `cerrada_at`). Los
+  helpers de las políticas (`is_admin`, `soy_activo`, `es_mi_ruta_abierta`, `handle_new_user`)
+  viven en el schema `private`, no expuesto por la API. Los guards del router son solo UX.
 - **Fecha de negocio = Colima** (`America/Mexico_City`). Usa `public.hoy_colima()` en SQL; en el
   cliente no derives "hoy" de UTC.
-- **Login con usuario, no email.** Supabase Auth usa `<usuario>@reparto.local`; el trigger
-  `handle_new_user` crea el `profiles` con rol `repartidor`. No hay registro público: los usuarios
+- **Login con usuario.** Supabase Auth usa `<usuario>@reparto.local`; si lo tecleado contiene `@`
+  se usa tal cual (el admin original entra con su email real). El trigger `handle_new_user` crea el
+  `profiles` con rol `repartidor`. No hay registro público: los usuarios
   los crea el admin desde la app mediante una Edge Function (usa la service role key, que nunca va
   en el frontend).
 - **Resumen** (kg iniciales/entregados/restantes) sale de la vista `resumen_rutas`
@@ -72,7 +72,7 @@ Tras cambiar el esquema: nueva migración en `supabase/migrations/` (nunca edita
 
 ## Fases
 
-1. Setup, PWA y Supabase (tablas, auth, RLS) — hecho
+1. Setup, PWA y Supabase (tablas, auth, RLS) — hecho; falta Edge Function `admin-usuarios`
 2. Login y pantalla del repartidor
 3. Dashboard del admin (incluye alta de usuarios)
 4. Reporte diario PDF/CSV con detalle
