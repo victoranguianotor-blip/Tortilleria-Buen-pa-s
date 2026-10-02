@@ -213,7 +213,7 @@ Asfalto, lámina y letra blanca sin medias tintas; un amarillo de señal, un ver
 ### Hierarchy
 - **Display** (800, clamp(2.75rem, 4vw + 1rem, 4.5rem), 1, tabular; 3.25rem en tablet de pie): solo la cifra de "Quedan".
 - **Headline** (800, 2.25rem, 1, tabular): lectura de kg tecleados. El título del login usa 800 en 1.875–2.25rem con interlínea ajustada.
-- **Figure** (800, 1.5rem, 1, tabular): Salió / Entregado / Paradas, cifras del cierre y del detalle del encargado.
+- **Figure** (800, 1.5rem, 1, tabular): Salió / Entregado / Cobrado / Paradas, cifras del cierre y del detalle del encargado. El dinero siempre con signo y dos decimales (`$1,234.50`), sin color propio.
 - **Title** (800, 1.25rem): título del panel de captura ("Parada 5", "Carga de hoy", nombre del repartidor).
 - **Stop name** (600, 1.125rem): nombre de la parada o del repartidor en un renglón; se recorta con puntos suspensivos.
 - **Body** (400, 1rem, 1.4): texto corrido y mensajes; avisos en 600.
@@ -282,15 +282,19 @@ Interruptores de lámina: grandes, en oración normal, sin adornos.
 
 ### Tablero de renglones
 - Encabezado de columnas en gris rótulo 600 de 0.8125rem sobre costura; renglones de 3.25rem separados por costura.
-- Número en gris rótulo, hora en gris claro tabular, nombre en blanco 600, kg en cifra 800 alineada a la derecha.
+- Número en gris rótulo, hora en gris claro tabular, nombre en blanco 600, kg en cifra 800 alineada a la derecha y cobrado en blanco 700 tabular a su derecha.
+- Una recolección lleva antes del nombre la etiqueta "Recolección" (contorno de costura, gris claro 700), sus kg en gris claro y "—" en cobrado. La nota de una parada va como segunda línea en gris rótulo, recortada.
 - El renglón tocado para corregir se selecciona: fondo amarillo apagado con contorno interior amarillo de 1px.
 - Vacío y pista ("Toca una parada para corregirla o borrarla.") en gris rótulo.
-- El encargado usa el mismo tablero para repartidores (punto de estado, nombre, Salió, Entregó, Queda, paradas) y usuarios.
+- El encargado usa el mismo tablero para repartidores (punto de estado, nombre, hora de salida, Salió, Entregó, Queda, Cobrado, paradas; ≤ 640px quedan solo nombre, Queda y Cobrado) y usuarios.
 
-### Teclado de kg
-- Rejilla 3×4 (7-8-9 arriba; ½ / 0 / borrar abajo), teclas de lámina alzada con costura, 6px, dígitos blancos 700 tabulares.
+### Teclado de kg y de pesos
+- Rejilla 3×4 (7-8-9 arriba; ½ / 0 / borrar abajo; en pesos el ½ se vuelve punto decimal), teclas de lámina alzada con costura, 6px, dígitos blancos 700 tabulares.
 - Al presionar la tecla se enciende en amarillo al instante y vuelve en 140ms; deshabilitado al 40%.
-- La lectura de kg es una ventanilla de asfalto con costura: rótulo a la izquierda, cifra a la derecha (gris rótulo en cero, blanca con valor) y "kg" en gris claro.
+- La lectura de kg es una ventanilla de asfalto con costura: rótulo a la izquierda, cifra a la derecha (gris rótulo en cero, blanca con valor) y "kg" en gris claro. La de pesos lleva "$" antes de la cifra.
+- En la parada, "Kilos que dejas" y "Cobrado" son dos ventanillas lado a lado (rótulo arriba, cifra abajo) que comparten un teclado; la activa lleva contorno amarillo. Cobrado sigue a kg × precio base ("Cobrado (sugerido)") hasta que el repartidor teclea: la primera tecla reemplaza la sugerencia y "Usar $X" la recupera.
+- Arriba de la captura, un selector Entrega / Recolección (dos mitades con costura; la elegida en amarillo apagado con contorno amarillo). En recolección solo queda la ventanilla "Kilos que recoges". "+ Nota" en el encabezado abre un campo de nota.
+- Antes de la primera parada, "Listo para salir" con el botón principal "Salir a ruta"; la hora queda en el rótulo de la cifra ("Salió 06:42").
 
 ### Destello de señal (firma)
 El único movimiento del sistema. Cuando cambia "Quedan" la cifra se ilumina en amarillo; cuando entra una parada su renglón se enciende en amarillo apagado con contorno amarillo. Dura 1400ms: amarillo pleno el primer 30% para que se lea con sol y luego se apaga con cubic-bezier(0.16, 1, 0.3, 1). Con reduced motion el mismo resaltado aparece fijo y se quita sin transición al terminar. Ninguna otra pantalla anima entradas, cambios de cifra ni decoraciones.

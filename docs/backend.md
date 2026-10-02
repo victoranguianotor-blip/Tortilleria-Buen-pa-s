@@ -2,13 +2,17 @@
 
 Proyecto Supabase: `gmbixckrajmrpovsrymi` (Postgres 17).
 El esquema vive en `supabase/migrations/` (la primera migración está en español; la segunda,
-`*_english_names.sql`, renombró todo a inglés conservando los datos). La gestión de usuarios está en
+`*_english_names.sql`, renombró todo a inglés conservando los datos; la tercera,
+`*_departure_and_payments.sql`, agregó hora de salida, dinero cobrado y precio base; la cuarta,
+`*_pickups_and_notes.sql`, agregó el tipo de parada y las notas, y renombró `delivered_kg` a `kg`). La gestión de usuarios está en
 `supabase/functions/admin-users/`.
 
 ## Modelo de datos
 
 ```
 auth.users ──1:1── profiles ──1:N── routes ──1:N── deliveries
+
+settings (una sola fila)
 ```
 
 ### `profiles`
@@ -34,25 +38,37 @@ Una por repartidor por día (`unique (driver_id, route_date)`).
 | `driver_id`  | uuid FK       | default `auth.uid()`                     |
 | `route_date` | date          | default `business_today()`               |
 | `initial_kg` | numeric(8,2)  | `>= 0`                                   |
+| `departed_at`| timestamptz   | `null` = cargó pero no ha salido. Una vez puesta no cambia (trigger `lock_departed_at`) |
 | `closed_at`  | timestamptz   | `null` = abierta                         |
 | `created_at` | timestamptz   |                                          |
 
 ### `deliveries`
 
-Cada parada de una ruta.
+Cada parada de una ruta: una **entrega** (`kind = delivery`) o una **recolección** (`kind = pickup`,
+kilos que el repartidor recoge de una tienda). La tabla conserva el nombre `deliveries`.
 
 | Columna        | Tipo          | Notas                                    |
 | -------------- | ------------- | ---------------------------------------- |
 | `id`           | uuid PK       | se puede generar en el cliente           |
 | `route_id`     | uuid FK       | se borra en cascada con la ruta          |
 | `stop_name`    | text          | texto libre, 1–120 caracteres            |
-| `delivered_kg` | numeric(8,2)  | `> 0`                                    |
+| `kind`         | enum `stop_kind` | `delivery` (default) o `pickup`       |
+| `kg`           | numeric(8,2)  | `> 0`; dejados en una entrega, recogidos en una recolección |
+| `received_amount` | numeric(10,2) | pesos cobrados, `>= 0` (0 = no pagó), default 0; siempre 0 en una recolección |
+| `notes`        | text          | opcional, hasta 500 caracteres           |
 | `created_at`   | timestamptz   |                                          |
+
+### `settings`
+
+Una sola fila (`id = true`) con `price_per_kg` (numeric(8,2), `> 0` o `null` = sin precio). Todo
+usuario con sesión la lee; solo el admin la actualiza. La app sugiere al repartidor
+`kg × price_per_kg` como monto cobrado, pero lo que se guarda es lo que él captura.
 
 ### Vista `route_summaries`
 
 Una fila por ruta con `driver_name`, `initial_kg`, `delivered_kg`, `remaining_kg`,
-`delivery_count` y `closed_at`. Es `security_invoker`, así que cada quien ve solo las filas que su
+`delivery_count`, `closed_at`, `departed_at`, `received_amount` (suma de lo cobrado), `picked_kg` y
+`pickup_count`. Las recolecciones no cuentan en `delivered_kg`, `remaining_kg` ni `delivery_count`. Es `security_invoker`, así que cada quien ve solo las filas que su
 RLS le permite. `remaining_kg` puede ser negativo (sobre-entrega: se advierte, no se bloquea).
 
 ### Funciones
@@ -63,7 +79,8 @@ RLS le permite. `remaining_kg` puede ser negativo (sobre-entrega: se advierte, n
 | `reopen_route(p_route_id)`       | public    | Solo admin: reabre una ruta cerrada por error. RPC         |
 | `is_admin()`                     | private   | Usada por las políticas                                    |
 | `is_active()`                    | private   | Usada por las políticas                                    |
-| `is_my_open_route(route_id)`     | private   | Ruta propia, de hoy, abierta y usuario activo              |
+| `is_my_open_route(route_id)`     | private   | Ruta propia, de hoy, ya salió, abierta y usuario activo    |
+| `lock_departed_at()`             | private   | Trigger: la hora de salida no se cambia ni se borra        |
 | `handle_new_user()`              | private   | Trigger que crea el perfil                                 |
 
 El schema `private` no está expuesto por la API REST.
@@ -76,13 +93,16 @@ El schema `private` no está expuesto por la API REST.
 | Editar perfiles (`full_name`, `role`, `active`) | no                                       | los de otros   | no         |
 | Ver routes / deliveries / route_summaries     | solo las suyas                             | todas          | no         |
 | Crear ruta                                    | la suya, de hoy, si está activo            | no             | no         |
-| Editar ruta (`initial_kg`, cerrarla)          | la suya, de hoy, abierta                   | no             | no         |
+| Editar ruta (`initial_kg`, salir, cerrarla)   | la suya, de hoy, abierta                   | no             | no         |
 | Reabrir ruta                                  | no                                         | `reopen_route` | no         |
-| Crear / editar / borrar deliveries            | en su ruta de hoy abierta, si está activo  | no             | no         |
+| Crear / editar / borrar deliveries            | en su ruta de hoy abierta y ya salida, si está activo | no  | no         |
+| Ver `settings`                                | sí                                         | sí             | no         |
+| Cambiar el precio base                        | no                                         | sí             | no         |
 | Borrar rutas                                  | no                                         | no             | no         |
 
-Además hay permisos por columna: en `routes` solo se actualizan `initial_kg` y `closed_at`, y en
-`deliveries` solo `stop_name` y `delivered_kg` (una entrega no se puede mover de ruta ni una ruta
+Además hay permisos por columna: en `routes` solo se actualizan `initial_kg`, `departed_at` y
+`closed_at`; en `deliveries`, `kind`, `stop_name`, `kg`, `received_amount` y `notes`; en `settings`,
+`price_per_kg` (una entrega no se puede mover de ruta ni una ruta
 cambiar de dueño). Los perfiles solo los inserta el trigger.
 
 Consecuencias prácticas:
