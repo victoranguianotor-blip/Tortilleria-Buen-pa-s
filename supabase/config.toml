@@ -414,6 +414,5 @@ enabled = true
 # and column/key alignment. Set to "null" to emit raw, unformatted SQL.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"
 
-[functions.admin-usuarios]
-# La plataforma no valida claves sb_*; la función verifica sesión y rol admin en código.
+[functions.admin-users]
 verify_jwt = false
