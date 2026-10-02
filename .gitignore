@@ -49,3 +49,7 @@ supabase/.branches
 
 # Credenciales de prueba (nunca al repo)
 docs/credenciales-prueba.md
+
+# Impeccable: capturas y referencias locales
+.impeccable/review/
+.impeccable/ref/
