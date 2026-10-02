@@ -17,3 +17,8 @@ export function colimaTime(moment: string | Date): string {
     hourCycle: 'h23',
   }).format(typeof moment === 'string' ? new Date(moment) : moment)
 }
+
+export function addDays(isoDate: string, days: number): string {
+  const [year, month, day] = isoDate.split('-').map(Number) as [number, number, number]
+  return new Date(Date.UTC(year, month - 1, day + days)).toISOString().slice(0, 10)
+}

@@ -15,10 +15,11 @@ const dateText = computed(() => (props.date ? formatShortDate(props.date) : ''))
 
 <template>
   <header class="steel-band flex items-center gap-4 px-4 py-2 wide:px-6">
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-3" :class="{ 'max-md:hidden': $slots.default }">
       <FlapText v-if="dateText" :text="dateText" size="sm" />
       <FlapText :text="time" size="sm" />
     </div>
+    <slot />
     <p class="caption ml-auto hidden truncate text-flap! sm:block">{{ name }}</p>
     <button
       type="button"

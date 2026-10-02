@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import FlapText from '@/components/FlapText.vue'
+import PasswordField from '@/components/PasswordField.vue'
 import StrokeIcon from '@/components/StrokeIcon.vue'
 import { useClock } from '@/composables/clock'
 import { homeForRole } from '@/router'
@@ -15,7 +16,6 @@ const time = useClock()
 
 const username = ref('')
 const password = ref('')
-const showPassword = ref(false)
 const busy = ref(false)
 const error = ref<string | null>(null)
 
@@ -76,26 +76,13 @@ async function submit() {
 
         <label class="flex flex-col gap-2">
           <span class="caption">Contraseña</span>
-          <span class="relative block">
-            <input
-              v-model="password"
-              class="field pr-16!"
-              :type="showPassword ? 'text' : 'password'"
-              name="password"
-              autocomplete="current-password"
-              enterkeyhint="go"
-              :disabled="busy"
-            />
-            <button
-              type="button"
-              class="absolute inset-y-0 right-0 grid w-16 place-items-center text-2xl text-steel"
-              :aria-label="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
-              :aria-pressed="showPassword"
-              @click="showPassword = !showPassword"
-            >
-              <StrokeIcon :name="showPassword ? 'eye-off' : 'eye'" />
-            </button>
-          </span>
+          <PasswordField
+            v-model="password"
+            name="password"
+            autocomplete="current-password"
+            enterkeyhint="go"
+            :disabled="busy"
+          />
         </label>
 
         <p v-if="error" class="error-alert" role="alert">{{ error }}</p>

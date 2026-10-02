@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import DeliveryPanel from '@/components/DeliveryPanel.vue'
 import FlapText from '@/components/FlapText.vue'
 import LoadPanel from '@/components/LoadPanel.vue'
+import StatusLamp from '@/components/StatusLamp.vue'
 import StopsBoard from '@/components/StopsBoard.vue'
 import StrokeIcon from '@/components/StrokeIcon.vue'
 import TopBar from '@/components/TopBar.vue'
@@ -15,6 +16,7 @@ import { useRouteStore } from '@/stores/route'
 import { colimaTime } from '@/utils/date'
 import { errorMessage } from '@/utils/errors'
 import { formatKg, formatKgNumber, roundKg } from '@/utils/kg'
+import { routeStatus } from '@/utils/status'
 
 const auth = useAuthStore()
 const store = useRouteStore()
@@ -32,12 +34,7 @@ const closeConfirm = useTwoTapConfirm()
 const isOpen = computed(() => store.route !== null && !store.isClosed)
 const overDelivery = computed(() => store.remainingKg < 0)
 
-const lamp = computed(() => {
-  if (!store.route) return { text: 'Sin iniciar', tone: 'steel' as const }
-  if (store.isClosed) return { text: 'Cerrada', tone: 'steel' as const }
-  if (overDelivery.value) return { text: 'Sobre-entrega', tone: 'danger' as const }
-  return { text: 'En ruta', tone: 'amber' as const }
-})
+const lamp = computed(() => routeStatus(store.route, store.remainingKg))
 
 const stopNumber = computed(() => {
   if (!selected.value) return store.deliveries.length + 1
@@ -175,10 +172,7 @@ onMounted(load)
             </div>
           </div>
           <div class="flex flex-col items-end gap-2">
-            <p class="lamp" :class="`lamp-${lamp.tone}`" role="status">
-              <span class="bulb" aria-hidden="true" />
-              <FlapText :text="lamp.text" size="sm" :tone="lamp.tone" />
-            </p>
+            <StatusLamp :text="lamp.text" :tone="lamp.tone" />
             <button
               v-if="isOpen"
               type="button"
@@ -340,36 +334,6 @@ onMounted(load)
 </template>
 
 <style scoped>
-.lamp {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.5rem;
-  border-radius: 6px;
-  background: #000;
-}
-.lamp-amber {
-  box-shadow: 0 0 0 1px var(--color-amber-dark);
-}
-.lamp-danger {
-  box-shadow: 0 0 0 1px var(--color-danger-dark);
-}
-
-.bulb {
-  width: 0.8rem;
-  height: 0.8rem;
-  border-radius: 50%;
-  background: var(--color-steel-3);
-}
-.lamp-amber .bulb {
-  background: var(--color-amber);
-  box-shadow: 0 0 10px 1px rgb(255 180 0 / 0.6);
-}
-.lamp-danger .bulb {
-  background: var(--color-danger);
-  box-shadow: 0 0 10px 1px rgb(255 77 77 / 0.6);
-}
-
 .summary {
   display: grid;
   gap: 0.9rem;

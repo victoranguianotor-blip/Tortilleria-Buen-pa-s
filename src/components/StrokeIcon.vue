@@ -1,6 +1,18 @@
 <script setup lang="ts">
 defineProps<{
-  name: 'arrow' | 'logout' | 'backspace' | 'trash' | 'eye' | 'eye-off' | 'close' | 'pencil'
+  name:
+    | 'arrow'
+    | 'logout'
+    | 'backspace'
+    | 'trash'
+    | 'eye'
+    | 'eye-off'
+    | 'close'
+    | 'pencil'
+    | 'chevron-left'
+    | 'chevron-right'
+    | 'refresh'
+    | 'plus'
 }>()
 </script>
 
@@ -45,6 +57,19 @@ defineProps<{
     <template v-else-if="name === 'pencil'">
       <path d="M4 20l1-5L15.5 4.5l4 4L9 19z" />
       <path d="M13 7l4 4" />
+    </template>
+    <template v-else-if="name === 'chevron-left'">
+      <path d="M15 5l-7 7 7 7" />
+    </template>
+    <template v-else-if="name === 'chevron-right'">
+      <path d="M9 5l7 7-7 7" />
+    </template>
+    <template v-else-if="name === 'refresh'">
+      <path d="M19 12a7 7 0 1 1-2.05-4.95" />
+      <path d="M19 4v4h-4" />
+    </template>
+    <template v-else-if="name === 'plus'">
+      <path d="M12 5v14M5 12h14" />
     </template>
     <template v-else-if="name === 'close'">
       <path d="M6 6l12 12M18 6L6 18" />

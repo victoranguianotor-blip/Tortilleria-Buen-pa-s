@@ -6,12 +6,22 @@ import type { Delivery } from '@/services/routes'
 import { colimaTime } from '@/utils/date'
 import { formatKgNumber } from '@/utils/kg'
 
-const props = defineProps<{
-  deliveries: Delivery[]
-  selectedId: string | null
-  newId: string | null
-  editable: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    deliveries: Delivery[]
+    selectedId?: string | null
+    newId?: string | null
+    editable: boolean
+    label?: string
+    emptyText?: string
+  }>(),
+  {
+    selectedId: null,
+    newId: null,
+    label: 'Paradas de hoy',
+    emptyText: 'Sin paradas todavía. La primera aparece aquí.',
+  },
+)
 defineEmits<{ select: [delivery: Delivery] }>()
 
 const list = ref<HTMLOListElement | null>(null)
@@ -39,7 +49,7 @@ watch(
       <span class="text-right">Kg</span>
     </div>
 
-    <ol ref="list" class="list min-h-0 flex-1 overflow-y-auto" aria-label="Paradas de hoy">
+    <ol ref="list" class="list min-h-0 flex-1 overflow-y-auto" :aria-label="label">
       <li v-for="(d, i) in deliveries" :key="d.id">
         <button
           type="button"
@@ -71,7 +81,7 @@ watch(
 
       <li v-if="deliveries.length === 0" class="row empty">
         <span class="num">--</span>
-        <span class="col-span-3 caption">Sin paradas todavía. La primera aparece aquí.</span>
+        <span class="col-span-3 caption">{{ emptyText }}</span>
       </li>
     </ol>
   </div>

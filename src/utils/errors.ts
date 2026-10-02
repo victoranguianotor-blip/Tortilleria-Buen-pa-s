@@ -11,6 +11,8 @@ export function errorMessage(e: unknown): string {
   }
 
   switch (code) {
+    case 'admin_users':
+      return message || 'Algo salió mal. Inténtalo otra vez.'
     case 'invalid_credentials':
       return 'Usuario o contraseña incorrectos.'
     case 'user_banned':

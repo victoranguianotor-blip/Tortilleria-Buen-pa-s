@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
-import { colimaTime, formatShortDate } from './date'
+import { addDays, colimaTime, formatShortDate } from './date'
 import { usernameToEmail } from './email'
 import { errorMessage } from './errors'
 import { applyKey, kgToValue, valueToKg, type KeypadKey } from './keypad'
+import { routeStatus } from './status'
+import { isValidUsername, normalizeUsername } from './users'
 
 function type(keys: KeypadKey[], initial = ''): string {
   return keys.reduce(applyKey, initial)
@@ -53,6 +55,19 @@ describe('date', () => {
   it('uses Colima time (UTC-6)', () => {
     expect(colimaTime('2026-10-01T18:05:00Z')).toBe('12:05')
   })
+  it('adds days across months and years', () => {
+    expect(addDays('2026-10-01', -1)).toBe('2026-09-30')
+    expect(addDays('2026-12-31', 1)).toBe('2027-01-01')
+  })
+})
+
+describe('usernames', () => {
+  it('normalizes and validates like the Edge Function', () => {
+    expect(normalizeUsername('  Juan.P ')).toBe('juan.p')
+    expect(isValidUsername('Juan_2')).toBe(true)
+    expect(isValidUsername('jo')).toBe(false)
+    expect(isValidUsername('juan pérez')).toBe(false)
+  })
 })
 
 describe('errorMessage', () => {
@@ -63,7 +78,21 @@ describe('errorMessage', () => {
     expect(errorMessage({ code: 'invalid_credentials' })).toMatch(/incorrectos/)
     expect(errorMessage({ code: '42501' })).toMatch(/cerrada/)
   })
+  it('passes through Edge Function messages', () => {
+    expect(errorMessage({ code: 'admin_users', message: 'El usuario "juan" ya existe' })).toBe(
+      'El usuario "juan" ya existe',
+    )
+  })
   it('has a default message', () => {
     expect(errorMessage(null)).toMatch(/Algo salió mal/)
+  })
+})
+
+describe('routeStatus', () => {
+  it('reads the state of a route', () => {
+    expect(routeStatus(null, 0).text).toBe('Sin iniciar')
+    expect(routeStatus({ closed_at: '2026-10-01T20:00:00Z' }, -3).text).toBe('Cerrada')
+    expect(routeStatus({ closed_at: null }, -0.5).tone).toBe('danger')
+    expect(routeStatus({ closed_at: null }, 4).tone).toBe('amber')
   })
 })
