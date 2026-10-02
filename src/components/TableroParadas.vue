@@ -42,7 +42,7 @@ watch(
       <span class="text-right">Kg</span>
     </div>
 
-    <ol ref="lista" class="min-h-0 flex-1 overflow-y-auto" aria-label="Paradas de hoy">
+    <ol ref="lista" class="lista min-h-0 flex-1 overflow-y-auto" aria-label="Paradas de hoy">
       <li v-for="(e, i) in entregas" :key="e.id">
         <button
           type="button"
@@ -134,6 +134,19 @@ button.renglon.activo {
 .pista {
   padding: 0.8rem 0.9rem;
   color: var(--color-acero-2);
+}
+
+.lista {
+  scroll-snap-type: y mandatory;
+}
+.lista > li {
+  scroll-snap-align: end;
+}
+
+@media (orientation: portrait) and (min-width: 700px) and (min-height: 1000px) {
+  .renglon:not(.encabezado) {
+    min-height: 3rem;
+  }
 }
 
 /* Celular: la hora cede su espacio al nombre de la parada. */

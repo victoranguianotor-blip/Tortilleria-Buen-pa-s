@@ -187,7 +187,7 @@ onMounted(cargar)
               v-if="abierta"
               type="button"
               class="boton-acero min-h-12! px-3!"
-              :class="{ peligro: cierre.armado.value }"
+              :class="cierre.armado.value ? 'peligro' : 'border-transparent! text-acero-2!'"
               :disabled="ocupado"
               @click="cerrarRuta"
             >

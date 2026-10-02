@@ -61,6 +61,11 @@ const vVoltear: Directive<HTMLElement, boolean> = {
 .flaps-xl {
   font-size: clamp(4rem, 7vw + 1rem, 7rem);
 }
+@media (orientation: portrait) and (min-width: 700px) and (min-height: 1000px) {
+  .flaps-xl {
+    font-size: 3.6rem;
+  }
+}
 .flaps-titulo {
   font-size: clamp(3rem, 5vw + 1rem, 5.5rem);
 }

@@ -63,8 +63,11 @@ defineExpose({ limpiar })
 </script>
 
 <template>
-  <section class="flex flex-col gap-4 horizontal:gap-3 vertical-alto:gap-3" :aria-label="titulo">
-    <div class="flex min-h-12 items-center justify-between gap-3">
+  <section
+    class="panel flex flex-col gap-4 horizontal:gap-3 vertical-alto:gap-3"
+    :aria-label="titulo"
+  >
+    <div class="titulo flex min-h-12 items-center justify-between gap-3">
       <h2><FlapText :texto="titulo" tamano="md" :tono="editando ? 'ambar' : 'tinta'" /></h2>
       <button
         v-if="editando"
@@ -98,7 +101,7 @@ defineExpose({ limpiar })
       </datalist>
     </label>
 
-    <LecturaKg :valor="valor" etiqueta="Kilos que dejas" />
+    <LecturaKg class="lectura" :valor="valor" etiqueta="Kilos que dejas" />
     <TecladoKg v-model="valor" :deshabilitado="ocupado" />
 
     <p class="aviso" :class="{ sobre: sobreEntrega }" role="status">
@@ -118,9 +121,7 @@ defineExpose({ limpiar })
         :disabled="!listo || ocupado"
         @click="guardar"
       >
-        <span>{{
-          ocupado ? 'Guardando…' : editando ? 'Guardar cambios' : 'Registrar parada'
-        }}</span>
+        <span>{{ ocupado ? 'Guardando…' : editando ? 'Guardar' : 'Registrar parada' }}</span>
         <IconoTrazo v-if="!ocupado" nombre="flecha" />
       </button>
       <button
@@ -132,7 +133,7 @@ defineExpose({ limpiar })
         @click="borrado.tocar(() => emit('borrar'))"
       >
         <IconoTrazo nombre="basura" class="text-2xl" />
-        <span v-if="borrado.armado.value">¿Borrar?</span>
+        <span>{{ borrado.armado.value ? '¿Borrar?' : 'Borrar' }}</span>
       </button>
     </div>
   </section>
@@ -149,5 +150,25 @@ defineExpose({ limpiar })
 }
 .aviso.sobre {
   color: var(--color-rojo);
+}
+
+/* Tablet de pie: título y lectura de kilos comparten fila para dejarle altura a las paradas. */
+@media (orientation: portrait) and (min-width: 700px) and (min-height: 1000px) {
+  .panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+  .panel > * {
+    grid-column: 1 / -1;
+  }
+  .panel > .titulo {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .panel > .lectura {
+    grid-column: 2;
+    grid-row: 1;
+  }
 }
 </style>

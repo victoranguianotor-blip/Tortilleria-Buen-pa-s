@@ -9,7 +9,7 @@ defineProps<{ valor: string; etiqueta: string }>()
   <div
     class="flex items-end justify-between gap-4 rounded-md bg-flap px-3 py-2 ring-1 ring-acero-3"
   >
-    <span class="rotulo pb-1">{{ etiqueta }}</span>
+    <span class="rotulo pb-1 vertical-alto:sr-only">{{ etiqueta }}</span>
     <div class="flex items-end gap-2" aria-live="polite">
       <FlapText
         :texto="valor || '0'"
