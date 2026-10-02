@@ -278,6 +278,11 @@ Placa negra con un foco redondo y el estado en celdas: EN RUTA en ámbar con foc
 ### Celda de paleta (firma)
 Cada carácter en su paleta (0.72em × 1.16em, separación 0.07em), mitad superior #212125 y mitad inferior #19191C, línea de corte negra a media altura; las celdas vacías son más oscuras para mantener columnas fijas. Tonos: tinta, ámbar, rojo, acero. Cinco tamaños: xl, titulo, lg, md, sm. Al cambiar, solo la celda cuyo carácter cambió se voltea: giro en X de -92° a 14° y a reposo en 460ms con cubic-bezier(0.16, 1, 0.3, 1), destello de brillo al inicio y 55ms de retraso por posición, en cascada. En el primer render nada se mueve salvo un renglón recién agregado. Con reduced motion el cambio es instantáneo. El texto real se ofrece a lectores de pantalla; las celdas son decorativas.
 
+### Pantallas del encargado
+Mismo tablero, mismas reglas. La franja de acero suma dos placas de sección (RUTAS, USUARIOS); la de la sección actual se hunde a negro de paleta con texto ámbar. En celular la franja oculta fecha y reloj para dejarles lugar.
+- **Rutas:** a la izquierda el resumen del día (selector de día con flechas y la fecha en celdas, que pasa a ámbar cuando no es hoy; totales SALIÓ / ENTREGADO / QUEDAN / CERRADAS) y el tablero de repartidores: foco de estado, nombre, SALIÓ, ENTREGÓ, QUEDA y paradas en celdas `sm`. Hoy también aparecen los repartidores activos sin iniciar, en acero. A la derecha el detalle del repartidor tocado: lámpara, cifras, sus paradas de solo lectura y REABRIR RUTA (solo una ruta cerrada de hoy). Se actualiza solo cada minuto cuando se ve hoy.
+- **Usuarios:** tablero de usuarios (foco ámbar = activo, nombre, usuario, rol) y a la derecha el alta (nombre, usuario, contraseña visible, rol en dos placas de selección que se encienden en ámbar) o la ficha del usuario tocado (cambiar contraseña, desactivar con dos toques, activar con uno).
+
 ### Confirmación de dos toques
 Borrar una parada y cerrar la ruta no abren modales: el primer toque arma el botón (pasa a rojo y pregunta "¿Borrar?" / "¿Cerrar? Toca otra vez") y el segundo ejecuta. CERRAR RUTA en reposo es discreto: texto acero medio, sin borde.
 

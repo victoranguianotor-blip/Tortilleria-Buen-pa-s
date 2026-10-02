@@ -91,7 +91,7 @@ contrato de dirección de la pantalla del repartidor están en `.impeccable/surf
 
 1. Setup, PWA y Supabase (tablas, auth, RLS, Edge Function `admin-users`) — hecho
 2. Login y pantalla del repartidor — hecho
-3. Dashboard del admin (incluye alta de usuarios)
+3. Dashboard del admin (incluye alta de usuarios) — hecho
 4. Reporte diario PDF/CSV con detalle
 5. Pulido para tablet y despliegue en Netlify
 6. (después) Offline con Dexie
