@@ -50,55 +50,40 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 .keypad {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.45rem;
+  gap: 0.5rem;
 }
 
 .key {
-  position: relative;
   display: grid;
   place-items: center;
-  min-height: clamp(3.2rem, 7.5vh, 4.1rem);
+  min-height: clamp(3rem, 7vh, 3.75rem);
   border-radius: 6px;
-  background: linear-gradient(180deg, #222226 0 50%, #1a1a1d 50% 100%);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.07),
-    0 2px 4px rgb(0 0 0 / 0.6);
+  background: var(--color-raised);
+  border: 1px solid var(--color-line);
   color: var(--color-ink);
-  font-size: 2.3rem;
-  font-weight: 600;
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
   transition:
-    transform 90ms ease-out,
-    background 160ms ease-out,
-    color 160ms ease-out;
-}
-
-.key::after {
-  content: '';
-  position: absolute;
-  inset: calc(50% - 0.5px) 6px auto;
-  height: 1px;
-  background: rgb(0 0 0 / 0.8);
+    background 140ms ease-out,
+    color 140ms ease-out;
 }
 
 @media (orientation: portrait) and (min-width: 700px) and (min-height: 1000px) {
   .key {
-    min-height: 3.3rem;
-  }
-}
-@media (min-width: 960px) and (orientation: landscape) {
-  .key {
-    min-height: clamp(3rem, 6.8vh, 4.1rem);
+    min-height: 3.25rem;
   }
 }
 
 .key.fn {
-  color: var(--color-steel);
+  color: var(--color-ink-2);
+  font-size: 1.5rem;
 }
 
 .key:active:not(:disabled) {
-  transform: translateY(1px);
-  background: var(--color-amber);
-  color: var(--color-flap);
+  background: var(--color-signal);
+  border-color: var(--color-signal);
+  color: var(--color-signal-ink);
   transition-duration: 0ms;
 }
 

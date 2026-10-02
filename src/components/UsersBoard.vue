@@ -8,8 +8,7 @@ defineEmits<{ select: [user: UserProfile] }>()
 
 <template>
   <div class="flex min-h-0 flex-col">
-    <div class="row header caption" aria-hidden="true">
-      <span />
+    <div class="row list-head" aria-hidden="true">
       <span>Nombre</span>
       <span class="username">Usuario</span>
       <span>Rol</span>
@@ -19,16 +18,15 @@ defineEmits<{ select: [user: UserProfile] }>()
       <li v-for="u in users" :key="u.id">
         <button
           type="button"
-          class="row w-full text-left"
-          :class="{ active: u.id === selectedId, inactive: !u.active }"
+          class="row list-row w-full text-left"
+          :class="{ selected: u.id === selectedId, inactive: !u.active }"
           :aria-pressed="u.id === selectedId"
           :aria-label="`${u.full_name}, usuario ${u.username}, ${roleLabel(u.role)}${u.active ? '' : ', desactivado'}`"
           @click="$emit('select', u)"
         >
-          <span class="bulb" :class="{ on: u.active }" />
           <span class="name">{{ u.full_name }}</span>
           <span class="username handle">{{ u.username }}</span>
-          <span class="caption">{{ u.active ? roleLabel(u.role) : 'Desactivado' }}</span>
+          <span class="role">{{ u.active ? roleLabel(u.role) : 'Desactivado' }}</span>
         </button>
       </li>
     </ul>
@@ -38,27 +36,14 @@ defineEmits<{ select: [user: UserProfile] }>()
 <style scoped>
 .row {
   display: grid;
-  grid-template-columns: 0.8rem minmax(0, 1fr) minmax(0, 0.8fr) 7rem;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) 6.5rem;
   align-items: center;
-  gap: 0.9rem;
-  min-height: 3.5rem;
-  padding: 0.35rem 0.9rem;
-  border-bottom: 1px solid #222327;
+  gap: 0.75rem;
+  min-height: 3.25rem;
+  padding: 0.3rem 0.9rem;
 }
-.header {
-  min-height: 2.4rem;
-  border-bottom-color: var(--color-steel-3);
-}
-
-button.row {
-  transition: background 160ms ease-out;
-}
-button.row:active {
-  background: var(--color-flap-2);
-}
-button.row.active {
-  background: var(--color-amber-dark);
-  box-shadow: inset 0 0 0 2px var(--color-amber);
+.list-head {
+  min-height: 2.25rem;
 }
 
 .name,
@@ -68,39 +53,26 @@ button.row.active {
   white-space: nowrap;
 }
 .name {
-  font-size: 1.45rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 1.125rem;
+  font-weight: 700;
 }
 .handle {
-  color: var(--color-steel);
-  font-size: 1.15rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  color: var(--color-ink-2);
 }
-.active .name {
-  color: var(--color-amber);
+.role {
+  color: var(--color-ink-2);
+  font-size: 0.9375rem;
+  font-weight: 600;
 }
 .inactive .name,
-.inactive .handle {
-  color: var(--color-steel-2);
-}
-
-.bulb {
-  width: 0.8rem;
-  height: 0.8rem;
-  border-radius: 50%;
-  background: var(--color-steel-3);
-}
-.bulb.on {
-  background: var(--color-amber);
-  box-shadow: 0 0 10px 1px rgb(255 180 0 / 0.6);
+.inactive .handle,
+.inactive .role {
+  color: var(--color-ink-3);
 }
 
 @media (max-width: 640px) {
   .row {
-    grid-template-columns: 0.8rem minmax(0, 1fr) 6rem;
+    grid-template-columns: minmax(0, 1fr) 6rem;
     gap: 0.6rem;
     padding-inline: 0.75rem;
   }

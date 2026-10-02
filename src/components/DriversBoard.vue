@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import FlapText from '@/components/FlapText.vue'
 import type { RouteSummary } from '@/services/admin'
 import { formatKgNumber } from '@/utils/kg'
 import { routeStatus } from '@/utils/status'
@@ -13,21 +12,24 @@ export interface DriverRow {
 defineProps<{ rows: DriverRow[]; selectedId: string | null; emptyText: string }>()
 defineEmits<{ select: [driverId: string] }>()
 
+function status(row: DriverRow) {
+  return routeStatus(row.summary, row.summary?.remaining_kg ?? 0)
+}
+
 function describe(row: DriverRow): string {
-  const status = routeStatus(row.summary, row.summary?.remaining_kg ?? 0).text
-  if (!row.summary) return `${row.name}: ${status}`
+  if (!row.summary) return `${row.name}: ${status(row).text}`
   const s = row.summary
-  return `${row.name}: ${status}. Salió con ${formatKgNumber(s.initial_kg)}, entregó ${formatKgNumber(s.delivered_kg)}, quedan ${formatKgNumber(s.remaining_kg)} kilos en ${s.delivery_count} paradas`
+  return `${row.name}: ${status(row).text}. Salió con ${formatKgNumber(s.initial_kg)}, entregó ${formatKgNumber(s.delivered_kg)}, quedan ${formatKgNumber(s.remaining_kg)} kilos en ${s.delivery_count} paradas`
 }
 </script>
 
 <template>
   <div class="flex min-h-0 flex-col">
-    <div class="row header caption" aria-hidden="true">
+    <div class="row list-head" aria-hidden="true">
       <span />
       <span>Repartidor</span>
-      <span class="text-right">Salió</span>
-      <span class="text-right">Entregó</span>
+      <span class="kg text-right">Salió</span>
+      <span class="kg text-right">Entregó</span>
       <span class="text-right">Queda</span>
       <span class="text-right">Par.</span>
     </div>
@@ -36,56 +38,27 @@ function describe(row: DriverRow): string {
       <li v-for="row in rows" :key="row.driverId">
         <button
           type="button"
-          class="row w-full text-left"
-          :class="{ active: row.driverId === selectedId }"
+          class="row list-row w-full text-left"
+          :class="{ selected: row.driverId === selectedId }"
           :aria-pressed="row.driverId === selectedId"
           :aria-label="describe(row)"
           @click="$emit('select', row.driverId)"
         >
-          <span
-            class="bulb"
-            :class="`bulb-${routeStatus(row.summary, row.summary?.remaining_kg ?? 0).tone}`"
-          />
-          <span class="name" :class="{ idle: !row.summary }">{{ row.name }}</span>
+          <span class="dot" :class="`dot-${status(row).tone}`" />
+          <span class="name" :class="{ 'text-ink-2': !row.summary }">{{ row.name }}</span>
           <template v-if="row.summary">
-            <FlapText
-              class="kg"
-              :text="formatKgNumber(row.summary.initial_kg)"
-              :cells="5"
-              align="right"
-              size="sm"
-            />
-            <FlapText
-              class="kg"
-              :text="formatKgNumber(row.summary.delivered_kg)"
-              :cells="5"
-              align="right"
-              size="sm"
-            />
-            <FlapText
-              class="justify-self-end"
-              :text="formatKgNumber(row.summary.remaining_kg)"
-              :cells="5"
-              align="right"
-              size="sm"
-              :tone="row.summary.remaining_kg < 0 ? 'danger' : 'ink'"
-            />
-            <FlapText
-              class="justify-self-end"
-              :text="String(row.summary.delivery_count)"
-              :cells="2"
-              align="right"
-              size="sm"
-            />
+            <span class="kg num">{{ formatKgNumber(row.summary.initial_kg) }}</span>
+            <span class="kg num">{{ formatKgNumber(row.summary.delivered_kg) }}</span>
+            <span class="num" :class="{ 'text-danger': row.summary.remaining_kg < 0 }">
+              {{ formatKgNumber(row.summary.remaining_kg) }}
+            </span>
+            <span class="num">{{ row.summary.delivery_count }}</span>
           </template>
-          <span v-else class="idle-text caption">Sin iniciar</span>
+          <span v-else class="idle">Sin iniciar</span>
         </button>
       </li>
 
-      <li v-if="rows.length === 0" class="row empty">
-        <span />
-        <span class="col-span-5 caption">{{ emptyText }}</span>
-      </li>
+      <li v-if="rows.length === 0" class="px-4 py-3 text-ink-3">{{ emptyText }}</li>
     </ul>
   </div>
 </template>
@@ -93,90 +66,58 @@ function describe(row: DriverRow): string {
 <style scoped>
 .row {
   display: grid;
-  grid-template-columns: 0.8rem minmax(0, 1fr) repeat(3, 4.5rem) 1.8rem;
+  grid-template-columns: 0.6rem minmax(0, 1fr) repeat(3, 4.25rem) 2.25rem;
   align-items: center;
-  gap: 0.9rem;
-  min-height: 3.5rem;
-  padding: 0.35rem 0.9rem;
-  border-bottom: 1px solid #222327;
+  gap: 0.75rem;
+  min-height: 3.25rem;
+  padding: 0.3rem 0.9rem;
 }
-.header {
-  min-height: 2.4rem;
-  border-bottom-color: var(--color-steel-3);
-}
-
-button.row {
-  transition: background 160ms ease-out;
-}
-button.row:active {
-  background: var(--color-flap-2);
-}
-button.row.active {
-  background: var(--color-amber-dark);
-  box-shadow: inset 0 0 0 2px var(--color-amber);
+.list-head {
+  min-height: 2.25rem;
 }
 
 .name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 1.45rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 1.125rem;
+  font-weight: 700;
 }
-.name.idle {
-  color: var(--color-steel);
+.num {
+  text-align: right;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
-.active .name {
-  color: var(--color-amber);
-}
-.kg {
-  justify-self: end;
-}
-.idle-text {
+.idle {
   grid-column: span 4;
   justify-self: end;
-  color: var(--color-steel-2);
+  color: var(--color-ink-3);
 }
 
-.bulb {
-  width: 0.8rem;
-  height: 0.8rem;
+.dot {
+  width: 0.6rem;
+  height: 0.6rem;
   border-radius: 50%;
-  background: var(--color-steel-3);
+  background: var(--color-ink-3);
 }
-.bulb-amber {
-  background: var(--color-amber);
-  box-shadow: 0 0 10px 1px rgb(255 180 0 / 0.6);
+.dot-go {
+  background: var(--color-go);
 }
-.bulb-danger {
+.dot-danger {
   background: var(--color-danger);
-  box-shadow: 0 0 10px 1px rgb(255 77 77 / 0.6);
-}
-
-.empty {
-  border-bottom-style: dashed;
-}
-
-@media (orientation: portrait) and (min-width: 700px) and (min-height: 1000px) {
-  .row:not(.header) {
-    min-height: 3rem;
-  }
 }
 
 @media (max-width: 640px) {
   .row {
-    grid-template-columns: 0.8rem minmax(0, 1fr) 4.5rem 1.8rem;
+    grid-template-columns: 0.6rem minmax(0, 1fr) 4.25rem 2rem;
     gap: 0.6rem;
     padding-inline: 0.75rem;
   }
-  .header > :nth-child(3),
-  .header > :nth-child(4),
   .kg {
     display: none;
   }
-  .idle-text {
+  .idle {
     grid-column: span 2;
   }
 }

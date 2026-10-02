@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import DeliveryPanel from '@/components/DeliveryPanel.vue'
-import FlapText from '@/components/FlapText.vue'
+import FlashValue from '@/components/FlashValue.vue'
 import LoadPanel from '@/components/LoadPanel.vue'
 import StatusLamp from '@/components/StatusLamp.vue'
 import StopsBoard from '@/components/StopsBoard.vue'
@@ -83,12 +83,19 @@ async function saveDelivery(stopName: string, kg: number) {
       await store.updateDelivery(editing.id, stopName, kg)
       newDeliveryId.value = null
     } else {
-      newDeliveryId.value = (await store.addDelivery(stopName, kg)).id
+      markNew((await store.addDelivery(stopName, kg)).id)
     }
   })
   if (!ok) return
   selected.value = null
   deliveryPanel.value?.reset()
+}
+
+let newTimer: ReturnType<typeof setTimeout> | undefined
+function markNew(id: string) {
+  newDeliveryId.value = id
+  clearTimeout(newTimer)
+  newTimer = setTimeout(() => (newDeliveryId.value = null), 1400)
 }
 
 async function deleteDelivery() {
@@ -133,15 +140,12 @@ onMounted(load)
     <TopBar :date="store.today" :name="auth.profile?.full_name ?? ''" @logout="logout" />
 
     <div v-if="status !== 'ready'" class="grid flex-1 place-items-center p-6">
-      <div class="flex flex-col items-center gap-6 text-center">
-        <FlapText
-          :text="status === 'loading' ? 'Cargando' : 'Sin conexión'"
-          size="lg"
-          :tone="status === 'loading' ? 'steel' : 'danger'"
-          animate
-        />
+      <div class="flex max-w-md flex-col items-center gap-4 text-center">
+        <p class="text-2xl font-extrabold" :class="{ 'text-danger': status === 'failed' }">
+          {{ status === 'loading' ? 'Cargando tu ruta…' : 'Sin conexión' }}
+        </p>
         <template v-if="status === 'failed'">
-          <p class="max-w-md text-xl text-steel">
+          <p class="text-lg text-ink-2">
             No se pudo traer tu ruta. Revisa la señal e inténtalo otra vez.
           </p>
           <button type="button" class="btn-primary" @click="load">Reintentar</button>
@@ -151,33 +155,28 @@ onMounted(load)
 
     <main
       v-else
-      class="relative min-h-0 flex-1 overflow-y-auto p-3 wide:grid wide:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] wide:gap-4 wide:overflow-hidden wide:p-4 tall:flex tall:flex-col tall:overflow-hidden"
+      class="relative min-h-0 flex-1 overflow-y-auto p-3 wide:grid wide:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] wide:gap-3 wide:overflow-hidden tall:flex tall:flex-col tall:overflow-hidden"
     >
-      <section
-        class="board-frame flex min-h-0 flex-col rounded-lg tall:flex-1"
-        aria-label="Tablero de la ruta"
-      >
+      <section class="panel flex min-h-0 flex-col tall:flex-1" aria-label="Tablero de la ruta">
         <div class="flex flex-wrap items-start justify-between gap-x-4 gap-y-3 px-4 pt-4 pb-3">
-          <div class="flex flex-col gap-2">
-            <h1 class="caption">Quedan</h1>
-            <div class="flex items-end gap-3">
-              <FlapText
-                :text="store.route ? formatKgNumber(store.remainingKg) : '--'"
-                :cells="5"
-                align="right"
-                size="xl"
-                :tone="overDelivery ? 'danger' : 'ink'"
+          <div class="flex flex-col gap-1">
+            <h1 class="label">Quedan</h1>
+            <p class="flex items-baseline gap-2">
+              <FlashValue
+                class="remaining"
+                :class="{ 'text-danger': overDelivery }"
+                :text="store.route ? formatKgNumber(store.remainingKg) : '—'"
               />
-              <span class="caption pb-3 text-base!">kg</span>
-            </div>
+              <span class="text-xl font-bold text-ink-2">kg</span>
+            </p>
           </div>
           <div class="flex flex-col items-end gap-2">
             <StatusLamp :text="lamp.text" :tone="lamp.tone" />
             <button
               v-if="isOpen"
               type="button"
-              class="btn-steel min-h-12! px-3!"
-              :class="closeConfirm.armed.value ? 'danger' : 'border-transparent! text-steel-2!'"
+              class="btn-secondary"
+              :class="closeConfirm.armed.value ? 'danger' : 'quiet'"
               :disabled="busy"
               @click="closeRoute"
             >
@@ -195,46 +194,26 @@ onMounted(load)
             :aria-label="`Salió con ${store.route ? formatKgNumber(store.route.initial_kg) : 0} kilos${isOpen ? '. Tocar para corregir' : ''}`"
             @click="editLoad"
           >
-            <span class="caption flex items-center gap-1.5">
+            <span class="label flex items-center gap-1.5">
               Salió
-              <StrokeIcon v-if="isOpen" name="pencil" class="text-steel-2" />
+              <StrokeIcon v-if="isOpen" name="pencil" />
             </span>
-            <span>
-              <FlapText
-                :text="store.route ? formatKgNumber(store.route.initial_kg) : '--'"
-                :cells="5"
-                align="right"
-                size="md"
-                :tone="editingLoad ? 'amber' : 'ink'"
-              />
+            <span class="figure-value text-2xl">
+              {{ store.route ? formatKgNumber(store.route.initial_kg) : '—' }}
             </span>
           </button>
           <div class="figure">
-            <span class="caption">Entregado</span>
-            <span>
-              <FlapText
-                :text="formatKgNumber(store.deliveredKg)"
-                :cells="5"
-                align="right"
-                size="md"
-              />
-            </span>
+            <span class="label">Entregado</span>
+            <span class="figure-value text-2xl">{{ formatKgNumber(store.deliveredKg) }}</span>
           </div>
           <div class="figure">
-            <span class="caption">Paradas</span>
-            <span>
-              <FlapText
-                :text="String(store.deliveries.length)"
-                :cells="2"
-                align="right"
-                size="md"
-              />
-            </span>
+            <span class="label">Paradas</span>
+            <span class="figure-value text-2xl">{{ store.deliveries.length }}</span>
           </div>
         </div>
 
         <StopsBoard
-          class="min-h-64 flex-1 wide:min-h-0 tall:min-h-0"
+          class="max-h-80 min-h-64 flex-1 wide:max-h-none wide:min-h-0 tall:max-h-none tall:min-h-0"
           :deliveries="store.deliveries"
           :selected-id="selected?.id ?? null"
           :new-id="newDeliveryId"
@@ -244,7 +223,7 @@ onMounted(load)
       </section>
 
       <section
-        class="board-frame mt-3 shrink-0 rounded-lg p-4 wide:mt-0 wide:min-h-0 wide:overflow-y-auto"
+        class="panel mt-3 shrink-0 p-4 wide:mt-0 wide:min-h-0 wide:overflow-y-auto"
         aria-label="Captura"
       >
         <LoadPanel
@@ -255,51 +234,29 @@ onMounted(load)
           @confirm="startRoute"
         />
 
-        <div v-else-if="store.isClosed" class="flex flex-col gap-5">
-          <h2><FlapText text="Ruta cerrada" size="md" tone="steel" /></h2>
+        <div v-else-if="store.isClosed" class="flex flex-col gap-4">
+          <h2 class="text-xl font-extrabold">Ruta cerrada</h2>
           <dl class="summary">
             <div>
-              <dt class="caption">Cerró</dt>
-              <dd><FlapText :text="colimaTime(store.route.closed_at!)" size="lg" /></dd>
+              <dt>Cerró</dt>
+              <dd class="figure-value text-2xl">{{ colimaTime(store.route.closed_at!) }}</dd>
             </div>
             <div>
-              <dt class="caption">Salió</dt>
-              <dd>
-                <FlapText
-                  :text="formatKgNumber(store.route.initial_kg)"
-                  :cells="5"
-                  align="right"
-                  size="lg"
-                />
-              </dd>
+              <dt>Salió</dt>
+              <dd class="figure-value text-2xl">{{ formatKgNumber(store.route.initial_kg) }} kg</dd>
             </div>
             <div>
-              <dt class="caption">Entregó</dt>
-              <dd>
-                <FlapText
-                  :text="formatKgNumber(store.deliveredKg)"
-                  :cells="5"
-                  align="right"
-                  size="lg"
-                />
-              </dd>
+              <dt>Entregó</dt>
+              <dd class="figure-value text-2xl">{{ formatKgNumber(store.deliveredKg) }} kg</dd>
             </div>
             <div>
-              <dt class="caption">Regresa</dt>
-              <dd>
-                <FlapText
-                  :text="formatKgNumber(store.remainingKg)"
-                  :cells="5"
-                  align="right"
-                  size="lg"
-                  :tone="overDelivery ? 'danger' : 'ink'"
-                />
+              <dt>Regresa</dt>
+              <dd class="figure-value text-2xl" :class="{ 'text-danger': overDelivery }">
+                {{ formatKgNumber(store.remainingKg) }} kg
               </dd>
             </div>
           </dl>
-          <p class="text-lg tracking-[0.1em] text-steel uppercase">
-            ¿Te equivocaste? Pide al encargado que la reabra.
-          </p>
+          <p class="text-ink-2">¿Te equivocaste? Pide al encargado que la reabra.</p>
         </div>
 
         <LoadPanel
@@ -334,36 +291,52 @@ onMounted(load)
 </template>
 
 <style scoped>
+.remaining {
+  font-size: clamp(2.75rem, 4vw + 1rem, 4.5rem);
+  font-weight: 800;
+}
+@media (orientation: portrait) and (min-width: 700px) and (min-height: 1000px) {
+  .remaining {
+    font-size: 3.25rem;
+  }
+}
+
 .summary {
   display: grid;
-  gap: 0.9rem;
 }
 .summary > div {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  padding-bottom: 0.9rem;
-  border-bottom: 1px solid var(--color-steel-3);
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--color-line);
+}
+.summary dt {
+  color: var(--color-ink-2);
+  font-weight: 600;
 }
 
 .figures {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-block: 1px solid var(--color-steel-3);
+  border-block: 1px solid var(--color-line);
 }
 
 .figure {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  padding: 0.7rem clamp(0.6rem, 1.5vw, 1rem);
+  gap: 0.35rem;
+  padding: 0.65rem clamp(0.6rem, 1.5vw, 1rem);
 }
 .figure + .figure {
-  border-left: 1px solid var(--color-steel-3);
+  border-left: 1px solid var(--color-line);
 }
 button.figure:not(:disabled):active,
 button.figure.active {
-  background: var(--color-amber-dark);
+  background: var(--color-signal-soft);
+}
+button.figure.active {
+  box-shadow: inset 0 0 0 1px var(--color-signal);
 }
 </style>

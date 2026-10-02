@@ -1,12 +1,12 @@
 const TIME_ZONE = 'America/Mexico_City'
 
-const WEEKDAYS = ['DOM', 'LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB']
-const MONTHS = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC']
+const WEEKDAYS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
+const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
 
 export function formatShortDate(isoDate: string): string {
   const [year, month, day] = isoDate.split('-').map(Number) as [number, number, number]
   const weekday = new Date(Date.UTC(year, month - 1, day)).getUTCDay()
-  return `${WEEKDAYS[weekday]} ${String(day).padStart(2, '0')} ${MONTHS[month - 1]}`
+  return `${WEEKDAYS[weekday]} ${day} ${MONTHS[month - 1]}`
 }
 
 export function colimaTime(moment: string | Date): string {

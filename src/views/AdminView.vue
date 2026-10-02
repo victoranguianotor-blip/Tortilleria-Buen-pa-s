@@ -4,7 +4,6 @@ import { useRoute, useRouter } from 'vue-router'
 
 import AdminNav from '@/components/AdminNav.vue'
 import DriversBoard, { type DriverRow } from '@/components/DriversBoard.vue'
-import FlapText from '@/components/FlapText.vue'
 import RouteDetail from '@/components/RouteDetail.vue'
 import StrokeIcon from '@/components/StrokeIcon.vue'
 import TopBar from '@/components/TopBar.vue'
@@ -208,15 +207,12 @@ onMounted(load)
     </TopBar>
 
     <div v-if="status !== 'ready'" class="grid flex-1 place-items-center p-6">
-      <div class="flex flex-col items-center gap-6 text-center">
-        <FlapText
-          :text="status === 'loading' ? 'Cargando' : 'Sin conexión'"
-          size="lg"
-          :tone="status === 'loading' ? 'steel' : 'danger'"
-          animate
-        />
+      <div class="flex max-w-md flex-col items-center gap-4 text-center">
+        <p class="text-2xl font-extrabold" :class="{ 'text-danger': status === 'failed' }">
+          {{ status === 'loading' ? 'Cargando el resumen…' : 'Sin conexión' }}
+        </p>
         <template v-if="status === 'failed'">
-          <p class="max-w-md text-xl text-steel">
+          <p class="text-lg text-ink-2">
             No se pudo traer el resumen. Revisa la señal e inténtalo otra vez.
           </p>
           <button type="button" class="btn-primary" @click="load">Reintentar</button>
@@ -226,18 +222,18 @@ onMounted(load)
 
     <main
       v-else
-      class="min-h-0 flex-1 overflow-y-auto p-3 wide:grid wide:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] wide:gap-4 wide:overflow-hidden wide:p-4 tall:flex tall:flex-col tall:overflow-hidden"
+      class="min-h-0 flex-1 overflow-y-auto p-3 wide:grid wide:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] wide:gap-3 wide:overflow-hidden tall:flex tall:flex-col tall:overflow-hidden"
     >
       <section
-        class="board-frame flex min-h-0 flex-col rounded-lg tall:flex-1"
+        class="panel flex min-h-0 flex-col tall:max-h-[55%] tall:flex-[0_1_auto]"
         aria-label="Resumen del día"
       >
-        <div class="flex flex-wrap items-center justify-between gap-3 px-4 pt-4 pb-3">
-          <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center justify-between gap-3 px-3 pt-3 pb-3 sm:px-4">
+          <div class="flex items-center gap-1">
             <h1 class="sr-only">Rutas del {{ date ? formatShortDate(date) : '' }}</h1>
             <button
               type="button"
-              class="btn-steel size-12 min-h-12! p-0!"
+              class="btn-secondary quiet size-12 p-0!"
               aria-label="Día anterior"
               @click="goTo(addDays(date!, -1))"
             >
@@ -245,11 +241,12 @@ onMounted(load)
             </button>
             <button
               type="button"
-              class="relative min-h-12 rounded-md px-1"
+              class="relative min-h-12 rounded-md px-2 text-xl font-extrabold"
+              :class="{ 'text-signal': !isToday }"
               aria-label="Elegir día"
               @click="openPicker"
             >
-              <FlapText :text="formatShortDate(date!)" :tone="isToday ? 'ink' : 'amber'" />
+              {{ formatShortDate(date!) }}
               <input
                 ref="datePicker"
                 type="date"
@@ -263,15 +260,14 @@ onMounted(load)
             </button>
             <button
               type="button"
-              class="btn-steel size-12 min-h-12! p-0!"
+              class="btn-secondary quiet size-12 p-0! disabled:opacity-40"
               aria-label="Día siguiente"
               :disabled="isToday"
-              :class="{ 'opacity-40': isToday }"
               @click="goTo(addDays(date!, 1))"
             >
               <StrokeIcon name="chevron-right" class="text-2xl" />
             </button>
-            <button v-if="!isToday" type="button" class="btn-steel min-h-12!" @click="goTo(today!)">
+            <button v-if="!isToday" type="button" class="btn-secondary ml-1" @click="goTo(today!)">
               Hoy
             </button>
           </div>
@@ -279,64 +275,52 @@ onMounted(load)
           <div class="flex items-center gap-2">
             <button
               type="button"
-              class="btn-steel min-h-12! border-transparent! px-2! text-steel-2!"
+              class="btn-secondary quiet px-2!"
               :disabled="refreshing"
               @click="refreshNow"
             >
               <StrokeIcon name="refresh" class="text-xl" :class="{ 'animate-spin': refreshing }" />
-              <span v-if="updatedAt">{{ colimaTime(updatedAt) }}</span>
+              <span v-if="updatedAt" class="tabular-nums">{{ colimaTime(updatedAt) }}</span>
               <span class="sr-only">Actualizar</span>
             </button>
             <button
               v-for="format in ['pdf', 'csv'] as const"
               :key="format"
               type="button"
-              class="btn-steel min-h-12!"
+              class="btn-secondary disabled:opacity-40"
               :aria-label="`Descargar reporte del día en ${format.toUpperCase()}`"
               :disabled="summaries.length === 0 || exporting !== null"
-              :class="{ 'opacity-40': summaries.length === 0 }"
               @click="exportReport(format)"
             >
               <StrokeIcon name="download" class="text-xl" />
-              <span>{{ exporting === format ? '…' : format }}</span>
+              <span>{{ exporting === format ? '…' : format.toUpperCase() }}</span>
             </button>
           </div>
         </div>
 
         <dl class="figures">
           <div>
-            <dt class="caption">Salió</dt>
-            <dd>
-              <FlapText :text="formatKgNumber(totals.initial)" :cells="6" align="right" />
+            <dt class="label">Salió</dt>
+            <dd class="figure-value text-2xl">{{ formatKgNumber(totals.initial) }}</dd>
+          </div>
+          <div>
+            <dt class="label">Entregado</dt>
+            <dd class="figure-value text-2xl">{{ formatKgNumber(totals.delivered) }}</dd>
+          </div>
+          <div>
+            <dt class="label">{{ isToday ? 'Quedan' : 'Regresó' }}</dt>
+            <dd class="figure-value text-2xl" :class="{ 'text-danger': totals.remaining < 0 }">
+              {{ formatKgNumber(totals.remaining) }}
             </dd>
           </div>
           <div>
-            <dt class="caption">Entregado</dt>
-            <dd>
-              <FlapText :text="formatKgNumber(totals.delivered)" :cells="6" align="right" />
-            </dd>
-          </div>
-          <div>
-            <dt class="caption">{{ isToday ? 'Quedan' : 'Regresó' }}</dt>
-            <dd>
-              <FlapText
-                :text="formatKgNumber(totals.remaining)"
-                :cells="6"
-                align="right"
-                :tone="totals.remaining < 0 ? 'danger' : 'ink'"
-              />
-            </dd>
-          </div>
-          <div>
-            <dt class="caption">Cerradas</dt>
-            <dd>
-              <FlapText :text="`${totals.closed}/${summaries.length}`" :cells="5" align="right" />
-            </dd>
+            <dt class="label">Cerradas</dt>
+            <dd class="figure-value text-2xl">{{ totals.closed }} de {{ summaries.length }}</dd>
           </div>
         </dl>
 
         <DriversBoard
-          class="min-h-64 flex-1 wide:min-h-0 tall:min-h-0"
+          class="min-h-64 flex-1 wide:min-h-0 tall:min-h-24"
           :rows="rows"
           :selected-id="selectedId"
           :empty-text="isToday ? 'No hay repartidores activos.' : 'Nadie salió a ruta este día.'"
@@ -345,7 +329,7 @@ onMounted(load)
       </section>
 
       <section
-        class="board-frame mt-3 flex min-h-0 flex-col rounded-lg p-4 wide:mt-0 tall:max-h-[45%]"
+        class="panel mt-3 flex min-h-0 flex-col p-4 wide:mt-0 tall:flex-1"
         aria-label="Detalle de la ruta"
       >
         <RouteDetail
@@ -360,7 +344,7 @@ onMounted(load)
           @reopen="reopen"
         />
         <div v-else class="grid flex-1 place-items-center gap-3 py-8 text-center">
-          <p class="caption text-base!">Toca un repartidor para ver sus paradas</p>
+          <p class="text-ink-2">Toca un repartidor para ver sus paradas.</p>
           <p v-if="error" class="error-alert" role="alert">{{ error }}</p>
         </div>
       </section>
@@ -372,17 +356,17 @@ onMounted(load)
 .figures {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-block: 1px solid var(--color-steel-3);
+  border-block: 1px solid var(--color-line);
 }
 .figures > div {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  padding: 0.7rem clamp(0.5rem, 1.2vw, 1rem);
+  gap: 0.35rem;
+  padding: 0.65rem clamp(0.6rem, 1.2vw, 1rem);
   overflow: hidden;
 }
 .figures > div + div {
-  border-left: 1px solid var(--color-steel-3);
+  border-left: 1px solid var(--color-line);
 }
 
 @media (max-width: 640px) {
@@ -393,7 +377,7 @@ onMounted(load)
     border-left: none;
   }
   .figures > div:nth-child(n + 3) {
-    border-top: 1px solid var(--color-steel-3);
+    border-top: 1px solid var(--color-line);
   }
 }
 </style>

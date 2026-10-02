@@ -22,7 +22,7 @@ const show = ref(props.visible)
     />
     <button
       type="button"
-      class="absolute inset-y-0 right-0 grid w-16 place-items-center text-2xl text-steel"
+      class="absolute inset-y-0 right-0 grid w-16 place-items-center text-xl text-ink-2"
       :aria-label="show ? 'Ocultar contraseña' : 'Mostrar contraseña'"
       :aria-pressed="show"
       @click="show = !show"

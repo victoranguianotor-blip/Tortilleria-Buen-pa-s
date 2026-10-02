@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import FlapText from '@/components/FlapText.vue'
 import PasswordField from '@/components/PasswordField.vue'
 import StrokeIcon from '@/components/StrokeIcon.vue'
 import { useClock } from '@/composables/clock'
@@ -40,26 +39,21 @@ async function submit() {
 <template>
   <main class="grid min-h-dvh place-items-center p-4 wide:p-8">
     <div
-      class="board-frame grid w-full max-w-5xl gap-8 rounded-lg p-5 wide:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] wide:gap-10 wide:p-8"
+      class="panel grid w-full max-w-4xl gap-8 p-5 sm:p-7 wide:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] wide:gap-10 wide:p-8"
     >
-      <div class="flex flex-col justify-between gap-6">
-        <h1 class="flex flex-col items-start gap-2">
-          <span class="sr-only">Reparto de Tortillas</span>
-          <FlapText text="Reparto" size="title" animate aria-hidden="true" />
-          <span class="flex flex-wrap gap-x-5 gap-y-2">
-            <FlapText text="de" size="lg" tone="steel" animate aria-hidden="true" />
-            <FlapText text="tortillas" size="lg" tone="steel" animate aria-hidden="true" />
-          </span>
-        </h1>
-        <div class="flex items-center gap-3">
-          <span class="caption">Hora</span>
-          <FlapText :text="time" size="md" />
+      <div class="flex flex-col justify-between gap-4">
+        <div class="flex flex-col gap-3">
+          <h1 class="text-3xl leading-tight font-extrabold sm:text-4xl">Reparto de Tortillas</h1>
+          <p class="text-lg text-ink-2">Entra con el usuario que te dio el encargado.</p>
         </div>
+        <p class="text-ink-3 tabular-nums">
+          Hora en Colima <span class="ml-1 font-bold text-ink">{{ time }}</span>
+        </p>
       </div>
 
-      <form class="flex flex-col gap-5" novalidate @submit.prevent="submit">
-        <label class="flex flex-col gap-2">
-          <span class="caption">Usuario</span>
+      <form class="flex flex-col gap-4" novalidate @submit.prevent="submit">
+        <label class="flex flex-col gap-1.5">
+          <span class="label">Usuario</span>
           <input
             v-model="username"
             class="field"
@@ -74,8 +68,8 @@ async function submit() {
           />
         </label>
 
-        <label class="flex flex-col gap-2">
-          <span class="caption">Contraseña</span>
+        <label class="flex flex-col gap-1.5">
+          <span class="label">Contraseña</span>
           <PasswordField
             v-model="password"
             name="password"
@@ -87,7 +81,7 @@ async function submit() {
 
         <p v-if="error" class="error-alert" role="alert">{{ error }}</p>
 
-        <button type="submit" class="btn-primary mt-1 w-full" :disabled="!ready || busy">
+        <button type="submit" class="btn-primary mt-2 w-full" :disabled="!ready || busy">
           <span>{{ busy ? 'Entrando…' : 'Entrar' }}</span>
           <StrokeIcon v-if="!busy" name="arrow" />
         </button>

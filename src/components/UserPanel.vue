@@ -50,27 +50,25 @@ defineExpose({ reset })
 </script>
 
 <template>
-  <section class="flex flex-col gap-5" :aria-label="`Usuario ${user.full_name}`">
+  <section class="flex flex-col gap-4" :aria-label="`Usuario ${user.full_name}`">
     <div class="flex items-start justify-between gap-3">
       <div class="flex min-w-0 flex-col gap-1">
-        <h2 class="name">{{ user.full_name }}</h2>
-        <p class="caption">{{ roleLabel(user.role) }} · usuario {{ user.username }}</p>
+        <h2 class="text-xl font-extrabold [overflow-wrap:anywhere]">{{ user.full_name }}</h2>
+        <p class="text-ink-2">
+          {{ roleLabel(user.role) }} · usuario <b class="text-ink">{{ user.username }}</b>
+        </p>
       </div>
-      <button type="button" class="btn-steel min-h-12! shrink-0" @click="emit('close')">
+      <button type="button" class="btn-secondary shrink-0" @click="emit('close')">
         <StrokeIcon name="close" class="text-xl" />
         <span>Cerrar</span>
       </button>
     </div>
 
-    <StatusLamp
-      class="self-start"
-      :text="user.active ? 'Activo' : 'Desactivado'"
-      :tone="user.active ? 'amber' : 'steel'"
-    />
+    <StatusLamp class="self-start" :text="user.active ? 'Activo' : 'Desactivado'" tone="idle" />
 
     <form class="flex flex-col gap-3" novalidate @submit.prevent="savePassword">
-      <label class="flex flex-col gap-2">
-        <span class="caption">Nueva contraseña</span>
+      <label class="flex flex-col gap-1.5">
+        <span class="label">Nueva contraseña</span>
         <PasswordField
           v-model="password"
           visible
@@ -89,7 +87,7 @@ defineExpose({ reset })
     <p v-if="error" class="error-alert" role="alert">{{ error }}</p>
     <p v-else-if="notice" class="notice" role="status">{{ notice }}</p>
 
-    <div class="flex flex-col gap-2 border-t border-steel-3 pt-5">
+    <div class="mt-4 flex flex-col gap-2 border-t border-line pt-5">
       <p v-if="isSelf" class="hint">Es tu cuenta: no puedes desactivarla.</p>
       <template v-else>
         <p class="hint">
@@ -101,7 +99,7 @@ defineExpose({ reset })
         </p>
         <button
           type="button"
-          class="btn-steel"
+          class="btn-secondary"
           :class="{ danger: deactivateConfirm.armed.value }"
           :disabled="busy"
           @click="toggleActive"
@@ -120,24 +118,12 @@ defineExpose({ reset })
 </template>
 
 <style scoped>
-.name {
-  overflow-wrap: anywhere;
-  font-size: clamp(1.6rem, 1.4vw + 1.1rem, 2.1rem);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  line-height: 1.1;
-  text-transform: uppercase;
-}
 .hint {
-  color: var(--color-steel-2);
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  color: var(--color-ink-3);
+  font-size: 0.875rem;
 }
 .notice {
   color: var(--color-ink);
-  font-size: 1.15rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
 }
 </style>

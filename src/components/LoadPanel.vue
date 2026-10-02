@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
-import FlapText from '@/components/FlapText.vue'
 import KgKeypad from '@/components/KgKeypad.vue'
 import KgReadout from '@/components/KgReadout.vue'
 import StrokeIcon from '@/components/StrokeIcon.vue'
@@ -26,17 +25,11 @@ const starting = computed(() => props.mode === 'start')
     :aria-label="starting ? 'Carga de hoy' : 'Corregir carga'"
   >
     <div class="flex min-h-12 items-center justify-between gap-3">
-      <h2>
-        <FlapText
-          :text="starting ? 'Carga de hoy' : 'Corregir carga'"
-          size="md"
-          :tone="starting ? 'ink' : 'amber'"
-        />
-      </h2>
+      <h2 class="text-xl font-extrabold">{{ starting ? 'Carga de hoy' : 'Corregir carga' }}</h2>
       <button
         v-if="!starting"
         type="button"
-        class="btn-steel min-h-12!"
+        class="btn-secondary"
         :disabled="busy"
         @click="emit('cancel')"
       >
@@ -45,7 +38,7 @@ const starting = computed(() => props.mode === 'start')
       </button>
     </div>
 
-    <p class="text-xl font-semibold tracking-[0.1em] uppercase">
+    <p class="text-lg text-ink-2">
       {{ starting ? '¿Con cuántos kilos sales hoy?' : '¿Cuántos kilos cargaste en realidad?' }}
     </p>
 

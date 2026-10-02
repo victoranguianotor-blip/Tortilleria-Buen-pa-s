@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 
-import FlapText from '@/components/FlapText.vue'
 import KgKeypad from '@/components/KgKeypad.vue'
 import KgReadout from '@/components/KgReadout.vue'
 import StrokeIcon from '@/components/StrokeIcon.vue'
@@ -44,8 +43,8 @@ const leftover = computed(() => roundKg(props.availableKg - kg.value))
 const overDelivery = computed(() => kg.value > 0 && leftover.value < 0)
 const ready = computed(() => stopName.value.trim().length > 0 && kg.value > 0)
 const title = computed(() => {
-  const number = String(props.stopNumber).padStart(2, '0')
-  return editing.value ? `Corregir ${number}` : `Parada ${number}`
+  const number = props.stopNumber
+  return editing.value ? `Corregir parada ${number}` : `Parada ${number}`
 })
 
 function save() {
@@ -60,13 +59,13 @@ defineExpose({ reset })
 </script>
 
 <template>
-  <section class="panel flex flex-col gap-4 wide:gap-3 tall:gap-3" :aria-label="title">
+  <section class="capture flex flex-col gap-4 wide:gap-3 tall:gap-3" :aria-label="title">
     <div class="heading flex min-h-12 items-center justify-between gap-3">
-      <h2><FlapText :text="title" size="md" :tone="editing ? 'amber' : 'ink'" /></h2>
+      <h2 class="text-xl font-extrabold">{{ title }}</h2>
       <button
         v-if="editing"
         type="button"
-        class="btn-steel min-h-12!"
+        class="btn-secondary"
         :disabled="busy"
         @click="emit('cancel')"
       >
@@ -79,12 +78,12 @@ defineExpose({ reset })
       <span class="sr-only">Nombre de la parada</span>
       <input
         v-model="stopName"
-        class="field uppercase"
+        class="field"
         type="text"
         list="recent-stops"
         maxlength="120"
         autocomplete="off"
-        autocapitalize="characters"
+        autocapitalize="sentences"
         enterkeyhint="done"
         placeholder="Tienda o cliente"
         :disabled="busy"
@@ -108,7 +107,7 @@ defineExpose({ reset })
 
     <p v-if="error" class="error-alert" role="alert">{{ error }}</p>
 
-    <div class="flex gap-3">
+    <div class="flex gap-6">
       <button
         type="button"
         class="btn-primary min-w-0 flex-1"
@@ -121,14 +120,14 @@ defineExpose({ reset })
       <button
         v-if="editing"
         type="button"
-        class="btn-steel danger min-h-auto! shrink-0"
+        class="btn-secondary danger min-h-auto! shrink-0"
         :aria-label="
           deleteConfirm.armed.value ? 'Toca otra vez para borrar la parada' : 'Borrar parada'
         "
         :disabled="busy"
         @click="deleteConfirm.tap(() => emit('delete'))"
       >
-        <StrokeIcon name="trash" class="text-2xl" />
+        <StrokeIcon name="trash" class="text-xl" />
         <span>{{ deleteConfirm.armed.value ? '¿Borrar?' : 'Borrar' }}</span>
       </button>
     </div>
@@ -138,30 +137,28 @@ defineExpose({ reset })
 <style scoped>
 .notice {
   min-height: 1.5rem;
-  color: var(--color-steel);
-  font-size: 1.15rem;
+  color: var(--color-ink-2);
+  font-size: 1rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
 }
 .notice.over {
   color: var(--color-danger);
 }
 
 @media (orientation: portrait) and (min-width: 700px) and (min-height: 1000px) {
-  .panel {
+  .capture {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
   }
-  .panel > * {
+  .capture > * {
     grid-column: 1 / -1;
   }
-  .panel > .heading {
+  .capture > .heading {
     grid-column: 1;
     grid-row: 1;
   }
-  .panel > .readout {
+  .capture > .readout {
     grid-column: 2;
     grid-row: 1;
   }

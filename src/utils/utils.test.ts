@@ -50,7 +50,7 @@ describe('kg keypad', () => {
 
 describe('date', () => {
   it('formats the business date', () => {
-    expect(formatShortDate('2026-10-01')).toBe('JUE 01 OCT')
+    expect(formatShortDate('2026-10-01')).toBe('Jue 1 oct')
   })
   it('uses Colima time (UTC-6)', () => {
     expect(colimaTime('2026-10-01T18:05:00Z')).toBe('12:05')
@@ -93,6 +93,6 @@ describe('routeStatus', () => {
     expect(routeStatus(null, 0).text).toBe('Sin iniciar')
     expect(routeStatus({ closed_at: '2026-10-01T20:00:00Z' }, -3).text).toBe('Cerrada')
     expect(routeStatus({ closed_at: null }, -0.5).tone).toBe('danger')
-    expect(routeStatus({ closed_at: null }, 4).tone).toBe('amber')
+    expect(routeStatus({ closed_at: null }, 4).tone).toBe('go')
   })
 })

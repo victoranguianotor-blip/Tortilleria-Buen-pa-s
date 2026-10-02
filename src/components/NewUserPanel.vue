@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 
-import FlapText from '@/components/FlapText.vue'
 import PasswordField from '@/components/PasswordField.vue'
 import StrokeIcon from '@/components/StrokeIcon.vue'
 import type { UserRole } from '@/services/admin'
@@ -50,11 +49,11 @@ defineExpose({ reset })
 </script>
 
 <template>
-  <form class="flex flex-col gap-5" novalidate aria-label="Nuevo usuario" @submit.prevent="submit">
-    <h2 class="flex min-h-12 items-center"><FlapText text="Nuevo usuario" /></h2>
+  <form class="flex flex-col gap-4" novalidate aria-label="Nuevo usuario" @submit.prevent="submit">
+    <h2 class="text-xl font-extrabold">Nuevo usuario</h2>
 
-    <label class="flex flex-col gap-2">
-      <span class="caption">Nombre</span>
+    <label class="flex flex-col gap-1.5">
+      <span class="label">Nombre</span>
       <input
         v-model="fullName"
         class="field"
@@ -68,11 +67,11 @@ defineExpose({ reset })
       />
     </label>
 
-    <label class="flex flex-col gap-2">
-      <span class="caption">Usuario para entrar</span>
+    <label class="flex flex-col gap-1.5">
+      <span class="label">Usuario para entrar</span>
       <input
         v-model="username"
-        class="field lowercase"
+        class="field"
         type="text"
         maxlength="30"
         autocomplete="off"
@@ -89,8 +88,8 @@ defineExpose({ reset })
       </span>
     </label>
 
-    <label class="flex flex-col gap-2">
-      <span class="caption">Contraseña</span>
+    <label class="flex flex-col gap-1.5">
+      <span class="label">Contraseña</span>
       <PasswordField
         v-model="password"
         visible
@@ -104,8 +103,8 @@ defineExpose({ reset })
       </span>
     </label>
 
-    <fieldset class="flex flex-col gap-2">
-      <legend class="caption mb-2">Rol</legend>
+    <fieldset class="flex flex-col gap-1.5">
+      <legend class="label mb-1.5">Rol</legend>
       <div class="grid grid-cols-2 gap-2">
         <label v-for="r in ['driver', 'admin'] as const" :key="r" class="choice">
           <input v-model="role" class="sr-only" type="radio" name="role" :value="r" />
@@ -126,10 +125,8 @@ defineExpose({ reset })
 
 <style scoped>
 .hint {
-  color: var(--color-steel-2);
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  color: var(--color-ink-3);
+  font-size: 0.875rem;
 }
 .hint.bad {
   color: var(--color-danger);
@@ -138,34 +135,28 @@ defineExpose({ reset })
 .choice {
   display: grid;
   place-items: center;
-  min-height: 3.4rem;
-  border: 2px solid var(--color-steel-3);
+  min-height: 3rem;
+  border: 1px solid var(--color-line);
   border-radius: 6px;
-  color: var(--color-steel);
-  font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  color: var(--color-ink-2);
+  font-weight: 700;
   cursor: pointer;
   transition:
-    border-color 160ms ease-out,
-    color 160ms ease-out,
-    background 160ms ease-out;
+    border-color 140ms ease-out,
+    background 140ms ease-out;
 }
 .choice:has(:checked) {
-  border-color: var(--color-amber);
-  background: var(--color-amber-dark);
-  color: var(--color-amber);
+  border-color: var(--color-signal);
+  background: var(--color-signal-soft);
+  color: var(--color-ink);
 }
 .choice:has(:focus-visible) {
-  outline: 3px solid var(--color-amber);
-  outline-offset: 3px;
+  outline: 3px solid var(--color-signal);
+  outline-offset: 2px;
 }
 
 .notice {
   color: var(--color-ink);
-  font-size: 1.15rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
 }
 </style>

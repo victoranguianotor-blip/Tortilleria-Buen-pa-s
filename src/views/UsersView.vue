@@ -3,7 +3,6 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import AdminNav from '@/components/AdminNav.vue'
-import FlapText from '@/components/FlapText.vue'
 import NewUserPanel from '@/components/NewUserPanel.vue'
 import StrokeIcon from '@/components/StrokeIcon.vue'
 import TopBar from '@/components/TopBar.vue'
@@ -119,15 +118,12 @@ onMounted(load)
     </TopBar>
 
     <div v-if="status !== 'ready'" class="grid flex-1 place-items-center p-6">
-      <div class="flex flex-col items-center gap-6 text-center">
-        <FlapText
-          :text="status === 'loading' ? 'Cargando' : 'Sin conexión'"
-          size="lg"
-          :tone="status === 'loading' ? 'steel' : 'danger'"
-          animate
-        />
+      <div class="flex max-w-md flex-col items-center gap-4 text-center">
+        <p class="text-2xl font-extrabold" :class="{ 'text-danger': status === 'failed' }">
+          {{ status === 'loading' ? 'Cargando usuarios…' : 'Sin conexión' }}
+        </p>
         <template v-if="status === 'failed'">
-          <p class="max-w-md text-xl text-steel">
+          <p class="text-lg text-ink-2">
             No se pudo traer la lista de usuarios. Revisa la señal e inténtalo otra vez.
           </p>
           <button type="button" class="btn-primary" @click="load">Reintentar</button>
@@ -137,21 +133,21 @@ onMounted(load)
 
     <main
       v-else
-      class="min-h-0 flex-1 overflow-y-auto p-3 wide:grid wide:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] wide:gap-4 wide:overflow-hidden wide:p-4 tall:flex tall:flex-col tall:overflow-hidden"
+      class="min-h-0 flex-1 overflow-y-auto p-3 wide:grid wide:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] wide:gap-3 wide:overflow-hidden tall:flex tall:flex-col tall:overflow-hidden"
     >
-      <section
-        class="board-frame flex min-h-0 flex-col rounded-lg tall:flex-1"
-        aria-label="Lista de usuarios"
-      >
-        <div class="flex flex-wrap items-center justify-between gap-3 px-4 pt-4 pb-3">
-          <div class="flex flex-col gap-2">
-            <h1 class="caption">Repartidores activos</h1>
-            <FlapText :text="String(activeDrivers)" :cells="2" align="right" size="lg" />
+      <section class="panel flex min-h-0 flex-col tall:flex-1" aria-label="Lista de usuarios">
+        <div class="flex min-h-18 flex-wrap items-center justify-between gap-3 px-4 py-3">
+          <div class="flex flex-col">
+            <h1 class="text-xl font-extrabold">Usuarios</h1>
+            <p class="text-ink-2">
+              {{ activeDrivers }}
+              {{ activeDrivers === 1 ? 'repartidor activo' : 'repartidores activos' }}
+            </p>
           </div>
           <button
             v-if="selected"
             type="button"
-            class="btn-steel min-h-12!"
+            class="btn-secondary"
             :disabled="busy"
             @click="showNewUser"
           >
@@ -161,7 +157,7 @@ onMounted(load)
         </div>
 
         <UsersBoard
-          class="min-h-64 flex-1 border-t border-steel-3 wide:min-h-0 tall:min-h-0"
+          class="min-h-64 flex-1 border-t border-line wide:min-h-0 tall:min-h-0"
           :users="users"
           :selected-id="selectedId"
           @select="select"
@@ -169,7 +165,7 @@ onMounted(load)
       </section>
 
       <section
-        class="board-frame mt-3 shrink-0 rounded-lg p-4 wide:mt-0 wide:min-h-0 wide:overflow-y-auto tall:max-h-[55%] tall:overflow-y-auto"
+        class="panel mt-3 shrink-0 p-4 wide:mt-0 wide:min-h-0 wide:overflow-y-auto tall:max-h-[55%] tall:overflow-y-auto"
         aria-label="Detalle del usuario"
       >
         <UserPanel

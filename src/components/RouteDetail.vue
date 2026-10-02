@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import FlapText from '@/components/FlapText.vue'
 import StatusLamp from '@/components/StatusLamp.vue'
 import StopsBoard from '@/components/StopsBoard.vue'
 import type { RouteSummary } from '@/services/admin'
@@ -27,43 +26,34 @@ const over = computed(() => (props.summary?.remaining_kg ?? 0) < 0)
 <template>
   <section class="flex min-h-0 flex-col gap-4" :aria-label="`Ruta de ${name}`">
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <h2 class="name">{{ name }}</h2>
+      <h2 class="min-w-0 truncate text-xl font-extrabold">{{ name }}</h2>
       <StatusLamp :text="status.text" :tone="status.tone" />
     </div>
 
-    <p v-if="!summary" class="text-lg tracking-[0.1em] text-steel uppercase">
+    <p v-if="!summary" class="text-ink-2">
       {{ isToday ? 'Todavía no inicia la ruta de hoy.' : 'No salió a ruta este día.' }}
     </p>
 
     <template v-else>
-      <dl class="figures">
+      <dl class="figures -mx-4">
         <div>
-          <dt class="caption">Salió</dt>
-          <dd>
-            <FlapText :text="formatKgNumber(summary.initial_kg)" :cells="5" align="right" />
-          </dd>
+          <dt class="label">Salió</dt>
+          <dd class="figure-value text-2xl">{{ formatKgNumber(summary.initial_kg) }}</dd>
         </div>
         <div>
-          <dt class="caption">Entregó</dt>
-          <dd>
-            <FlapText :text="formatKgNumber(summary.delivered_kg)" :cells="5" align="right" />
-          </dd>
+          <dt class="label">Entregó</dt>
+          <dd class="figure-value text-2xl">{{ formatKgNumber(summary.delivered_kg) }}</dd>
         </div>
         <div>
-          <dt class="caption">{{ summary.closed_at ? 'Regresa' : 'Queda' }}</dt>
-          <dd>
-            <FlapText
-              :text="formatKgNumber(summary.remaining_kg)"
-              :cells="5"
-              align="right"
-              :tone="over ? 'danger' : 'ink'"
-            />
+          <dt class="label">{{ summary.closed_at ? 'Regresa' : 'Queda' }}</dt>
+          <dd class="figure-value text-2xl" :class="{ 'text-danger': over }">
+            {{ formatKgNumber(summary.remaining_kg) }}
           </dd>
         </div>
       </dl>
 
-      <div class="stops flex min-h-0 flex-col">
-        <p v-if="deliveries === null" class="caption p-4">Cargando paradas…</p>
+      <div class="-mx-4 flex min-h-48 flex-1 flex-col">
+        <p v-if="deliveries === null" class="p-4 text-ink-3">Cargando paradas…</p>
         <StopsBoard
           v-else
           class="min-h-0 flex-1"
@@ -75,13 +65,11 @@ const over = computed(() => (props.summary?.remaining_kg ?? 0) < 0)
       </div>
 
       <div v-if="summary.closed_at" class="flex flex-wrap items-center justify-between gap-3">
-        <p class="text-lg tracking-[0.1em] text-steel uppercase">
-          Cerró a las {{ colimaTime(summary.closed_at) }}
-        </p>
+        <p class="text-ink-2">Cerró a las {{ colimaTime(summary.closed_at) }}</p>
         <button
           v-if="isToday"
           type="button"
-          class="btn-steel"
+          class="btn-secondary"
           :disabled="busy"
           @click="$emit('reopen')"
         >
@@ -95,33 +83,18 @@ const over = computed(() => (props.summary?.remaining_kg ?? 0) < 0)
 </template>
 
 <style scoped>
-.name {
-  font-size: clamp(1.6rem, 1.4vw + 1.1rem, 2.1rem);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  line-height: 1.1;
-  text-transform: uppercase;
-}
-
 .figures {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-block: 1px solid var(--color-steel-3);
+  border-block: 1px solid var(--color-line);
 }
 .figures > div {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  padding: 0.7rem clamp(0.5rem, 1.2vw, 0.9rem);
+  gap: 0.35rem;
+  padding: 0.65rem 0.9rem;
 }
 .figures > div + div {
-  border-left: 1px solid var(--color-steel-3);
-}
-
-.stops {
-  flex: 1;
-  min-height: 12rem;
-  border: 1px solid var(--color-steel-3);
-  border-radius: 6px;
+  border-left: 1px solid var(--color-line);
 }
 </style>
