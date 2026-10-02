@@ -136,8 +136,9 @@ defineExpose({ reset })
   display: grid;
   place-items: center;
   min-height: 3rem;
-  border: 1px solid var(--color-line);
+  border: 1px solid var(--color-edge);
   border-radius: 6px;
+  background: var(--color-raised);
   color: var(--color-ink-2);
   font-weight: 700;
   cursor: pointer;

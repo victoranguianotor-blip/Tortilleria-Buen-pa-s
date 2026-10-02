@@ -1,13 +1,16 @@
 <script setup lang="ts">
+import StrokeIcon from '@/components/StrokeIcon.vue'
+
 withDefaults(
   defineProps<{
     value: string
     label: string
     unit?: 'kg' | 'money'
     active?: boolean
+    selectable?: boolean
     stacked?: boolean
   }>(),
-  { unit: 'kg', active: false, stacked: false },
+  { unit: 'kg', active: false, selectable: false, stacked: false },
 )
 </script>
 
@@ -15,11 +18,14 @@ withDefaults(
   <div
     class="flex rounded-md border bg-ground px-4 py-2.5"
     :class="[
-      active ? 'readout-active border-signal' : 'border-line',
+      active ? 'readout-active border-signal' : selectable ? 'border-edge' : 'border-line',
       stacked ? 'flex-col gap-1.5' : 'items-baseline justify-between gap-4',
     ]"
   >
-    <span class="label" :class="{ 'tall:sr-only': !stacked }">{{ label }}</span>
+    <span class="label flex items-center gap-1.5" :class="{ 'tall:sr-only': !stacked }">
+      {{ label }}
+      <StrokeIcon v-if="selectable && !active" name="pencil" class="text-ink-2" />
+    </span>
     <p class="flex items-baseline gap-1.5" aria-live="polite">
       <span v-if="unit === 'money'" class="font-semibold text-ink-2">$</span>
       <span class="figure-value text-4xl" :class="value ? 'text-ink' : 'text-ink-3'">

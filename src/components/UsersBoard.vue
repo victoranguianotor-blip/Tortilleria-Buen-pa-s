@@ -40,7 +40,7 @@ defineEmits<{ select: [user: UserProfile] }>()
   align-items: center;
   gap: 0.75rem;
   min-height: 3.25rem;
-  padding: 0.3rem 0.9rem;
+  padding: 0.3rem 2.1rem 0.3rem 0.9rem;
 }
 .list-head {
   min-height: 2.25rem;
@@ -74,7 +74,7 @@ defineEmits<{ select: [user: UserProfile] }>()
   .row {
     grid-template-columns: minmax(0, 1fr) 6rem;
     gap: 0.6rem;
-    padding-inline: 0.75rem;
+    padding-left: 0.75rem;
   }
   .username {
     display: none;

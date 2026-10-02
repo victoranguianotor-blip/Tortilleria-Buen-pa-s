@@ -15,12 +15,14 @@
   align-items: center;
   min-height: 3rem;
   padding: 0 0.9rem;
+  border: 1px solid var(--color-edge);
   border-radius: 6px;
+  background: var(--color-raised);
   color: var(--color-ink-2);
   font-weight: 700;
 }
 .nav-link:active {
-  background: var(--color-raised);
+  background: var(--color-line);
 }
 .nav-link.current {
   background: var(--color-raised);

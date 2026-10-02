@@ -218,7 +218,13 @@ defineExpose({ reset })
         :disabled="busy"
         @click="field = 'kg'"
       >
-        <KgReadout :value="value" label="Kilos que dejas" :active="field === 'kg'" stacked />
+        <KgReadout
+          :value="value"
+          label="Kilos que dejas"
+          :active="field === 'kg'"
+          selectable
+          stacked
+        />
       </button>
       <button
         type="button"
@@ -232,6 +238,7 @@ defineExpose({ reset })
           :label="amountEdited || suggested === null ? 'Cobrado' : 'Cobrado (sugerido)'"
           unit="money"
           :active="field === 'amount'"
+          selectable
           stacked
         />
       </button>
@@ -267,7 +274,7 @@ defineExpose({ reset })
         <button
           v-if="showUseSuggested"
           type="button"
-          class="font-bold text-signal underline underline-offset-4"
+          class="btn-secondary"
           :disabled="busy"
           @click="useSuggested"
         >
@@ -319,19 +326,20 @@ defineExpose({ reset })
 .kinds {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  border: 1px solid var(--color-line);
+  border: 1px solid var(--color-edge);
   border-radius: 6px;
   overflow: hidden;
 }
 .kind {
   min-height: 3rem;
+  background: var(--color-raised);
   color: var(--color-ink-2);
   font-size: 1.0625rem;
   font-weight: 700;
   transition: background 140ms ease-out;
 }
 .kind + .kind {
-  border-left: 1px solid var(--color-line);
+  border-left: 1px solid var(--color-edge);
 }
 .kind[aria-pressed='true'] {
   background: var(--color-signal-soft);

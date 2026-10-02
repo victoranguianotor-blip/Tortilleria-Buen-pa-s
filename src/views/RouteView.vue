@@ -391,6 +391,14 @@ onMounted(load)
 .figure + .figure {
   border-left: 1px solid var(--color-line);
 }
+/* The editable load figure is a plate inside the grid, so it reads as tappable. */
+button.figure:not(:disabled) {
+  margin: 0.35rem;
+  padding: 0.3rem clamp(0.25rem, 1.5vw - 0.35rem, 0.65rem);
+  border-radius: 6px;
+  background: var(--color-raised);
+  box-shadow: inset 0 0 0 1px var(--color-edge);
+}
 button.figure:not(:disabled):active,
 button.figure.active {
   background: var(--color-signal-soft);

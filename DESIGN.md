@@ -6,6 +6,7 @@ colors:
   panel: "#1a1d21"
   raised: "#24282d"
   line: "#343a41"
+  edge: "#646c76"
   ink: "#ffffff"
   ink-2: "#c4cbd3"
   ink-3: "#9aa3ad"
@@ -93,14 +94,14 @@ components:
     backgroundColor: "{colors.raised}"
     textColor: "{colors.ink-3}"
   button-secondary:
-    backgroundColor: "transparent"
+    backgroundColor: "{colors.raised}"
     textColor: "{colors.ink}"
     typography: "{typography.button-sm}"
     rounded: "{rounded.control}"
     padding: "0 1rem"
     height: "3rem"
   button-secondary-active:
-    backgroundColor: "{colors.raised}"
+    backgroundColor: "{colors.line}"
   button-secondary-danger:
     textColor: "{colors.danger}"
   button-secondary-quiet:
@@ -191,7 +192,8 @@ Asfalto, lámina y letra blanca sin medias tintas; un amarillo de señal, un ver
 - **Asfalto** (ground): fondo de página y la ventanilla de lectura de kg.
 - **Lámina** (panel): paneles y banda superior.
 - **Lámina alzada** (raised): campos, teclas, botón primario deshabilitado y el fondo de respuesta al tocar.
-- **Costura** (line): todos los bordes de 1px: paneles, campos, teclas, renglones, divisiones entre cifras.
+- **Costura** (line): los bordes estructurales de 1px: paneles, campos, teclas, renglones, divisiones entre cifras.
+- **Contorno de control** (edge): el borde de 1px de todo lo tocable que no es el botón principal (botones secundarios y discretos, secciones del menú, fecha del encargado, cifra "Salió" editable, ventanillas Kilos/Cobrado, selector Entrega/Recolección, opciones de rol). Contrasta 3.2:1 con la lámina para que una acción nunca se lea como texto.
 - **Blanco carretero** (ink): texto principal y todas las cifras, incluido el reloj.
 - **Gris claro** (ink-2): texto secundario: hora de la parada, nombre en la banda, fecha, unidades "kg", avisos neutros, botón discreto, teclas de función.
 - **Gris rótulo** (ink-3): rótulos de cifras y columnas, número de renglón, placeholder, pistas, texto deshabilitado.
@@ -255,9 +257,9 @@ Esquinas apenas suavizadas de 6px en paneles, campos, teclas, botones, alertas y
 Interruptores de lámina: grandes, en oración normal, sin adornos.
 - **Shape:** esquinas de 6px.
 - **Primary:** amarillo con texto asfalto, 800 en 1.125rem, alto 3.5rem, a todo lo ancho en la captura, con flecha de trazo al final. Al presionar se oscurece (brightness 0.88, 120ms). Deshabilitado: lámina alzada con texto gris rótulo.
-- **Secondary:** costura de 1px, texto blanco 700, alto 3rem; al tocar se rellena de lámina alzada (140ms).
+- **Secondary:** placa de lámina alzada con contorno de control (edge) de 1px, texto blanco 700, alto 3rem; al tocar (o al pasar el puntero) se oscurece a costura (140ms). Deshabilitado: sin relleno, borde de costura y texto gris rótulo.
 - **Danger:** borde y texto rojos (Borrar, Cerrar ruta armada).
-- **Quiet:** sin borde, texto gris claro (Salir, Cerrar ruta en reposo, flechas de día).
+- **Quiet:** la misma placa con texto gris claro (Salir, Cerrar ruta en reposo, flechas de día, + Nota, enlaces legales del login). Nunca texto suelto: toda acción lleva placa y contorno.
 - **Focus:** anillo amarillo de 3px con 2px de separación en todo lo enfocable.
 
 ### Chips
@@ -278,12 +280,14 @@ Interruptores de lámina: grandes, en oración normal, sin adornos.
 
 ### Navigation
 - **Banda superior:** lámina con costura inferior; fecha en gris claro y hora en blanco 700 tabular, nombre en gris claro 600, Salir discreto (en celular solo su icono).
-- **Secciones del encargado** (Rutas, Usuarios): enlaces de 3rem en gris claro 700; la actual se rellena de lámina alzada, va en blanco y lleva subrayado interior amarillo de 2px.
+- **Secciones del encargado** (Rutas, Usuarios) y de las páginas legales: placas de 3rem con contorno de control, gris claro 700; la actual va en blanco con subrayado interior amarillo de 2px.
+- La etiqueta "En prueba" de la banda es texto amarillo sin contorno, para no confundirse con un botón.
 
 ### Tablero de renglones
 - Encabezado de columnas en gris rótulo 600 de 0.8125rem sobre costura; renglones de 3.25rem separados por costura.
 - Número en gris rótulo, hora en gris claro tabular, nombre en blanco 600, kg en cifra 800 alineada a la derecha y cobrado en blanco 700 tabular a su derecha.
 - Una recolección lleva antes del nombre la etiqueta "Recolección" (contorno de costura, gris claro 700), sus kg en gris claro y "—" en cobrado. La nota de una parada va como segunda línea en gris rótulo, recortada.
+- Todo renglón tocable termina en una flecha › de trazo (2.2px, gris rótulo; amarilla si está seleccionado), con 2.1rem reservados a la derecha. Los renglones de solo lectura no la llevan.
 - El renglón tocado para corregir se selecciona: fondo amarillo apagado con contorno interior amarillo de 1px.
 - Vacío y pista ("Toca una parada para corregirla o borrarla.") en gris rótulo.
 - El encargado usa el mismo tablero para repartidores (punto de estado, nombre, hora de salida, Salió, Entregó, Queda, Cobrado, paradas; ≤ 640px quedan solo nombre, Queda y Cobrado) y usuarios.
@@ -292,7 +296,7 @@ Interruptores de lámina: grandes, en oración normal, sin adornos.
 - Rejilla 3×4 (7-8-9 arriba; ½ / 0 / borrar abajo; en pesos el ½ se vuelve punto decimal), teclas de lámina alzada con costura, 6px, dígitos blancos 700 tabulares.
 - Al presionar la tecla se enciende en amarillo al instante y vuelve en 140ms; deshabilitado al 40%.
 - La lectura de kg es una ventanilla de asfalto con costura: rótulo a la izquierda, cifra a la derecha (gris rótulo en cero, blanca con valor) y "kg" en gris claro. La de pesos lleva "$" antes de la cifra.
-- En la parada, "Kilos que dejas" y "Cobrado" son dos ventanillas lado a lado (rótulo arriba, cifra abajo) que comparten un teclado; la activa lleva contorno amarillo. Cobrado sigue a kg × precio base ("Cobrado (sugerido)") hasta que el repartidor teclea: la primera tecla reemplaza la sugerencia y "Usar $X" la recupera.
+- En la parada, "Kilos que dejas" y "Cobrado" son dos ventanillas lado a lado (rótulo arriba, cifra abajo) que comparten un teclado; la activa lleva contorno amarillo y la otra contorno de control con un lápiz junto al rótulo. Cobrado sigue a kg × precio base ("Cobrado (sugerido)") hasta que el repartidor teclea: la primera tecla reemplaza la sugerencia y "Usar $X" (botón secundario) la recupera.
 - Arriba de la captura, un selector Entrega / Recolección (dos mitades con costura; la elegida en amarillo apagado con contorno amarillo). En recolección solo queda la ventanilla "Kilos que recoges". "+ Nota" en el encabezado abre un campo de nota.
 - Antes de la primera parada, "Listo para salir" con el botón principal "Salir a ruta"; la hora queda en el rótulo de la cifra ("Salió 06:42").
 

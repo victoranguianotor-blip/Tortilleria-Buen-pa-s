@@ -272,7 +272,7 @@ onMounted(load)
             </button>
             <button
               type="button"
-              class="relative min-h-12 rounded-md px-2 text-xl font-extrabold"
+              class="relative min-h-12 rounded-md border border-edge bg-raised px-3 text-xl font-extrabold active:bg-line"
               :class="{ 'text-signal': !isToday }"
               aria-label="Elegir día"
               @click="openPicker"
