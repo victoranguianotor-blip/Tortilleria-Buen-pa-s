@@ -40,6 +40,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,woff2,png,svg,ico}'],
+        // Optional jsPDF dependencies for doc.html(), never loaded by the report (index.es = canvg).
+        globIgnores: ['**/html2canvas-*.js', '**/purify.es-*.js', '**/index.es-*.js'],
         navigateFallback: '/index.html',
       },
     }),

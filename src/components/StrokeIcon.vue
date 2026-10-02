@@ -13,6 +13,7 @@ defineProps<{
     | 'chevron-right'
     | 'refresh'
     | 'plus'
+    | 'download'
 }>()
 </script>
 
@@ -70,6 +71,11 @@ defineProps<{
     </template>
     <template v-else-if="name === 'plus'">
       <path d="M12 5v14M5 12h14" />
+    </template>
+    <template v-else-if="name === 'download'">
+      <path d="M12 4v11" />
+      <path d="M7 10l5 5 5-5" />
+      <path d="M5 20h14" />
     </template>
     <template v-else-if="name === 'close'">
       <path d="M6 6l12 12M18 6L6 18" />

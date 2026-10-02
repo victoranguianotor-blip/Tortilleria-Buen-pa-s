@@ -27,6 +27,18 @@ export async function fetchUsers(): Promise<UserProfile[]> {
   return data
 }
 
+export async function fetchDeliveriesOfRoutes(
+  routeIds: string[],
+): Promise<Pick<Tables<'deliveries'>, 'route_id' | 'stop_name' | 'delivered_kg' | 'created_at'>[]> {
+  if (routeIds.length === 0) return []
+  const { data, error } = await supabase
+    .from('deliveries')
+    .select('route_id, stop_name, delivered_kg, created_at')
+    .in('route_id', routeIds)
+  if (error) throw error
+  return data
+}
+
 export async function reopenRoute(routeId: string): Promise<void> {
   const { error } = await supabase.rpc('reopen_route', { p_route_id: routeId })
   if (error) throw error

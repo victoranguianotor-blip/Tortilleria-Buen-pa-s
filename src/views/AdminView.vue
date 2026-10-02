@@ -13,8 +13,10 @@ import type { RouteSummary, UserProfile } from '@/services/admin'
 import { businessToday, fetchDeliveries, type Delivery } from '@/services/routes'
 import { useAuthStore } from '@/stores/auth'
 import { addDays, colimaTime, formatShortDate } from '@/utils/date'
+import { downloadBlob } from '@/utils/download'
 import { errorMessage } from '@/utils/errors'
 import { formatKgNumber, roundKg, sumKg } from '@/utils/kg'
+import { buildDayReport, reportToCsv } from '@/utils/report'
 
 const REFRESH_MS = 60_000
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/
@@ -34,6 +36,7 @@ const deliveries = ref<Delivery[] | null>(null)
 const busy = ref(false)
 const error = ref<string | null>(null)
 const datePicker = ref<HTMLInputElement | null>(null)
+const exporting = ref<'pdf' | 'csv' | null>(null)
 let request = 0
 
 const date = computed(() => {
@@ -153,6 +156,32 @@ async function reopen() {
   }
 }
 
+async function exportReport(format: 'pdf' | 'csv') {
+  const day = date.value
+  if (!day || exporting.value) return
+  exporting.value = format
+  error.value = null
+  try {
+    await refresh()
+    const routes = summaries.value
+    const deliveries = await admin.fetchDeliveriesOfRoutes(routes.map((r) => r.route_id))
+    const report = buildDayReport(day, routes, deliveries)
+    if (format === 'csv') {
+      downloadBlob(
+        new Blob([reportToCsv(report)], { type: 'text/csv;charset=utf-8' }),
+        `reporte-${day}.csv`,
+      )
+    } else {
+      const { reportToPdf } = await import('@/utils/reportPdf')
+      downloadBlob(await reportToPdf(report), `reporte-${day}.pdf`)
+    }
+  } catch (e) {
+    error.value = errorMessage(e)
+  } finally {
+    exporting.value = null
+  }
+}
+
 watch(date, (next, previous) => {
   if (previous && next !== previous) refreshNow()
 })
@@ -247,16 +276,31 @@ onMounted(load)
             </button>
           </div>
 
-          <button
-            type="button"
-            class="btn-steel min-h-12! border-transparent! px-2! text-steel-2!"
-            :disabled="refreshing"
-            @click="refreshNow"
-          >
-            <StrokeIcon name="refresh" class="text-xl" :class="{ 'animate-spin': refreshing }" />
-            <span v-if="updatedAt">{{ colimaTime(updatedAt) }}</span>
-            <span class="sr-only">Actualizar</span>
-          </button>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              class="btn-steel min-h-12! border-transparent! px-2! text-steel-2!"
+              :disabled="refreshing"
+              @click="refreshNow"
+            >
+              <StrokeIcon name="refresh" class="text-xl" :class="{ 'animate-spin': refreshing }" />
+              <span v-if="updatedAt">{{ colimaTime(updatedAt) }}</span>
+              <span class="sr-only">Actualizar</span>
+            </button>
+            <button
+              v-for="format in ['pdf', 'csv'] as const"
+              :key="format"
+              type="button"
+              class="btn-steel min-h-12!"
+              :aria-label="`Descargar reporte del día en ${format.toUpperCase()}`"
+              :disabled="summaries.length === 0 || exporting !== null"
+              :class="{ 'opacity-40': summaries.length === 0 }"
+              @click="exportReport(format)"
+            >
+              <StrokeIcon name="download" class="text-xl" />
+              <span>{{ exporting === format ? '…' : format }}</span>
+            </button>
+          </div>
         </div>
 
         <dl class="figures">
