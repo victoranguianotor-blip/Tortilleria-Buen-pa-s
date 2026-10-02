@@ -63,6 +63,10 @@ Supabase se administra con el **MCP de Supabase** (scope local, proyecto `gmbixc
   (`security_invoker`, respeta RLS). Los cálculos de kg en el cliente usan `src/utils/kg.ts`
   (suma en centésimas para evitar errores de punto flotante). Los kg restantes pueden ser negativos:
   la sobre-entrega se advierte, no se bloquea.
+- **Reporte diario.** `src/utils/report.ts` arma el modelo del día y el CSV (lógica pura, con
+  tests); `src/utils/reportPdf.ts` dibuja el PDF carta con jsPDF, importado bajo demanda. Las
+  dependencias opcionales de jsPDF (`html2canvas`, `dompurify`, `canvg`) quedan fuera del precache
+  del service worker (`globIgnores` en `vite.config.ts`).
 
 ## Diseño
 
@@ -92,6 +96,6 @@ contrato de dirección de la pantalla del repartidor están en `.impeccable/surf
 1. Setup, PWA y Supabase (tablas, auth, RLS, Edge Function `admin-users`) — hecho
 2. Login y pantalla del repartidor — hecho
 3. Dashboard del admin (incluye alta de usuarios) — hecho
-4. Reporte diario PDF/CSV con detalle
+4. Reporte diario PDF/CSV con detalle — hecho
 5. Pulido para tablet y despliegue en Netlify
 6. (después) Offline con Dexie
