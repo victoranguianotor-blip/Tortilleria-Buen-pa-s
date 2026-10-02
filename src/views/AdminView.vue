@@ -4,17 +4,20 @@ import { useRoute, useRouter } from 'vue-router'
 
 import AdminNav from '@/components/AdminNav.vue'
 import DriversBoard, { type DriverRow } from '@/components/DriversBoard.vue'
+import PricePanel from '@/components/PricePanel.vue'
 import RouteDetail from '@/components/RouteDetail.vue'
 import StrokeIcon from '@/components/StrokeIcon.vue'
 import TopBar from '@/components/TopBar.vue'
 import * as admin from '@/services/admin'
 import type { RouteSummary, UserProfile } from '@/services/admin'
 import { businessToday, fetchDeliveries, type Delivery } from '@/services/routes'
+import { fetchPricePerKg, updatePricePerKg } from '@/services/settings'
 import { useAuthStore } from '@/stores/auth'
 import { addDays, colimaTime, formatShortDate } from '@/utils/date'
 import { downloadBlob } from '@/utils/download'
 import { errorMessage } from '@/utils/errors'
 import { formatKgNumber, roundKg, sumKg } from '@/utils/kg'
+import { formatMoney, sumMoney } from '@/utils/money'
 import { buildDayReport, reportToCsv } from '@/utils/report'
 
 const REFRESH_MS = 60_000
@@ -36,6 +39,8 @@ const busy = ref(false)
 const error = ref<string | null>(null)
 const datePicker = ref<HTMLInputElement | null>(null)
 const exporting = ref<'pdf' | 'csv' | null>(null)
+const pricePerKg = ref<number | null>(null)
+const editingPrice = ref(false)
 let request = 0
 
 const date = computed(() => {
@@ -67,6 +72,8 @@ const totals = computed(() => {
     initial,
     delivered,
     remaining: roundKg(initial - delivered),
+    received: sumMoney(summaries.value.map((s) => s.received_amount)),
+    picked: sumKg(summaries.value.map((s) => s.picked_kg)),
     closed: summaries.value.filter((s) => s.closed_at).length,
   }
 })
@@ -75,7 +82,7 @@ async function load() {
   status.value = 'loading'
   try {
     today.value = await businessToday()
-    users.value = await admin.fetchUsers()
+    ;[users.value, pricePerKg.value] = await Promise.all([admin.fetchUsers(), fetchPricePerKg()])
     await refresh()
     status.value = 'ready'
   } catch {
@@ -119,6 +126,7 @@ async function refreshNow() {
 
 function select(driverId: string) {
   error.value = null
+  editingPrice.value = false
   if (selectedId.value === driverId) return
   selectedId.value = driverId
   deliveries.value = null
@@ -138,6 +146,29 @@ function openPicker() {
   if (!input) return
   if (typeof input.showPicker === 'function') input.showPicker()
   else input.click()
+}
+
+function editPrice() {
+  error.value = null
+  editingPrice.value = true
+}
+
+async function savePrice(price: number) {
+  busy.value = true
+  error.value = null
+  try {
+    pricePerKg.value = await updatePricePerKg(price)
+    editingPrice.value = false
+  } catch (e) {
+    error.value = errorMessage(e)
+  } finally {
+    busy.value = false
+  }
+}
+
+function cancelPrice() {
+  error.value = null
+  editingPrice.value = false
 }
 
 async function reopen() {
@@ -272,7 +303,23 @@ onMounted(load)
             </button>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              class="btn-secondary"
+              :class="{ 'border-signal!': editingPrice }"
+              :aria-label="
+                pricePerKg
+                  ? `Precio base ${formatMoney(pricePerKg)} por kilo. Tocar para cambiarlo`
+                  : 'Poner precio base por kilo'
+              "
+              @click="editPrice"
+            >
+              <StrokeIcon name="pencil" class="text-lg" />
+              <span class="tabular-nums">{{
+                pricePerKg ? `${formatMoney(pricePerKg)}/kg` : 'Precio base'
+              }}</span>
+            </button>
             <button
               type="button"
               class="btn-secondary quiet px-2!"
@@ -314,6 +361,14 @@ onMounted(load)
             </dd>
           </div>
           <div>
+            <dt class="label">Recogido</dt>
+            <dd class="figure-value text-2xl">{{ formatKgNumber(totals.picked) }}</dd>
+          </div>
+          <div>
+            <dt class="label">Cobrado</dt>
+            <dd class="figure-value text-2xl">{{ formatMoney(totals.received) }}</dd>
+          </div>
+          <div>
             <dt class="label">Cerradas</dt>
             <dd class="figure-value text-2xl">{{ totals.closed }} de {{ summaries.length }}</dd>
           </div>
@@ -332,8 +387,16 @@ onMounted(load)
         class="panel mt-3 flex min-h-0 flex-col p-4 wide:mt-0 tall:flex-1"
         aria-label="Detalle de la ruta"
       >
+        <PricePanel
+          v-if="editingPrice"
+          :current-price="pricePerKg"
+          :busy="busy"
+          :error="error"
+          @confirm="savePrice"
+          @cancel="cancelPrice"
+        />
         <RouteDetail
-          v-if="selected"
+          v-else-if="selected"
           class="flex-1"
           :name="selected.name"
           :summary="selected.summary"
@@ -355,7 +418,7 @@ onMounted(load)
 <style scoped>
 .figures {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   border-block: 1px solid var(--color-line);
 }
 .figures > div {
@@ -365,16 +428,22 @@ onMounted(load)
   padding: 0.65rem clamp(0.6rem, 1.2vw, 1rem);
   overflow: hidden;
 }
-.figures > div + div {
+.figures > div:not(:nth-child(3n + 1)) {
   border-left: 1px solid var(--color-line);
+}
+.figures > div:nth-child(n + 4) {
+  border-top: 1px solid var(--color-line);
 }
 
 @media (max-width: 640px) {
   .figures {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .figures > div:nth-child(3) {
+  .figures > div:nth-child(odd) {
     border-left: none;
+  }
+  .figures > div:nth-child(even) {
+    border-left: 1px solid var(--color-line);
   }
   .figures > div:nth-child(n + 3) {
     border-top: 1px solid var(--color-line);

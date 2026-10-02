@@ -7,6 +7,7 @@ import type { RouteSummary } from '@/services/admin'
 import type { Delivery } from '@/services/routes'
 import { colimaTime } from '@/utils/date'
 import { formatKgNumber } from '@/utils/kg'
+import { formatMoney } from '@/utils/money'
 import { routeStatus } from '@/utils/status'
 
 const props = defineProps<{
@@ -35,6 +36,23 @@ const over = computed(() => (props.summary?.remaining_kg ?? 0) < 0)
     </p>
 
     <template v-else>
+      <p class="text-ink-2">
+        <template v-if="summary.departed_at"
+          >Salió a las
+          <span class="font-bold text-ink tabular-nums">{{
+            colimaTime(summary.departed_at)
+          }}</span></template
+        >
+        <template v-else>Ya cargó, todavía no sale a ruta.</template>
+        <template v-if="summary.pickup_count > 0">
+          · recogió
+          <span class="font-bold text-ink tabular-nums"
+            >{{ formatKgNumber(summary.picked_kg) }} kg</span
+          >
+          en {{ summary.pickup_count === 1 ? '1 parada' : `${summary.pickup_count} paradas` }}
+        </template>
+      </p>
+
       <dl class="figures -mx-4">
         <div>
           <dt class="label">Salió</dt>
@@ -49,6 +67,10 @@ const over = computed(() => (props.summary?.remaining_kg ?? 0) < 0)
           <dd class="figure-value text-2xl" :class="{ 'text-danger': over }">
             {{ formatKgNumber(summary.remaining_kg) }}
           </dd>
+        </div>
+        <div>
+          <dt class="label">Cobró</dt>
+          <dd class="figure-value text-2xl">{{ formatMoney(summary.received_amount) }}</dd>
         </div>
       </dl>
 
@@ -85,7 +107,7 @@ const over = computed(() => (props.summary?.remaining_kg ?? 0) < 0)
 <style scoped>
 .figures {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 0.8fr)) minmax(0, 1.2fr);
   border-block: 1px solid var(--color-line);
 }
 .figures > div {

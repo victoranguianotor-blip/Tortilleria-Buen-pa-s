@@ -5,72 +5,171 @@ import KgKeypad from '@/components/KgKeypad.vue'
 import KgReadout from '@/components/KgReadout.vue'
 import StrokeIcon from '@/components/StrokeIcon.vue'
 import { useTwoTapConfirm } from '@/composables/twoTapConfirm'
-import type { Delivery } from '@/services/routes'
+import type { Delivery, StopInput, StopKind } from '@/services/routes'
+import { amountToValue, kgToValue, valueToAmount, valueToKg } from '@/utils/keypad'
 import { formatKg, roundKg } from '@/utils/kg'
-import { kgToValue, valueToKg } from '@/utils/keypad'
+import { formatMoney, suggestedAmount } from '@/utils/money'
 
 const props = defineProps<{
   delivery: Delivery | null
   stopNumber: number
   availableKg: number
+  pricePerKg: number | null
   stopSuggestions: string[]
   busy: boolean
   error: string | null
 }>()
 const emit = defineEmits<{
-  save: [stopName: string, kg: number]
+  save: [input: StopInput]
   delete: []
   cancel: []
 }>()
 
+const kind = ref<StopKind>('delivery')
 const stopName = ref('')
 const value = ref('')
+const notes = ref('')
+const showNotes = ref(false)
+const field = ref<'kg' | 'amount'>('kg')
+// Until the driver types an amount, it follows kg × base price.
+const amountValue = ref('')
+const amountEdited = ref(false)
 const deleteConfirm = useTwoTapConfirm()
 
 watch(
   () => props.delivery,
   (d) => {
+    kind.value = d?.kind ?? 'delivery'
     stopName.value = d?.stop_name ?? ''
-    value.value = d ? kgToValue(d.delivered_kg) : ''
+    value.value = d ? kgToValue(d.kg) : ''
+    notes.value = d?.notes ?? ''
+    showNotes.value = Boolean(d?.notes)
+    amountValue.value = d ? amountToValue(d.received_amount) : ''
+    amountEdited.value = d !== null
+    field.value = 'kg'
     deleteConfirm.disarm()
   },
   { immediate: true },
 )
 
 const editing = computed(() => props.delivery !== null)
+const pickup = computed(() => kind.value === 'pickup')
 const kg = computed(() => valueToKg(value.value))
+const suggested = computed(() => suggestedAmount(kg.value, props.pricePerKg))
+const amountShown = computed(() => {
+  if (amountEdited.value) return amountValue.value
+  return suggested.value === null ? '' : amountToValue(suggested.value)
+})
+const amount = computed(() => valueToAmount(amountShown.value))
+const showUseSuggested = computed(
+  () => amountEdited.value && suggested.value !== null && suggested.value !== amount.value,
+)
+
+const keypadValue = computed({
+  get: () => (field.value === 'kg' ? value.value : amountShown.value),
+  set: (next: string) => {
+    if (field.value === 'kg') {
+      value.value = next
+    } else {
+      amountValue.value = next
+      amountEdited.value = true
+    }
+  },
+})
+
 const leftover = computed(() => roundKg(props.availableKg - kg.value))
-const overDelivery = computed(() => kg.value > 0 && leftover.value < 0)
+const overDelivery = computed(() => !pickup.value && kg.value > 0 && leftover.value < 0)
 const ready = computed(() => stopName.value.trim().length > 0 && kg.value > 0)
 const title = computed(() => {
   const number = props.stopNumber
   return editing.value ? `Corregir parada ${number}` : `Parada ${number}`
 })
+const saveLabel = computed(() => {
+  if (props.busy) return 'Guardando…'
+  if (editing.value) return 'Guardar'
+  return pickup.value ? 'Registrar recolección' : 'Registrar entrega'
+})
+
+function setKind(next: StopKind) {
+  kind.value = next
+  field.value = 'kg'
+}
+
+function useSuggested() {
+  amountEdited.value = false
+  amountValue.value = ''
+}
 
 function save() {
-  if (ready.value && !props.busy) emit('save', stopName.value.trim(), kg.value)
+  if (!ready.value || props.busy) return
+  emit('save', {
+    kind: kind.value,
+    stopName: stopName.value.trim(),
+    kg: kg.value,
+    amount: pickup.value ? 0 : amount.value,
+    notes: notes.value.trim() || null,
+  })
 }
 
 function reset() {
+  kind.value = 'delivery'
   stopName.value = ''
   value.value = ''
+  notes.value = ''
+  showNotes.value = false
+  amountValue.value = ''
+  amountEdited.value = false
+  field.value = 'kg'
 }
 defineExpose({ reset })
 </script>
 
 <template>
-  <section class="capture flex flex-col gap-4 wide:gap-3 tall:gap-3" :aria-label="title">
-    <div class="heading flex min-h-12 items-center justify-between gap-3">
+  <section class="flex flex-col gap-4 wide:gap-3 tall:gap-3" :aria-label="title">
+    <div class="flex min-h-12 items-center justify-between gap-3">
       <h2 class="text-xl font-extrabold">{{ title }}</h2>
+      <div class="flex gap-2">
+        <button
+          v-if="!showNotes"
+          type="button"
+          class="btn-secondary quiet"
+          :disabled="busy"
+          @click="showNotes = true"
+        >
+          <StrokeIcon name="plus" class="text-xl" />
+          <span>Nota</span>
+        </button>
+        <button
+          v-if="editing"
+          type="button"
+          class="btn-secondary"
+          :disabled="busy"
+          @click="emit('cancel')"
+        >
+          <StrokeIcon name="close" class="text-xl" />
+          <span>Cancelar</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="kinds" role="group" aria-label="Tipo de parada">
       <button
-        v-if="editing"
         type="button"
-        class="btn-secondary"
+        class="kind"
+        :aria-pressed="!pickup"
         :disabled="busy"
-        @click="emit('cancel')"
+        @click="setKind('delivery')"
       >
-        <StrokeIcon name="close" class="text-xl" />
-        <span>Cancelar</span>
+        Entrega
+      </button>
+      <button
+        type="button"
+        class="kind"
+        :aria-pressed="pickup"
+        :disabled="busy"
+        @click="setKind('pickup')"
+      >
+        Recolección
       </button>
     </div>
 
@@ -94,16 +193,88 @@ defineExpose({ reset })
       </datalist>
     </label>
 
-    <KgReadout class="readout" :value="value" label="Kilos que dejas" />
-    <KgKeypad v-model="value" :disabled="busy" />
+    <label v-if="showNotes" class="flex flex-col">
+      <span class="sr-only">Nota</span>
+      <input
+        v-model="notes"
+        class="field"
+        type="text"
+        maxlength="500"
+        autocomplete="off"
+        autocapitalize="sentences"
+        enterkeyhint="done"
+        placeholder="Nota (opcional)"
+        :disabled="busy"
+        @keydown.enter.prevent="($event.target as HTMLInputElement).blur()"
+      />
+    </label>
 
-    <p class="notice" :class="{ over: overDelivery }" role="status">
-      <template v-if="overDelivery"
-        >Quedarían {{ formatKg(leftover) }}. Se registra igual.</template
+    <KgReadout v-if="pickup" :value="value" label="Kilos que recoges" />
+    <div v-else class="grid grid-cols-2 gap-2">
+      <button
+        type="button"
+        class="text-left"
+        :aria-pressed="field === 'kg'"
+        :disabled="busy"
+        @click="field = 'kg'"
       >
-      <template v-else-if="kg > 0">Te quedarían {{ formatKg(leftover) }}.</template>
-      <template v-else>Traes {{ formatKg(availableKg) }}.</template>
+        <KgReadout :value="value" label="Kilos que dejas" :active="field === 'kg'" stacked />
+      </button>
+      <button
+        type="button"
+        class="text-left"
+        :aria-pressed="field === 'amount'"
+        :disabled="busy"
+        @click="field = 'amount'"
+      >
+        <KgReadout
+          :value="amountShown"
+          :label="amountEdited || suggested === null ? 'Cobrado' : 'Cobrado (sugerido)'"
+          unit="money"
+          :active="field === 'amount'"
+          stacked
+        />
+      </button>
+    </div>
+
+    <KgKeypad
+      v-model="keypadValue"
+      :unit="field === 'kg' ? 'kg' : 'money'"
+      :replace="field === 'amount' && !amountEdited"
+      :disabled="busy"
+    />
+
+    <p v-if="pickup" class="notice" role="status">
+      Lo recogido se cuenta aparte; no cambia lo que traes.
     </p>
+    <div v-else class="flex flex-col gap-1">
+      <p class="notice" :class="{ over: overDelivery }" role="status">
+        <template v-if="overDelivery"
+          >Quedarían {{ formatKg(leftover) }}. Se registra igual.</template
+        >
+        <template v-else-if="kg > 0">Te quedarían {{ formatKg(leftover) }}.</template>
+        <template v-else>Traes {{ formatKg(availableKg) }}.</template>
+      </p>
+      <div class="flex min-h-6 flex-wrap items-center gap-x-3">
+        <p class="notice">
+          <template v-if="pricePerKg === null">Sin precio base: anota lo que te dieron.</template>
+          <template v-else-if="!amountEdited"
+            >A {{ formatMoney(pricePerKg) }} el kilo. Toca Cobrado si te dieron otra
+            cantidad.</template
+          >
+          <template v-else>Cobrado: {{ formatMoney(amount) }}.</template>
+        </p>
+        <button
+          v-if="showUseSuggested"
+          type="button"
+          class="font-bold text-signal underline underline-offset-4"
+          :disabled="busy"
+          @click="useSuggested"
+        >
+          Usar {{ formatMoney(suggested!) }}
+        </button>
+      </div>
+    </div>
 
     <p v-if="error" class="error-alert" role="alert">{{ error }}</p>
 
@@ -114,7 +285,7 @@ defineExpose({ reset })
         :disabled="!ready || busy"
         @click="save"
       >
-        <span>{{ busy ? 'Guardando…' : editing ? 'Guardar' : 'Registrar parada' }}</span>
+        <span>{{ saveLabel }}</span>
         <StrokeIcon v-if="!busy" name="arrow" />
       </button>
       <button
@@ -145,22 +316,26 @@ defineExpose({ reset })
   color: var(--color-danger);
 }
 
-@media (orientation: portrait) and (min-width: 700px) and (min-height: 1000px) {
-  .capture {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-  }
-  .capture > * {
-    grid-column: 1 / -1;
-  }
-  .capture > .heading {
-    grid-column: 1;
-    grid-row: 1;
-  }
-  .capture > .readout {
-    grid-column: 2;
-    grid-row: 1;
-  }
+.kinds {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.kind {
+  min-height: 3rem;
+  color: var(--color-ink-2);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  transition: background 140ms ease-out;
+}
+.kind + .kind {
+  border-left: 1px solid var(--color-line);
+}
+.kind[aria-pressed='true'] {
+  background: var(--color-signal-soft);
+  box-shadow: inset 0 0 0 1px var(--color-signal);
+  color: var(--color-ink);
 }
 </style>

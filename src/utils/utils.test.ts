@@ -3,7 +3,16 @@ import { describe, expect, it } from 'vitest'
 import { addDays, colimaTime, formatShortDate } from './date'
 import { usernameToEmail } from './email'
 import { errorMessage } from './errors'
-import { applyKey, kgToValue, valueToKg, type KeypadKey } from './keypad'
+import {
+  amountToValue,
+  applyKey,
+  applyMoneyKey,
+  kgToValue,
+  valueToAmount,
+  valueToKg,
+  type KeypadKey,
+  type MoneyKey,
+} from './keypad'
 import { routeStatus } from './status'
 import { isValidUsername, normalizeUsername } from './users'
 
@@ -45,6 +54,32 @@ describe('kg keypad', () => {
     expect(kgToValue(12.5)).toBe('12.5')
     expect(kgToValue(7.25)).toBe('7.5')
     expect(kgToValue(0)).toBe('')
+  })
+})
+
+describe('money keypad', () => {
+  const money = (keys: MoneyKey[], initial = '') => keys.reduce(applyMoneyKey, initial)
+
+  it('types pesos and up to two cents digits', () => {
+    expect(money(['2', '8', '1', 'dot', '2', '5', '9'])).toBe('281.25')
+  })
+  it('starts a decimal with 0 and ignores a second dot', () => {
+    expect(money(['dot', '5'])).toBe('0.5')
+    expect(money(['1', 'dot', 'dot', '5'])).toBe('1.5')
+  })
+  it('drops a leading zero and limits to 5 whole digits', () => {
+    expect(money(['0', '7'])).toBe('7')
+    expect(money(['9', '9', '9', '9', '9', '9'])).toBe('99999')
+  })
+  it('backspace removes one character at a time', () => {
+    expect(money(['1', 'dot', '5', 'backspace', 'backspace'])).toBe('1')
+  })
+  it('converts between value and amount', () => {
+    expect(valueToAmount('12.')).toBe(12)
+    expect(valueToAmount('')).toBe(0)
+    expect(amountToValue(281.25)).toBe('281.25')
+    expect(amountToValue(150.1)).toBe('150.1')
+    expect(amountToValue(0)).toBe('')
   })
 })
 
@@ -91,8 +126,10 @@ describe('errorMessage', () => {
 describe('routeStatus', () => {
   it('reads the state of a route', () => {
     expect(routeStatus(null, 0).text).toBe('Sin iniciar')
-    expect(routeStatus({ closed_at: '2026-10-01T20:00:00Z' }, -3).text).toBe('Cerrada')
-    expect(routeStatus({ closed_at: null }, -0.5).tone).toBe('danger')
-    expect(routeStatus({ closed_at: null }, 4).tone).toBe('go')
+    const departed_at = '2026-10-01T13:00:00Z'
+    expect(routeStatus({ closed_at: '2026-10-01T20:00:00Z', departed_at }, -3).text).toBe('Cerrada')
+    expect(routeStatus({ closed_at: null, departed_at: null }, 4).text).toBe('Por salir')
+    expect(routeStatus({ closed_at: null, departed_at }, -0.5).tone).toBe('danger')
+    expect(routeStatus({ closed_at: null, departed_at }, 4).tone).toBe('go')
   })
 })

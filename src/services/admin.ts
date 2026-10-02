@@ -5,8 +5,8 @@ import type { Tables } from '@/types/database'
 
 type SummaryRow = Tables<'route_summaries'>
 export type RouteSummary = {
-  [K in Exclude<keyof SummaryRow, 'closed_at'>]: NonNullable<SummaryRow[K]>
-} & Pick<SummaryRow, 'closed_at'>
+  [K in Exclude<keyof SummaryRow, 'closed_at' | 'departed_at'>]: NonNullable<SummaryRow[K]>
+} & Pick<SummaryRow, 'closed_at' | 'departed_at'>
 
 export type UserProfile = Tables<'profiles'>
 export type UserRole = UserProfile['role']
@@ -29,11 +29,16 @@ export async function fetchUsers(): Promise<UserProfile[]> {
 
 export async function fetchDeliveriesOfRoutes(
   routeIds: string[],
-): Promise<Pick<Tables<'deliveries'>, 'route_id' | 'stop_name' | 'delivered_kg' | 'created_at'>[]> {
+): Promise<
+  Pick<
+    Tables<'deliveries'>,
+    'route_id' | 'kind' | 'stop_name' | 'kg' | 'received_amount' | 'notes' | 'created_at'
+  >[]
+> {
   if (routeIds.length === 0) return []
   const { data, error } = await supabase
     .from('deliveries')
-    .select('route_id, stop_name, delivered_kg, created_at')
+    .select('route_id, kind, stop_name, kg, received_amount, notes, created_at')
     .in('route_id', routeIds)
   if (error) throw error
   return data

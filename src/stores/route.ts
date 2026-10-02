@@ -2,31 +2,41 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
 import * as routes from '@/services/routes'
-import type { Delivery, Route } from '@/services/routes'
+import type { Delivery, Route, StopInput } from '@/services/routes'
+import { fetchPricePerKg } from '@/services/settings'
 import { remainingKg as computeRemainingKg, sumKg } from '@/utils/kg'
+import { sumMoney } from '@/utils/money'
 
 export const useRouteStore = defineStore('route', () => {
   const today = ref<string | null>(null)
   const route = ref<Route | null>(null)
   const deliveries = ref<Delivery[]>([])
   const recentStops = ref<string[]>([])
+  const pricePerKg = ref<number | null>(null)
 
-  const deliveredKg = computed(() => sumKg(deliveries.value.map((d) => d.delivered_kg)))
+  const deliveredOnly = computed(() => deliveries.value.filter((d) => d.kind === 'delivery'))
+  const deliveredKg = computed(() => sumKg(deliveredOnly.value.map((d) => d.kg)))
+  const pickedKg = computed(() =>
+    sumKg(deliveries.value.filter((d) => d.kind === 'pickup').map((d) => d.kg)),
+  )
+  const receivedAmount = computed(() => sumMoney(deliveries.value.map((d) => d.received_amount)))
   const remainingKg = computed(() =>
     route.value
       ? computeRemainingKg(
           route.value.initial_kg,
-          deliveries.value.map((d) => d.delivered_kg),
+          deliveredOnly.value.map((d) => d.kg),
         )
       : 0,
   )
   const isClosed = computed(() => route.value?.closed_at != null)
+  const hasDeparted = computed(() => route.value?.departed_at != null)
 
   async function load(driverId: string) {
     today.value = await routes.businessToday()
     route.value = await routes.fetchRoute(driverId, today.value)
     deliveries.value = route.value ? await routes.fetchDeliveries(route.value.id) : []
     recentStops.value = await routes.fetchRecentStops().catch(() => [])
+    pricePerKg.value = await fetchPricePerKg().catch(() => null)
   }
 
   async function start(initialKg: number) {
@@ -39,18 +49,24 @@ export const useRouteStore = defineStore('route', () => {
     route.value = await routes.updateInitialKg(route.value.id, initialKg)
   }
 
-  async function addDelivery(stopName: string, kg: number): Promise<Delivery> {
+  async function depart() {
+    if (!route.value) return
+    route.value = await routes.departRoute(route.value.id)
+    pricePerKg.value = await fetchPricePerKg().catch(() => pricePerKg.value)
+  }
+
+  async function addDelivery(input: StopInput): Promise<Delivery> {
     if (!route.value) throw new Error('No route')
-    const delivery = await routes.createDelivery(route.value.id, stopName, kg)
+    const delivery = await routes.createDelivery(route.value.id, input)
     deliveries.value = [...deliveries.value, delivery]
-    rememberStop(stopName)
+    rememberStop(input.stopName)
     return delivery
   }
 
-  async function updateDelivery(id: string, stopName: string, kg: number) {
-    const updated = await routes.updateDelivery(id, stopName, kg)
+  async function updateDelivery(id: string, input: StopInput) {
+    const updated = await routes.updateDelivery(id, input)
     deliveries.value = deliveries.value.map((d) => (d.id === id ? updated : d))
-    rememberStop(stopName)
+    rememberStop(input.stopName)
   }
 
   async function removeDelivery(id: string) {
@@ -73,6 +89,7 @@ export const useRouteStore = defineStore('route', () => {
     route.value = null
     deliveries.value = []
     recentStops.value = []
+    pricePerKg.value = null
   }
 
   return {
@@ -80,12 +97,17 @@ export const useRouteStore = defineStore('route', () => {
     route,
     deliveries,
     recentStops,
+    pricePerKg,
     deliveredKg,
+    pickedKg,
+    receivedAmount,
     remainingKg,
     isClosed,
+    hasDeparted,
     load,
     start,
     updateInitialKg,
+    depart,
     addDelivery,
     updateDelivery,
     removeDelivery,

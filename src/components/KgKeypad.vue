@@ -1,26 +1,58 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted } from 'vue'
+import { computed, onBeforeUnmount, onMounted } from 'vue'
 
 import StrokeIcon from '@/components/StrokeIcon.vue'
-import { applyKey, type KeypadKey } from '@/utils/keypad'
+import { applyKey, applyMoneyKey, type KeypadKey, type MoneyKey } from '@/utils/keypad'
+
+type Key = KeypadKey | MoneyKey
 
 const value = defineModel<string>({ required: true })
-const props = defineProps<{ disabled?: boolean }>()
+const props = withDefaults(
+  defineProps<{ disabled?: boolean; unit?: 'kg' | 'money'; replace?: boolean }>(),
+  { unit: 'kg', replace: false },
+)
 
-const keys: KeypadKey[] = ['7', '8', '9', '4', '5', '6', '1', '2', '3', 'half', '0', 'backspace']
+const money = computed(() => props.unit === 'money')
+const keys = computed<Key[]>(() => [
+  '7',
+  '8',
+  '9',
+  '4',
+  '5',
+  '6',
+  '1',
+  '2',
+  '3',
+  money.value ? 'dot' : 'half',
+  '0',
+  'backspace',
+])
 
-function press(key: KeypadKey) {
-  if (!props.disabled) value.value = applyKey(value.value, key)
+// With `replace`, the first key starts a new value instead of editing the shown one.
+function press(key: Key) {
+  if (props.disabled) return
+  const base = props.replace ? '' : value.value
+  value.value = money.value
+    ? applyMoneyKey(base, key as MoneyKey)
+    : applyKey(base, key as KeypadKey)
 }
 
 function onKeydown(e: KeyboardEvent) {
   const target = e.target as HTMLElement | null
   if (target?.closest('input, textarea') || e.ctrlKey || e.metaKey || e.altKey) return
-  if (/^[0-9]$/.test(e.key)) press(e.key as KeypadKey)
-  else if (e.key === '.' || e.key === ',' || e.key.toLowerCase() === 'm') press('half')
+  if (/^[0-9]$/.test(e.key)) press(e.key as Key)
+  else if (e.key === '.' || e.key === ',') press(money.value ? 'dot' : 'half')
+  else if (!money.value && e.key.toLowerCase() === 'm') press('half')
   else if (e.key === 'Backspace') press('backspace')
   else return
   e.preventDefault()
+}
+
+function keyLabel(k: Key): string {
+  if (k === 'half') return 'Medio kilo'
+  if (k === 'dot') return 'Punto decimal'
+  if (k === 'backspace') return 'Borrar'
+  return k
 }
 
 onMounted(() => window.addEventListener('keydown', onKeydown))
@@ -28,19 +60,20 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 </script>
 
 <template>
-  <div class="keypad" role="group" aria-label="Teclado de kilos">
+  <div class="keypad" role="group" :aria-label="money ? 'Teclado de pesos' : 'Teclado de kilos'">
     <button
       v-for="k in keys"
       :key="k"
       type="button"
       class="key"
-      :class="{ fn: k === 'half' || k === 'backspace' }"
+      :class="{ fn: k === 'half' || k === 'dot' || k === 'backspace' }"
       :disabled="disabled"
-      :aria-label="k === 'half' ? 'Medio kilo' : k === 'backspace' ? 'Borrar' : k"
+      :aria-label="keyLabel(k)"
       @click="press(k)"
     >
       <StrokeIcon v-if="k === 'backspace'" name="backspace" />
       <template v-else-if="k === 'half'">½</template>
+      <template v-else-if="k === 'dot'">.</template>
       <template v-else>{{ k }}</template>
     </button>
   </div>

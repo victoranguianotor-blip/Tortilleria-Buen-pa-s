@@ -10,12 +10,13 @@ import StopsBoard from '@/components/StopsBoard.vue'
 import StrokeIcon from '@/components/StrokeIcon.vue'
 import TopBar from '@/components/TopBar.vue'
 import { useTwoTapConfirm } from '@/composables/twoTapConfirm'
-import type { Delivery } from '@/services/routes'
+import type { Delivery, StopInput } from '@/services/routes'
 import { useAuthStore } from '@/stores/auth'
 import { useRouteStore } from '@/stores/route'
 import { colimaTime } from '@/utils/date'
 import { errorMessage } from '@/utils/errors'
 import { formatKg, formatKgNumber, roundKg } from '@/utils/kg'
+import { formatMoney } from '@/utils/money'
 import { routeStatus } from '@/utils/status'
 
 const auth = useAuthStore()
@@ -32,6 +33,9 @@ const deliveryPanel = ref<InstanceType<typeof DeliveryPanel> | null>(null)
 const closeConfirm = useTwoTapConfirm()
 
 const isOpen = computed(() => store.route !== null && !store.isClosed)
+const departedTime = computed(() =>
+  store.route?.departed_at ? colimaTime(store.route.departed_at) : null,
+)
 const overDelivery = computed(() => store.remainingKg < 0)
 
 const lamp = computed(() => routeStatus(store.route, store.remainingKg))
@@ -42,7 +46,10 @@ const stopNumber = computed(() => {
 })
 
 // While editing a stop, its own kilos count as still available.
-const availableKg = computed(() => roundKg(store.remainingKg + (selected.value?.delivered_kg ?? 0)))
+const availableKg = computed(() => {
+  const own = selected.value?.kind === 'delivery' ? selected.value.kg : 0
+  return roundKg(store.remainingKg + own)
+})
 
 async function load() {
   status.value = 'loading'
@@ -72,18 +79,22 @@ async function startRoute(kg: number) {
   await run(() => store.start(kg))
 }
 
+async function depart() {
+  await run(() => store.depart())
+}
+
 async function saveLoad(kg: number) {
   if (await run(() => store.updateInitialKg(kg))) editingLoad.value = false
 }
 
-async function saveDelivery(stopName: string, kg: number) {
+async function saveDelivery(input: StopInput) {
   const editing = selected.value
   const ok = await run(async () => {
     if (editing) {
-      await store.updateDelivery(editing.id, stopName, kg)
+      await store.updateDelivery(editing.id, input)
       newDeliveryId.value = null
     } else {
-      markNew((await store.addDelivery(stopName, kg)).id)
+      markNew((await store.addDelivery(input)).id)
     }
   })
   if (!ok) return
@@ -169,6 +180,9 @@ onMounted(load)
               />
               <span class="text-xl font-bold text-ink-2">kg</span>
             </p>
+            <p v-if="store.pickedKg > 0" class="font-semibold text-ink-2">
+              Más {{ formatKg(store.pickedKg) }} recogidos
+            </p>
           </div>
           <div class="flex flex-col items-end gap-2">
             <StatusLamp :text="lamp.text" :tone="lamp.tone" />
@@ -191,11 +205,11 @@ onMounted(load)
             class="figure text-left"
             :disabled="!isOpen"
             :class="{ active: editingLoad }"
-            :aria-label="`Salió con ${store.route ? formatKgNumber(store.route.initial_kg) : 0} kilos${isOpen ? '. Tocar para corregir' : ''}`"
+            :aria-label="`${departedTime ? `Salió a las ${departedTime}` : 'Carga'} con ${store.route ? formatKgNumber(store.route.initial_kg) : 0} kilos${isOpen ? '. Tocar para corregir' : ''}`"
             @click="editLoad"
           >
             <span class="label flex items-center gap-1.5">
-              Salió
+              {{ departedTime ? `Salió ${departedTime}` : 'Carga' }}
               <StrokeIcon v-if="isOpen" name="pencil" />
             </span>
             <span class="figure-value text-2xl">
@@ -205,6 +219,10 @@ onMounted(load)
           <div class="figure">
             <span class="label">Entregado</span>
             <span class="figure-value text-2xl">{{ formatKgNumber(store.deliveredKg) }}</span>
+          </div>
+          <div class="figure">
+            <span class="label">Cobrado</span>
+            <span class="figure-value text-2xl">{{ formatMoney(store.receivedAmount) }}</span>
           </div>
           <div class="figure">
             <span class="label">Paradas</span>
@@ -237,12 +255,16 @@ onMounted(load)
         <div v-else-if="store.isClosed" class="flex flex-col gap-4">
           <h2 class="text-xl font-extrabold">Ruta cerrada</h2>
           <dl class="summary">
+            <div v-if="departedTime">
+              <dt>Salió a las</dt>
+              <dd class="figure-value text-2xl">{{ departedTime }}</dd>
+            </div>
             <div>
               <dt>Cerró</dt>
               <dd class="figure-value text-2xl">{{ colimaTime(store.route.closed_at!) }}</dd>
             </div>
             <div>
-              <dt>Salió</dt>
+              <dt>Cargó</dt>
               <dd class="figure-value text-2xl">{{ formatKgNumber(store.route.initial_kg) }} kg</dd>
             </div>
             <div>
@@ -250,10 +272,18 @@ onMounted(load)
               <dd class="figure-value text-2xl">{{ formatKgNumber(store.deliveredKg) }} kg</dd>
             </div>
             <div>
-              <dt>Regresa</dt>
+              <dt>Regresa sin entregar</dt>
               <dd class="figure-value text-2xl" :class="{ 'text-danger': overDelivery }">
                 {{ formatKgNumber(store.remainingKg) }} kg
               </dd>
+            </div>
+            <div v-if="store.pickedKg > 0">
+              <dt>Recogió</dt>
+              <dd class="figure-value text-2xl">{{ formatKgNumber(store.pickedKg) }} kg</dd>
+            </div>
+            <div>
+              <dt>Cobró</dt>
+              <dd class="figure-value text-2xl">{{ formatMoney(store.receivedAmount) }}</dd>
             </div>
           </dl>
           <p class="text-ink-2">¿Te equivocaste? Pide al encargado que la reabra.</p>
@@ -269,12 +299,30 @@ onMounted(load)
           @cancel="cancelEdit"
         />
 
+        <div v-else-if="!store.hasDeparted" class="flex flex-col gap-4">
+          <h2 class="text-xl font-extrabold">Listo para salir</h2>
+          <p class="text-lg text-ink-2">
+            Cargaste {{ formatKg(store.route.initial_kg) }}. Toca el botón en cuanto salgas: esa es
+            tu hora de salida.
+          </p>
+          <p v-if="error" class="error-alert" role="alert">{{ error }}</p>
+          <button type="button" class="btn-primary w-full" :disabled="busy" @click="depart">
+            <span>{{ busy ? 'Guardando…' : 'Salir a ruta' }}</span>
+            <StrokeIcon v-if="!busy" name="arrow" />
+          </button>
+          <button type="button" class="btn-secondary" :disabled="busy" @click="editLoad">
+            <StrokeIcon name="pencil" class="text-xl" />
+            <span>Corregir carga</span>
+          </button>
+        </div>
+
         <DeliveryPanel
           v-else
           ref="deliveryPanel"
           :delivery="selected"
           :stop-number="stopNumber"
           :available-kg="availableKg"
+          :price-per-kg="store.pricePerKg"
           :stop-suggestions="store.recentStops"
           :busy="busy"
           :error="error"
@@ -319,8 +367,19 @@ onMounted(load)
 
 .figures {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 0.7fr);
   border-block: 1px solid var(--color-line);
+}
+@media (max-width: 640px) {
+  .figures {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .figure:nth-child(3) {
+    border-left: none;
+  }
+  .figure:nth-child(n + 3) {
+    border-top: 1px solid var(--color-line);
+  }
 }
 
 .figure {

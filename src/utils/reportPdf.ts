@@ -2,7 +2,8 @@ import type { jsPDF } from 'jspdf'
 
 import { colimaTime, formatLongDate } from './date'
 import { formatKgNumber } from './kg'
-import type { DayReport } from './report'
+import { formatMoney } from './money'
+import type { DayReport, ReportStop } from './report'
 
 const PAGE = { width: 215.9, height: 279.4, margin: 15 }
 const CONTENT_WIDTH = PAGE.width - PAGE.margin * 2
@@ -26,23 +27,35 @@ interface Cell {
 }
 
 const SUMMARY_COLUMNS: Column[] = [
-  { title: 'Repartidor', width: 60 },
-  { title: 'Salió kg', width: 24, align: 'right' },
-  { title: 'Entregó kg', width: 24, align: 'right' },
-  { title: 'Regresa kg', width: 24, align: 'right' },
-  { title: 'Paradas', width: 18, align: 'right' },
-  { title: 'Estado', width: CONTENT_WIDTH - 150 },
+  { title: 'Repartidor', width: 32 },
+  { title: 'Salida', width: 15 },
+  { title: 'Salió kg', width: 20, align: 'right' },
+  { title: 'Entregó kg', width: 21, align: 'right' },
+  { title: 'Regresa kg', width: 21, align: 'right' },
+  { title: 'Recogió kg', width: 20, align: 'right' },
+  { title: 'Paradas', width: 14, align: 'right' },
+  { title: 'Cobrado', width: 25, align: 'right' },
+  { title: 'Estado', width: CONTENT_WIDTH - 168 },
 ]
 
 const STOP_COLUMNS: Column[] = [
   { title: '#', width: 10, align: 'right' },
   { title: 'Hora', width: 18 },
-  { title: 'Parada', width: CONTENT_WIDTH - 52 },
+  { title: 'Parada', width: CONTENT_WIDTH - 80 },
   { title: 'Kg', width: 24, align: 'right' },
+  { title: 'Cobrado', width: 28, align: 'right' },
 ]
 
 function capitalize(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1)
+}
+
+function stopText(stop: ReportStop): string {
+  const name = stop.pickup ? `Recolección: ${stop.stopName}` : stop.stopName
+  return stop.notes
+    ? `${name}
+Nota: ${stop.notes}`
+    : name
 }
 
 function kgCell(kg: number): Cell {
@@ -156,10 +169,13 @@ export async function reportToPdf(report: DayReport, generatedAt = new Date()): 
   for (const r of report.routes) {
     w.row(SUMMARY_COLUMNS, [
       { text: r.driverName },
+      { text: r.departedAt ? colimaTime(r.departedAt) : '—' },
       kgCell(r.initialKg),
       kgCell(r.deliveredKg),
       kgCell(r.remainingKg),
+      kgCell(r.pickedKg),
       { text: String(r.stops.length) },
+      { text: formatMoney(r.receivedAmount) },
       { text: r.closedAt ? `Cerrada ${colimaTime(r.closedAt)}` : 'Abierta' },
     ])
   }
@@ -167,10 +183,13 @@ export async function reportToPdf(report: DayReport, generatedAt = new Date()): 
     SUMMARY_COLUMNS,
     [
       { text: 'Total' },
+      { text: '' },
       kgCell(report.totals.initialKg),
       kgCell(report.totals.deliveredKg),
       kgCell(report.totals.remainingKg),
+      kgCell(report.totals.pickedKg),
       { text: String(report.totals.stops) },
+      { text: formatMoney(report.totals.receivedAmount) },
       { text: '' },
     ],
     { bold: true },
@@ -183,7 +202,7 @@ export async function reportToPdf(report: DayReport, generatedAt = new Date()): 
     w.section = r.driverName
     w.y += 1
     w.text(
-      `Salió ${formatKgNumber(r.initialKg)} kg · entregó ${formatKgNumber(r.deliveredKg)} kg · regresa ${formatKgNumber(r.remainingKg)} kg`,
+      `${r.departedAt ? `Salió a las ${colimaTime(r.departedAt)} con` : 'Cargó (sin salida registrada)'} ${formatKgNumber(r.initialKg)} kg · entregó ${formatKgNumber(r.deliveredKg)} kg · regresa ${formatKgNumber(r.remainingKg)} kg · recogió ${formatKgNumber(r.pickedKg)} kg · cobró ${formatMoney(r.receivedAmount)}`,
       9.5,
       'normal',
       r.remainingKg < 0 ? DANGER : MUTED,
@@ -198,8 +217,9 @@ export async function reportToPdf(report: DayReport, generatedAt = new Date()): 
       w.row(STOP_COLUMNS, [
         { text: String(s.number) },
         { text: s.time },
-        { text: s.stopName },
+        { text: stopText(s) },
         kgCell(s.kg),
+        { text: s.pickup ? '—' : formatMoney(s.amount) },
       ])
     }
   }

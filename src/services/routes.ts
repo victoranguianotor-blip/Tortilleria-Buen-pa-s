@@ -1,8 +1,27 @@
 import { supabase } from '@/lib/supabase'
-import type { Tables } from '@/types/database'
+import type { Enums, Tables } from '@/types/database'
 
 export type Route = Tables<'routes'>
 export type Delivery = Tables<'deliveries'>
+export type StopKind = Enums<'stop_kind'>
+
+export interface StopInput {
+  kind: StopKind
+  stopName: string
+  kg: number
+  amount: number
+  notes: string | null
+}
+
+function stopColumns(input: StopInput) {
+  return {
+    kind: input.kind,
+    stop_name: input.stopName,
+    kg: input.kg,
+    received_amount: input.kind === 'pickup' ? 0 : input.amount,
+    notes: input.notes,
+  }
+}
 
 export async function businessToday(): Promise<string> {
   const { data, error } = await supabase.rpc('business_today')
@@ -42,6 +61,17 @@ export async function updateInitialKg(routeId: string, initialKg: number): Promi
   return data
 }
 
+export async function departRoute(routeId: string): Promise<Route> {
+  const { data, error } = await supabase
+    .from('routes')
+    .update({ departed_at: new Date().toISOString() })
+    .eq('id', routeId)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
 export async function closeRoute(routeId: string): Promise<Route> {
   const { data, error } = await supabase
     .from('routes')
@@ -63,34 +93,21 @@ export async function fetchDeliveries(routeId: string): Promise<Delivery[]> {
   return data
 }
 
-export async function createDelivery(
-  routeId: string,
-  stopName: string,
-  deliveredKg: number,
-): Promise<Delivery> {
+export async function createDelivery(routeId: string, input: StopInput): Promise<Delivery> {
   const { data, error } = await supabase
     .from('deliveries')
-    .insert({
-      id: crypto.randomUUID(),
-      route_id: routeId,
-      stop_name: stopName,
-      delivered_kg: deliveredKg,
-    })
+    .insert({ id: crypto.randomUUID(), route_id: routeId, ...stopColumns(input) })
     .select()
     .single()
   if (error) throw error
   return data
 }
 
-export async function updateDelivery(
-  id: string,
-  stopName: string,
-  deliveredKg: number,
-): Promise<Delivery> {
+export async function updateDelivery(id: string, input: StopInput): Promise<Delivery> {
   // An update blocked by RLS does not error: it returns 0 rows, which .single() reports as PGRST116.
   const { data, error } = await supabase
     .from('deliveries')
-    .update({ stop_name: stopName, delivered_kg: deliveredKg })
+    .update(stopColumns(input))
     .eq('id', id)
     .select()
     .single()

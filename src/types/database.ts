@@ -19,22 +19,31 @@ export type Database = {
       deliveries: {
         Row: {
           created_at: string
-          delivered_kg: number
           id: string
+          kg: number
+          kind: Database["public"]["Enums"]["stop_kind"]
+          notes: string | null
+          received_amount: number
           route_id: string
           stop_name: string
         }
         Insert: {
           created_at?: string
-          delivered_kg: number
           id?: string
+          kg: number
+          kind?: Database["public"]["Enums"]["stop_kind"]
+          notes?: string | null
+          received_amount?: number
           route_id: string
           stop_name: string
         }
         Update: {
           created_at?: string
-          delivered_kg?: number
           id?: string
+          kg?: number
+          kind?: Database["public"]["Enums"]["stop_kind"]
+          notes?: string | null
+          received_amount?: number
           route_id?: string
           stop_name?: string
         }
@@ -86,6 +95,7 @@ export type Database = {
         Row: {
           closed_at: string | null
           created_at: string
+          departed_at: string | null
           driver_id: string
           id: string
           initial_kg: number
@@ -94,6 +104,7 @@ export type Database = {
         Insert: {
           closed_at?: string | null
           created_at?: string
+          departed_at?: string | null
           driver_id?: string
           id?: string
           initial_kg: number
@@ -102,6 +113,7 @@ export type Database = {
         Update: {
           closed_at?: string | null
           created_at?: string
+          departed_at?: string | null
           driver_id?: string
           id?: string
           initial_kg?: number
@@ -117,6 +129,21 @@ export type Database = {
           },
         ]
       }
+      settings: {
+        Row: {
+          id: boolean
+          price_per_kg: number | null
+        }
+        Insert: {
+          id?: boolean
+          price_per_kg?: number | null
+        }
+        Update: {
+          id?: boolean
+          price_per_kg?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       route_summaries: {
@@ -124,9 +151,13 @@ export type Database = {
           closed_at: string | null
           delivered_kg: number | null
           delivery_count: number | null
+          departed_at: string | null
           driver_id: string | null
           driver_name: string | null
           initial_kg: number | null
+          picked_kg: number | null
+          pickup_count: number | null
+          received_amount: number | null
           remaining_kg: number | null
           route_date: string | null
           route_id: string | null
@@ -147,6 +178,7 @@ export type Database = {
       reopen_route: { Args: { p_route_id: string }; Returns: undefined }
     }
     Enums: {
+      stop_kind: "delivery" | "pickup"
       user_role: "driver" | "admin"
     }
     CompositeTypes: {
@@ -275,6 +307,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      stop_kind: ["delivery", "pickup"],
       user_role: ["driver", "admin"],
     },
   },

@@ -23,7 +23,7 @@ export function errorMessage(e: unknown): string {
     case '23505':
       return 'Ya iniciaste la ruta de hoy.'
     case '23514':
-      return 'Revisa los datos: los kilos deben ser mayores a cero.'
+      return 'Revisa los datos: los kilos y el precio deben ser mayores a cero.'
   }
 
   return 'Algo salió mal. Inténtalo otra vez.'
