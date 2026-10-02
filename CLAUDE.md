@@ -25,6 +25,8 @@ npx vitest run src/utils/kg.test.ts   # un solo archivo
 npx vitest run -t "formatea"          # un solo test por nombre
 ```
 
+Detalle del backend (modelo, RLS, Edge Function, pruebas): `docs/backend.md`.
+
 Supabase se administra con el **MCP de Supabase** (scope local, proyecto `gmbixckrajmrpovsrymi`):
 
 - Cambio de esquema: crear un archivo nuevo en `supabase/migrations/`, aplicarlo con
