@@ -103,8 +103,7 @@ defineExpose({ limpiar })
 
     <p class="aviso" :class="{ sobre: sobreEntrega }" role="status">
       <template v-if="sobreEntrega">
-        Quedarían {{ formatearKg(quedarian) }}: dejas más de lo que traes. Se registra de todos
-        modos.
+        Quedarían {{ formatearKg(quedarian) }}. Se registra igual.
       </template>
       <template v-else-if="kg > 0">Te quedarían {{ formatearKg(quedarian) }}.</template>
       <template v-else>Traes {{ formatearKg(kgDisponibles) }}.</template>
@@ -112,10 +111,10 @@ defineExpose({ limpiar })
 
     <p v-if="error" class="alerta-error" role="alert">{{ error }}</p>
 
-    <div class="flex flex-col gap-3">
+    <div class="flex gap-3">
       <button
         type="button"
-        class="boton-ambar w-full"
+        class="boton-ambar min-w-0 flex-1"
         :disabled="!listo || ocupado"
         @click="guardar"
       >
@@ -127,12 +126,13 @@ defineExpose({ limpiar })
       <button
         v-if="editando"
         type="button"
-        class="boton-acero peligro w-full"
+        class="boton-acero peligro min-h-auto! shrink-0"
+        :aria-label="borrado.armado.value ? 'Toca otra vez para borrar la parada' : 'Borrar parada'"
         :disabled="ocupado"
         @click="borrado.tocar(() => emit('borrar'))"
       >
-        <IconoTrazo nombre="basura" class="text-xl" />
-        <span>{{ borrado.armado.value ? 'Toca otra vez para borrar' : 'Borrar parada' }}</span>
+        <IconoTrazo nombre="basura" class="text-2xl" />
+        <span v-if="borrado.armado.value">¿Borrar?</span>
       </button>
     </div>
   </section>
@@ -144,7 +144,8 @@ defineExpose({ limpiar })
   color: var(--color-acero);
   font-size: 1.15rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 .aviso.sobre {
   color: var(--color-rojo);

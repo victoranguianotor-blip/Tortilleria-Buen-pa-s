@@ -1,12 +1,14 @@
 <script setup lang="ts">
 // Renglones del tablero: una parada por renglón, columnas fijas. Un renglón se puede tocar
 // para corregirlo mientras la ruta esté abierta.
+import { nextTick, onMounted, ref, watch } from 'vue'
+
 import FlapText from '@/components/FlapText.vue'
 import type { Entrega } from '@/services/rutas'
 import { horaColima } from '@/utils/fecha'
 import { formatearKg } from '@/utils/kg'
 
-defineProps<{
+const props = defineProps<{
   entregas: Entrega[]
   seleccionadaId: string | null
   nuevaId: string | null
@@ -15,6 +17,20 @@ defineProps<{
 defineEmits<{ elegir: [entrega: Entrega] }>()
 
 const kgTexto = (kg: number) => formatearKg(kg).replace(' kg', '')
+
+// La parada más reciente siempre a la vista: el renglón nuevo debe verse caer.
+const lista = ref<HTMLOListElement | null>(null)
+async function mostrarUltima() {
+  await nextTick()
+  lista.value?.scrollTo({ top: lista.value.scrollHeight })
+}
+onMounted(mostrarUltima)
+watch(
+  () => props.entregas.length,
+  (n, antes) => {
+    if (n > antes) mostrarUltima()
+  },
+)
 </script>
 
 <template>
@@ -26,7 +42,7 @@ const kgTexto = (kg: number) => formatearKg(kg).replace(' kg', '')
       <span class="text-right">Kg</span>
     </div>
 
-    <ol class="min-h-0 flex-1 overflow-y-auto" aria-label="Paradas de hoy">
+    <ol ref="lista" class="min-h-0 flex-1 overflow-y-auto" aria-label="Paradas de hoy">
       <li v-for="(e, i) in entregas" :key="e.id">
         <button
           type="button"
@@ -50,6 +66,10 @@ const kgTexto = (kg: number) => formatearKg(kg).replace(' kg', '')
             class="justify-self-end"
           />
         </button>
+      </li>
+
+      <li v-if="editable && entregas.length > 0" class="pista rotulo" aria-hidden="true">
+        Toca una parada para corregirla o borrarla
       </li>
 
       <li v-if="entregas.length === 0" class="renglon vacio">
@@ -109,6 +129,11 @@ button.renglon.activo {
 
 .vacio {
   border-bottom-style: dashed;
+}
+
+.pista {
+  padding: 0.8rem 0.9rem;
+  color: var(--color-acero-2);
 }
 
 /* Celular: la hora cede su espacio al nombre de la parada. */

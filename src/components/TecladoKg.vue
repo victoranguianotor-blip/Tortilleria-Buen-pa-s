@@ -85,7 +85,12 @@ onBeforeUnmount(() => window.removeEventListener('keydown', alTeclear))
 /* Tablet de pie: el teclado cede altura para que se vean las paradas. */
 @media (orientation: portrait) and (min-width: 700px) and (min-height: 1000px) {
   .tecla {
-    min-height: 3.6rem;
+    min-height: 3.3rem;
+  }
+}
+@media (min-width: 960px) and (orientation: landscape) {
+  .tecla {
+    min-height: clamp(3rem, 6.8vh, 4.1rem);
   }
 }
 

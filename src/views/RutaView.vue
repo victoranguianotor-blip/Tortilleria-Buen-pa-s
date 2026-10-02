@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 
 import BarraSuperior from '@/components/BarraSuperior.vue'
 import FlapText from '@/components/FlapText.vue'
+import IconoTrazo from '@/components/IconoTrazo.vue'
 import PanelCarga from '@/components/PanelCarga.vue'
 import PanelEntrega from '@/components/PanelEntrega.vue'
 import TableroParadas from '@/components/TableroParadas.vue'
@@ -134,7 +135,7 @@ onMounted(cargar)
 </script>
 
 <template>
-  <div class="flex h-dvh flex-col">
+  <div class="relative flex h-dvh flex-col overflow-hidden">
     <BarraSuperior :fecha="ruta.hoy" :nombre="auth.perfil?.nombre ?? ''" @salir="salir" />
 
     <div v-if="estado !== 'listo'" class="grid flex-1 place-items-center p-6">
@@ -156,7 +157,7 @@ onMounted(cargar)
 
     <main
       v-else
-      class="min-h-0 flex-1 overflow-y-auto p-3 horizontal:grid horizontal:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] horizontal:gap-4 horizontal:overflow-hidden horizontal:p-4 vertical-alto:flex vertical-alto:flex-col vertical-alto:overflow-hidden"
+      class="relative min-h-0 flex-1 overflow-y-auto p-3 horizontal:grid horizontal:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] horizontal:gap-4 horizontal:overflow-hidden horizontal:p-4 vertical-alto:flex vertical-alto:flex-col vertical-alto:overflow-hidden"
     >
       <!-- Tablero: lo que queda, la carga y las paradas -->
       <section
@@ -177,9 +178,22 @@ onMounted(cargar)
               <span class="rotulo pb-3 text-base!">kg</span>
             </div>
           </div>
-          <p class="lampara" :class="`lampara-${lampara.tono}`" role="status">
-            <FlapText :texto="lampara.texto" tamano="sm" :tono="lampara.tono" />
-          </p>
+          <div class="flex flex-col items-end gap-2">
+            <p class="lampara" :class="`lampara-${lampara.tono}`" role="status">
+              <span class="foco" aria-hidden="true" />
+              <FlapText :texto="lampara.texto" tamano="sm" :tono="lampara.tono" />
+            </p>
+            <button
+              v-if="abierta"
+              type="button"
+              class="boton-acero min-h-12! px-3!"
+              :class="{ peligro: cierre.armado.value }"
+              :disabled="ocupado"
+              @click="cerrarRuta"
+            >
+              {{ cierre.armado.value ? '¿Cerrar? Toca otra vez' : 'Cerrar ruta' }}
+            </button>
+          </div>
         </div>
 
         <div class="cifras">
@@ -191,7 +205,10 @@ onMounted(cargar)
             :aria-label="`Salió con ${ruta.ruta ? kgTexto(ruta.ruta.kg_iniciales) : 0} kilos${abierta ? '. Tocar para corregir' : ''}`"
             @click="abrirCorreccionCarga"
           >
-            <span class="rotulo">Salió</span>
+            <span class="rotulo flex items-center gap-1.5">
+              Salió
+              <IconoTrazo v-if="abierta" nombre="lapiz" class="text-acero-2" />
+            </span>
             <span>
               <FlapText
                 :texto="ruta.ruta ? kgTexto(ruta.ruta.kg_iniciales) : '--'"
@@ -229,18 +246,6 @@ onMounted(cargar)
           :editable="abierta"
           @elegir="elegir"
         />
-
-        <div v-if="abierta" class="border-t border-acero-3 p-2">
-          <button
-            type="button"
-            class="boton-acero min-h-12! w-full"
-            :class="{ peligro: cierre.armado.value }"
-            :disabled="ocupado"
-            @click="cerrarRuta"
-          >
-            {{ cierre.armado.value ? 'Toca otra vez para cerrar la ruta' : 'Cerrar ruta del día' }}
-          </button>
-        </div>
       </section>
 
       <!-- Panel de captura -->
@@ -258,12 +263,48 @@ onMounted(cargar)
 
         <div v-else-if="ruta.cerrada" class="flex flex-col gap-5">
           <h2><FlapText texto="Ruta cerrada" tamano="md" tono="acero" /></h2>
-          <p class="text-2xl leading-snug font-semibold tracking-wide">
-            Cerraste a las {{ horaColima(ruta.ruta.cerrada_at!) }} con
-            {{ formatearKg(ruta.kgQuedan) }} de regreso.
-          </p>
-          <p class="text-xl leading-snug text-acero">
-            Si te equivocaste, pide al encargado que la reabra.
+          <dl class="cierre">
+            <div>
+              <dt class="rotulo">Cerró</dt>
+              <dd><FlapText :texto="horaColima(ruta.ruta.cerrada_at!)" tamano="lg" /></dd>
+            </div>
+            <div>
+              <dt class="rotulo">Salió</dt>
+              <dd>
+                <FlapText
+                  :texto="kgTexto(ruta.ruta.kg_iniciales)"
+                  :celdas="5"
+                  alinear="der"
+                  tamano="lg"
+                />
+              </dd>
+            </div>
+            <div>
+              <dt class="rotulo">Entregó</dt>
+              <dd>
+                <FlapText
+                  :texto="kgTexto(ruta.kgEntregados)"
+                  :celdas="5"
+                  alinear="der"
+                  tamano="lg"
+                />
+              </dd>
+            </div>
+            <div>
+              <dt class="rotulo">Regresa</dt>
+              <dd>
+                <FlapText
+                  :texto="kgTexto(ruta.kgQuedan)"
+                  :celdas="5"
+                  alinear="der"
+                  tamano="lg"
+                  :tono="sobreEntrega ? 'rojo' : 'tinta'"
+                />
+              </dd>
+            </div>
+          </dl>
+          <p class="text-lg tracking-[0.1em] text-acero uppercase">
+            ¿Te equivocaste? Pide al encargado que la reabra.
           </p>
         </div>
 
@@ -291,19 +332,50 @@ onMounted(cargar)
           @cancelar="cancelarEdicion"
         />
       </section>
+      <p class="sr-only" aria-live="polite">
+        <template v-if="ruta.ruta">Quedan {{ formatearKg(ruta.kgQuedan) }}</template>
+      </p>
     </main>
-
-    <p class="sr-only" aria-live="polite">
-      <template v-if="ruta.ruta">Quedan {{ formatearKg(ruta.kgQuedan) }}</template>
-    </p>
   </div>
 </template>
 
 <style scoped>
 .lampara {
-  padding: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
   border-radius: 6px;
-  background: var(--color-flap);
+  background: #000;
+}
+
+/* Foco de la lámpara: encendido en ruta, rojo en sobre-entrega, apagado al cerrar. */
+.foco {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: var(--color-acero-3);
+}
+.lampara-ambar .foco {
+  background: var(--color-ambar);
+  box-shadow: 0 0 10px 1px rgb(255 180 0 / 0.6);
+}
+.lampara-rojo .foco {
+  background: var(--color-rojo);
+  box-shadow: 0 0 10px 1px rgb(255 77 77 / 0.6);
+}
+
+.cierre {
+  display: grid;
+  gap: 0.9rem;
+}
+.cierre > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--color-acero-3);
 }
 .lampara-ambar {
   box-shadow: 0 0 0 1px var(--color-ambar-oscuro);

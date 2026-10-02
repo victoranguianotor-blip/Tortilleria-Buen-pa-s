@@ -53,7 +53,7 @@ async function entrar() {
         </h1>
         <div class="flex items-center gap-3">
           <span class="rotulo">Hora</span>
-          <FlapText :texto="hora" tamano="md" tono="ambar" />
+          <FlapText :texto="hora" tamano="md" />
         </div>
       </div>
 

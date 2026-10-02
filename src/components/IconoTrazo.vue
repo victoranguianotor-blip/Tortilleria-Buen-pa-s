@@ -1,6 +1,8 @@
 <script setup lang="ts">
 // Iconos propios, trazo de 2px, esquinas cuadradas como el tablero.
-defineProps<{ nombre: 'flecha' | 'salir' | 'retroceso' | 'basura' | 'ojo' | 'ojo-no' | 'x' }>()
+defineProps<{
+  nombre: 'flecha' | 'salir' | 'retroceso' | 'basura' | 'ojo' | 'ojo-no' | 'x' | 'lapiz'
+}>()
 </script>
 
 <template>
@@ -40,6 +42,10 @@ defineProps<{ nombre: 'flecha' | 'salir' | 'retroceso' | 'basura' | 'ojo' | 'ojo
     <template v-else-if="nombre === 'ojo-no'">
       <path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z" />
       <path d="M4 20L20 4" />
+    </template>
+    <template v-else-if="nombre === 'lapiz'">
+      <path d="M4 20l1-5L15.5 4.5l4 4L9 19z" />
+      <path d="M13 7l4 4" />
     </template>
     <template v-else-if="nombre === 'x'">
       <path d="M6 6l12 12M18 6L6 18" />

@@ -46,7 +46,7 @@ const iniciar = computed(() => props.modo === 'iniciar')
       </button>
     </div>
 
-    <p class="text-2xl font-semibold tracking-wide">
+    <p class="text-xl font-semibold tracking-[0.1em] uppercase">
       {{ iniciar ? '¿Con cuántos kilos sales hoy?' : '¿Cuántos kilos cargaste en realidad?' }}
     </p>
 

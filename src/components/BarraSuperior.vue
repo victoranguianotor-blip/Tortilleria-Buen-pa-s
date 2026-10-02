@@ -14,15 +14,15 @@ const fechaTexto = computed(() => (props.fecha ? fechaCorta(props.fecha) : ''))
 </script>
 
 <template>
-  <header class="marco flex items-center gap-4 px-4 py-2.5 horizontal:px-6">
+  <header class="franja-acero flex items-center gap-4 px-4 py-2 horizontal:px-6">
     <div class="flex items-center gap-3">
       <FlapText v-if="fechaTexto" :texto="fechaTexto" tamano="sm" />
-      <FlapText :texto="hora" tamano="sm" tono="ambar" />
+      <FlapText :texto="hora" tamano="sm" />
     </div>
-    <p class="rotulo ml-auto hidden truncate sm:block">{{ nombre }}</p>
+    <p class="rotulo ml-auto hidden truncate text-flap! sm:block">{{ nombre }}</p>
     <button
       type="button"
-      class="boton-acero ml-auto min-h-12! px-3! sm:ml-0"
+      class="boton-placa ml-auto sm:ml-0"
       aria-label="Salir"
       @click="$emit('salir')"
     >
