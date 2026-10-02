@@ -39,6 +39,7 @@ export default defineConfig({
         ],
       },
       workbox: {
+        globPatterns: ['**/*.{js,css,html,woff2,png,svg,ico}'],
         // SPA: cualquier ruta del navegador sirve index.html desde la caché
         navigateFallback: '/index.html',
       },
