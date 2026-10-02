@@ -6,8 +6,8 @@ const url = import.meta.env.VITE_SUPABASE_URL
 const publishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
 
 if (!url || !publishableKey) {
-  throw new Error('Faltan VITE_SUPABASE_URL o VITE_SUPABASE_PUBLISHABLE_KEY en .env')
+  throw new Error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY in .env')
 }
 
-// Solo `src/services/` debe importar este cliente.
+// Only src/services/ may import this client (keeps writes queueable for offline mode).
 export const supabase = createClient<Database>(url, publishableKey)

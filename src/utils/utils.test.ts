@@ -1,69 +1,69 @@
 import { describe, expect, it } from 'vitest'
 
-import { mensajeDeError } from './errores'
-import { fechaCorta, horaColima } from './fecha'
-import { usuarioAEmail } from './login'
-import { aplicarTecla, kgAValor, valorAKg, type Tecla } from './teclado'
+import { colimaTime, formatShortDate } from './date'
+import { usernameToEmail } from './email'
+import { errorMessage } from './errors'
+import { applyKey, kgToValue, valueToKg, type KeypadKey } from './keypad'
 
-function teclear(teclas: Tecla[], inicial = ''): string {
-  return teclas.reduce(aplicarTecla, inicial)
+function type(keys: KeypadKey[], initial = ''): string {
+  return keys.reduce(applyKey, initial)
 }
 
-describe('usuarioAEmail', () => {
-  it('agrega el dominio interno al usuario', () => {
-    expect(usuarioAEmail('  Juan ')).toBe('juan@reparto.local')
+describe('usernameToEmail', () => {
+  it('appends the internal domain', () => {
+    expect(usernameToEmail('  Juan ')).toBe('juan@reparto.local')
   })
-  it('respeta un email completo', () => {
-    expect(usuarioAEmail('Victor@Gmail.com')).toBe('victor@gmail.com')
-  })
-})
-
-describe('teclado de kg', () => {
-  it('escribe enteros y quita el cero inicial', () => {
-    expect(teclear(['0', '1', '2'])).toBe('12')
-  })
-  it('agrega y quita el medio', () => {
-    expect(teclear(['7', 'medio'])).toBe('7.5')
-    expect(teclear(['7', 'medio', 'medio'])).toBe('7')
-    expect(teclear(['medio'])).toBe('0.5')
-  })
-  it('conserva el medio al seguir tecleando', () => {
-    expect(teclear(['1', 'medio', '2'])).toBe('12.5')
-  })
-  it('borra primero el medio y luego dígitos', () => {
-    expect(teclear(['1', '2', 'medio', 'borrar'])).toBe('12')
-    expect(teclear(['1', '2', 'borrar', 'borrar', 'borrar'])).toBe('')
-  })
-  it('limita a 3 dígitos enteros', () => {
-    expect(teclear(['9', '9', '9', '9'])).toBe('999')
-  })
-  it('convierte entre valor y kg', () => {
-    expect(valorAKg('12.5')).toBe(12.5)
-    expect(valorAKg('')).toBe(0)
-    expect(kgAValor(12.5)).toBe('12.5')
-    expect(kgAValor(7.25)).toBe('7.5')
-    expect(kgAValor(0)).toBe('')
+  it('keeps a full email', () => {
+    expect(usernameToEmail('Victor@Gmail.com')).toBe('victor@gmail.com')
   })
 })
 
-describe('fecha', () => {
-  it('formatea la fecha de negocio', () => {
-    expect(fechaCorta('2026-10-01')).toBe('JUE 01 OCT')
+describe('kg keypad', () => {
+  it('types whole numbers and drops a leading zero', () => {
+    expect(type(['0', '1', '2'])).toBe('12')
   })
-  it('da la hora de Colima (UTC-6)', () => {
-    expect(horaColima('2026-10-01T18:05:00Z')).toBe('12:05')
+  it('toggles the half', () => {
+    expect(type(['7', 'half'])).toBe('7.5')
+    expect(type(['7', 'half', 'half'])).toBe('7')
+    expect(type(['half'])).toBe('0.5')
+  })
+  it('keeps the half while typing digits', () => {
+    expect(type(['1', 'half', '2'])).toBe('12.5')
+  })
+  it('backspace removes the half first, then digits', () => {
+    expect(type(['1', '2', 'half', 'backspace'])).toBe('12')
+    expect(type(['1', '2', 'backspace', 'backspace', 'backspace'])).toBe('')
+  })
+  it('limits to 3 whole digits', () => {
+    expect(type(['9', '9', '9', '9'])).toBe('999')
+  })
+  it('converts between value and kg', () => {
+    expect(valueToKg('12.5')).toBe(12.5)
+    expect(valueToKg('')).toBe(0)
+    expect(kgToValue(12.5)).toBe('12.5')
+    expect(kgToValue(7.25)).toBe('7.5')
+    expect(kgToValue(0)).toBe('')
   })
 })
 
-describe('mensajeDeError', () => {
-  it('reconoce errores de red', () => {
-    expect(mensajeDeError({ message: 'TypeError: Failed to fetch' })).toMatch(/Sin conexión/)
+describe('date', () => {
+  it('formats the business date', () => {
+    expect(formatShortDate('2026-10-01')).toBe('JUE 01 OCT')
   })
-  it('traduce códigos conocidos', () => {
-    expect(mensajeDeError({ code: 'invalid_credentials' })).toMatch(/incorrectos/)
-    expect(mensajeDeError({ code: '42501' })).toMatch(/cerrada/)
+  it('uses Colima time (UTC-6)', () => {
+    expect(colimaTime('2026-10-01T18:05:00Z')).toBe('12:05')
   })
-  it('tiene un mensaje por defecto', () => {
-    expect(mensajeDeError(null)).toMatch(/Algo salió mal/)
+})
+
+describe('errorMessage', () => {
+  it('detects network errors', () => {
+    expect(errorMessage({ message: 'TypeError: Failed to fetch' })).toMatch(/Sin conexión/)
+  })
+  it('translates known codes', () => {
+    expect(errorMessage({ code: 'invalid_credentials' })).toMatch(/incorrectos/)
+    expect(errorMessage({ code: '42501' })).toMatch(/cerrada/)
+  })
+  it('has a default message', () => {
+    expect(errorMessage(null)).toMatch(/Algo salió mal/)
   })
 })

@@ -2,46 +2,45 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 import * as auth from '@/services/auth'
-import type { Perfil } from '@/services/auth'
+import type { Profile } from '@/services/auth'
 
 export const useAuthStore = defineStore('auth', () => {
-  const perfil = ref<Perfil | null>(null)
-  let inicio: Promise<void> | null = null
+  const profile = ref<Profile | null>(null)
+  let initialization: Promise<void> | null = null
 
-  // Restaura la sesión guardada una sola vez (lo llama el guard del router).
-  function iniciar(): Promise<void> {
-    inicio ??= (async () => {
-      auth.alCerrarSesion(() => (perfil.value = null))
-      const id = await auth.idUsuarioActual()
+  function init(): Promise<void> {
+    initialization ??= (async () => {
+      auth.onSignedOut(() => (profile.value = null))
+      const id = await auth.currentUserId()
       if (!id) return
       try {
-        await cargarPerfil(id)
+        await loadProfile(id)
       } catch {
-        await auth.cerrarSesion()
+        await auth.signOut()
       }
     })()
-    return inicio
+    return initialization
   }
 
-  async function cargarPerfil(id: string) {
-    const datos = await auth.obtenerPerfil(id)
-    if (!datos.activo) {
-      await auth.cerrarSesion()
+  async function loadProfile(id: string) {
+    const data = await auth.fetchProfile(id)
+    if (!data.active) {
+      await auth.signOut()
       throw { code: 'user_banned' }
     }
-    perfil.value = datos
+    profile.value = data
   }
 
-  async function entrar(usuario: string, password: string) {
-    await auth.iniciarSesion(usuario, password)
-    const id = await auth.idUsuarioActual()
-    if (id) await cargarPerfil(id)
+  async function signIn(username: string, password: string) {
+    await auth.signIn(username, password)
+    const id = await auth.currentUserId()
+    if (id) await loadProfile(id)
   }
 
-  async function salir() {
-    await auth.cerrarSesion()
-    perfil.value = null
+  async function signOut() {
+    await auth.signOut()
+    profile.value = null
   }
 
-  return { perfil, iniciar, entrar, salir }
+  return { profile, init, signIn, signOut }
 })

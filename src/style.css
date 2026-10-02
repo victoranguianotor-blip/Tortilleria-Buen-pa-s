@@ -3,28 +3,25 @@
 @import '@fontsource/barlow-condensed/latin-600.css';
 @import '@fontsource/barlow-condensed/latin-700.css';
 
-/* Tablero de salidas: paletas negras, letra blanca, ámbar solo para acción/estado,
-   rojo solo para sobre-entrega y borrar, acero para marcos y etiquetas. */
 @theme {
   --color-flap: #0d0d0f;
   --color-flap-2: #1b1b1e;
   --color-flap-3: #26262b;
-  --color-tinta: #f2f2f2;
-  --color-ambar: #ffb400;
-  --color-ambar-oscuro: #3a2a00;
-  --color-rojo: #ff4d4d;
-  --color-rojo-oscuro: #3b1010;
-  --color-acero: #b6bbc2;
-  --color-acero-2: #7d838c;
-  --color-acero-3: #3a3d42;
+  --color-board: #111114;
+  --color-ink: #f2f2f2;
+  --color-amber: #ffb400;
+  --color-amber-dark: #3a2a00;
+  --color-danger: #ff4d4d;
+  --color-danger-dark: #3b1010;
+  --color-steel: #b6bbc2;
+  --color-steel-2: #7d838c;
+  --color-steel-3: #3a3d42;
 
-  --font-tablero: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --font-board: 'Barlow Condensed', 'Arial Narrow', sans-serif;
 }
 
-/* Dos columnas solo con espacio horizontal real (tablet apaisada). */
-@custom-variant horizontal (@media (min-width: 960px) and (orientation: landscape));
-/* Tablet de pie: todo en una pantalla, sin scroll de página. */
-@custom-variant vertical-alto (@media (orientation: portrait) and (min-width: 700px) and (min-height: 1000px));
+@custom-variant wide (@media (min-width: 960px) and (orientation: landscape));
+@custom-variant tall (@media (orientation: portrait) and (min-width: 700px) and (min-height: 1000px));
 
 @layer base {
   html {
@@ -36,46 +33,44 @@
 
   body {
     background: var(--color-flap);
-    color: var(--color-tinta);
-    font-family: var(--font-tablero);
+    color: var(--color-ink);
+    font-family: var(--font-board);
     font-weight: 500;
     letter-spacing: 0.04em;
     -webkit-font-smoothing: antialiased;
   }
 
   ::selection {
-    background: var(--color-ambar);
+    background: var(--color-amber);
     color: var(--color-flap);
   }
 
   input {
-    caret-color: var(--color-ambar);
+    caret-color: var(--color-amber);
   }
 
   :focus-visible {
-    outline: 3px solid var(--color-ambar);
+    outline: 3px solid var(--color-amber);
     outline-offset: 3px;
   }
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-acero-3) transparent;
+    scrollbar-color: var(--color-steel-3) transparent;
   }
 }
 
 @layer components {
-  /* Etiqueta pintada en el marco: acero, mayúsculas, espaciada. */
-  .rotulo {
+  .caption {
     font-size: 0.78rem;
     font-weight: 600;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--color-acero);
+    color: var(--color-steel);
   }
 
-  /* Tablero: campo negro de paleta dentro de un bisel de acero (tonos planos, luz arriba). */
-  .marco {
-    background: #111114;
+  .board-frame {
+    background: var(--color-board);
     border: 5px solid;
     border-color: #a7adb5 #7d838c #5f656d #7d838c;
     box-shadow:
@@ -83,16 +78,14 @@
       0 10px 30px -12px rgb(0 0 0 / 0.8);
   }
 
-  /* Franja de acero (encabezado), con la luz arriba y la sombra abajo. */
-  .franja-acero {
+  .steel-band {
     background: #9ea4ac;
     border-top: 2px solid #c3c8ce;
     border-bottom: 3px solid #5f656d;
     color: var(--color-flap);
   }
 
-  /* Placa oscura sobre el acero (botón de la franja). */
-  .boton-placa {
+  .btn-plate {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -101,7 +94,7 @@
     padding: 0 0.9rem;
     border-radius: 6px;
     background: var(--color-flap-2);
-    color: var(--color-tinta);
+    color: var(--color-ink);
     font-size: 1.1rem;
     font-weight: 600;
     letter-spacing: 0.14em;
@@ -110,34 +103,32 @@
       0 1px 0 rgb(255 255 255 / 0.35),
       inset 0 1px 0 rgb(255 255 255 / 0.06);
   }
-  .boton-placa:active {
+  .btn-plate:active {
     background: var(--color-flap);
   }
 
-  /* Campo de texto como celda del tablero. */
-  .campo {
+  .field {
     width: 100%;
     min-height: 3.6rem;
     padding: 0 1rem;
     background: var(--color-flap-2);
-    border: 2px solid var(--color-acero-3);
+    border: 2px solid var(--color-steel-3);
     border-radius: 6px;
-    color: var(--color-tinta);
+    color: var(--color-ink);
     font-size: 1.5rem;
     font-weight: 600;
     letter-spacing: 0.06em;
     transition: border-color 160ms ease-out;
   }
-  .campo::placeholder {
-    color: var(--color-acero-2);
+  .field::placeholder {
+    color: var(--color-steel-2);
   }
-  .campo:focus {
+  .field:focus {
     outline: none;
-    border-color: var(--color-ambar);
+    border-color: var(--color-amber);
   }
 
-  /* Botón principal: lámpara ámbar encendida. */
-  .boton-ambar {
+  .btn-primary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -145,7 +136,7 @@
     min-height: clamp(3.6rem, 8.5vh, 4.2rem);
     padding: 0 1.6rem;
     border-radius: 6px;
-    background: var(--color-ambar);
+    background: var(--color-amber);
     color: var(--color-flap);
     font-size: 1.6rem;
     font-weight: 700;
@@ -157,29 +148,27 @@
       transform 120ms ease-out,
       filter 160ms ease-out;
   }
-  .boton-ambar:active:not(:disabled) {
+  .btn-primary:active:not(:disabled) {
     transform: translateY(1px) scale(0.99);
     filter: brightness(0.92);
   }
-  .boton-ambar:disabled {
-    background: var(--color-acero-3);
-    color: var(--color-acero-2);
+  .btn-primary:disabled {
+    background: var(--color-steel-3);
+    color: var(--color-steel-2);
     box-shadow: none;
   }
 
-  /* Error: nombra el problema y cómo seguir. */
-  .alerta-error {
+  .error-alert {
     padding: 0.75rem 1rem;
     border-radius: 6px;
-    background: var(--color-rojo-oscuro);
-    color: var(--color-rojo);
+    background: var(--color-danger-dark);
+    color: var(--color-danger);
     font-size: 1.15rem;
     font-weight: 600;
     letter-spacing: 0.04em;
   }
 
-  /* Botón secundario: contorno de acero. */
-  .boton-acero {
+  .btn-steel {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -187,8 +176,8 @@
     min-height: 3.4rem;
     padding: 0 1.2rem;
     border-radius: 6px;
-    border: 2px solid var(--color-acero-3);
-    color: var(--color-acero);
+    border: 2px solid var(--color-steel-3);
+    color: var(--color-steel);
     font-size: 1.1rem;
     font-weight: 600;
     letter-spacing: 0.14em;
@@ -197,13 +186,13 @@
       border-color 160ms ease-out,
       color 160ms ease-out;
   }
-  .boton-acero:hover,
-  .boton-acero:active {
-    border-color: var(--color-acero-2);
-    color: var(--color-tinta);
+  .btn-steel:hover,
+  .btn-steel:active {
+    border-color: var(--color-steel-2);
+    color: var(--color-ink);
   }
-  .boton-acero.peligro {
-    border-color: var(--color-rojo);
-    color: var(--color-rojo);
+  .btn-steel.danger {
+    border-color: var(--color-danger);
+    color: var(--color-danger);
   }
 }

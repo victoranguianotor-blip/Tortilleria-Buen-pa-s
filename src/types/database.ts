@@ -1,4 +1,4 @@
-// Generado desde el esquema de Supabase (MCP generate_typescript_types). No editar a mano.
+// Generated from the Supabase schema (MCP generate_typescript_types). Do not edit by hand.
 
 export type Json =
   | string
@@ -16,101 +16,101 @@ export type Database = {
   }
   public: {
     Tables: {
-      entregas: {
+      deliveries: {
         Row: {
           created_at: string
+          delivered_kg: number
           id: string
-          kg_dejados: number
-          parada: string
-          ruta_id: string
+          route_id: string
+          stop_name: string
         }
         Insert: {
           created_at?: string
+          delivered_kg: number
           id?: string
-          kg_dejados: number
-          parada: string
-          ruta_id: string
+          route_id: string
+          stop_name: string
         }
         Update: {
           created_at?: string
+          delivered_kg?: number
           id?: string
-          kg_dejados?: number
-          parada?: string
-          ruta_id?: string
+          route_id?: string
+          stop_name?: string
         }
         Relationships: [
           {
-            foreignKeyName: "entregas_ruta_id_fkey"
-            columns: ["ruta_id"]
+            foreignKeyName: "deliveries_route_id_fkey"
+            columns: ["route_id"]
             isOneToOne: false
-            referencedRelation: "resumen_rutas"
-            referencedColumns: ["ruta_id"]
+            referencedRelation: "route_summaries"
+            referencedColumns: ["route_id"]
           },
           {
-            foreignKeyName: "entregas_ruta_id_fkey"
-            columns: ["ruta_id"]
+            foreignKeyName: "deliveries_route_id_fkey"
+            columns: ["route_id"]
             isOneToOne: false
-            referencedRelation: "rutas"
+            referencedRelation: "routes"
             referencedColumns: ["id"]
           },
         ]
       }
       profiles: {
         Row: {
-          activo: boolean
+          active: boolean
           created_at: string
+          full_name: string
           id: string
-          nombre: string
-          rol: Database["public"]["Enums"]["rol"]
-          usuario: string
+          role: Database["public"]["Enums"]["user_role"]
+          username: string
         }
         Insert: {
-          activo?: boolean
+          active?: boolean
           created_at?: string
+          full_name: string
           id: string
-          nombre: string
-          rol?: Database["public"]["Enums"]["rol"]
-          usuario: string
+          role?: Database["public"]["Enums"]["user_role"]
+          username: string
         }
         Update: {
-          activo?: boolean
+          active?: boolean
           created_at?: string
+          full_name?: string
           id?: string
-          nombre?: string
-          rol?: Database["public"]["Enums"]["rol"]
-          usuario?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          username?: string
         }
         Relationships: []
       }
-      rutas: {
+      routes: {
         Row: {
-          cerrada_at: string | null
+          closed_at: string | null
           created_at: string
-          fecha: string
+          driver_id: string
           id: string
-          kg_iniciales: number
-          repartidor_id: string
+          initial_kg: number
+          route_date: string
         }
         Insert: {
-          cerrada_at?: string | null
+          closed_at?: string | null
           created_at?: string
-          fecha?: string
+          driver_id?: string
           id?: string
-          kg_iniciales: number
-          repartidor_id?: string
+          initial_kg: number
+          route_date?: string
         }
         Update: {
-          cerrada_at?: string | null
+          closed_at?: string | null
           created_at?: string
-          fecha?: string
+          driver_id?: string
           id?: string
-          kg_iniciales?: number
-          repartidor_id?: string
+          initial_kg?: number
+          route_date?: string
         }
         Relationships: [
           {
-            foreignKeyName: "rutas_repartidor_id_fkey"
-            columns: ["repartidor_id"]
+            foreignKeyName: "routes_driver_id_fkey"
+            columns: ["driver_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -119,22 +119,22 @@ export type Database = {
       }
     }
     Views: {
-      resumen_rutas: {
+      route_summaries: {
         Row: {
-          cerrada_at: string | null
-          fecha: string | null
-          kg_entregados: number | null
-          kg_iniciales: number | null
-          kg_restantes: number | null
-          num_entregas: number | null
-          repartidor: string | null
-          repartidor_id: string | null
-          ruta_id: string | null
+          closed_at: string | null
+          delivered_kg: number | null
+          delivery_count: number | null
+          driver_id: string | null
+          driver_name: string | null
+          initial_kg: number | null
+          remaining_kg: number | null
+          route_date: string | null
+          route_id: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "rutas_repartidor_id_fkey"
-            columns: ["repartidor_id"]
+            foreignKeyName: "routes_driver_id_fkey"
+            columns: ["driver_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -143,11 +143,11 @@ export type Database = {
       }
     }
     Functions: {
-      hoy_colima: { Args: never; Returns: string }
-      reabrir_ruta: { Args: { p_ruta_id: string }; Returns: undefined }
+      business_today: { Args: never; Returns: string }
+      reopen_route: { Args: { p_route_id: string }; Returns: undefined }
     }
     Enums: {
-      rol: "repartidor" | "admin"
+      user_role: "driver" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -275,7 +275,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      rol: ["repartidor", "admin"],
+      user_role: ["driver", "admin"],
     },
   },
 } as const

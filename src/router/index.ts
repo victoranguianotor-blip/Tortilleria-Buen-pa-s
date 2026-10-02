@@ -1,17 +1,17 @@
 import { createRouter, createWebHistory, type RouteLocationRaw } from 'vue-router'
 
-import type { Perfil } from '@/services/auth'
+import type { Profile } from '@/services/auth'
 import { useAuthStore } from '@/stores/auth'
 
 declare module 'vue-router' {
   interface RouteMeta {
-    publica?: boolean
-    rol?: Perfil['rol']
+    public?: boolean
+    role?: Profile['role']
   }
 }
 
-export function inicioPorRol(rol: Perfil['rol']): RouteLocationRaw {
-  return { name: rol === 'admin' ? 'admin' : 'ruta' }
+export function homeForRole(role: Profile['role']): RouteLocationRaw {
+  return { name: role === 'admin' ? 'admin' : 'route' }
 }
 
 const router = createRouter({
@@ -21,33 +21,33 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('@/views/LoginView.vue'),
-      meta: { publica: true },
+      meta: { public: true },
     },
     {
-      path: '/ruta',
-      name: 'ruta',
-      component: () => import('@/views/RutaView.vue'),
-      meta: { rol: 'repartidor' },
+      path: '/route',
+      name: 'route',
+      component: () => import('@/views/RouteView.vue'),
+      meta: { role: 'driver' },
     },
     {
       path: '/admin',
       name: 'admin',
       component: () => import('@/views/AdminView.vue'),
-      meta: { rol: 'admin' },
+      meta: { role: 'admin' },
     },
-    { path: '/:pathMatch(.*)*', redirect: '/ruta' },
+    { path: '/:pathMatch(.*)*', redirect: '/route' },
   ],
 })
 
-// Solo UX: la seguridad real la aplica RLS en la base de datos.
+// UX only: the real access control is RLS in the database.
 router.beforeEach(async (to) => {
   const auth = useAuthStore()
-  await auth.iniciar()
-  const perfil = auth.perfil
+  await auth.init()
+  const profile = auth.profile
 
-  if (to.meta.publica) return perfil ? inicioPorRol(perfil.rol) : true
-  if (!perfil) return { name: 'login' }
-  if (to.meta.rol && to.meta.rol !== perfil.rol) return inicioPorRol(perfil.rol)
+  if (to.meta.public) return profile ? homeForRole(profile.role) : true
+  if (!profile) return { name: 'login' }
+  if (to.meta.role && to.meta.role !== profile.role) return homeForRole(profile.role)
 })
 
 export default router

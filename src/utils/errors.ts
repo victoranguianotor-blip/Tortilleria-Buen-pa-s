@@ -1,12 +1,10 @@
-// Traduce errores de Supabase (Auth y PostgREST) a mensajes para el repartidor.
-
-interface ErrorConCodigo {
+interface CodedError {
   code?: string
   message?: string
 }
 
-export function mensajeDeError(e: unknown): string {
-  const { code, message = '' } = (e ?? {}) as ErrorConCodigo
+export function errorMessage(e: unknown): string {
+  const { code, message = '' } = (e ?? {}) as CodedError
 
   if (/failed to fetch|networkerror|load failed|network request failed/i.test(message)) {
     return 'Sin conexión. Revisa la señal e inténtalo otra vez.'

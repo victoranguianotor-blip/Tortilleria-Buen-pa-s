@@ -1,46 +1,44 @@
 <script setup lang="ts">
-// Texto de tablero: cada carácter en su paleta. Una celda cuyo carácter cambia se monta de
-// nuevo (key = posición + carácter) y se voltea; las demás no se mueven. En el primer render
-// no se anima nada, salvo que `animar` lo pida (un renglón recién agregado).
+// Cells are keyed by position + character, so only changed characters remount and flip.
 import { computed, onMounted, ref, type Directive } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    texto: string
-    celdas?: number
-    alinear?: 'izq' | 'der'
-    tamano?: 'xl' | 'titulo' | 'lg' | 'md' | 'sm'
-    tono?: 'tinta' | 'ambar' | 'rojo' | 'acero'
-    animar?: boolean
+    text: string
+    cells?: number
+    align?: 'left' | 'right'
+    size?: 'xl' | 'title' | 'lg' | 'md' | 'sm'
+    tone?: 'ink' | 'amber' | 'danger' | 'steel'
+    animate?: boolean
   }>(),
-  { alinear: 'izq', tamano: 'md', tono: 'tinta', animar: false },
+  { align: 'left', size: 'md', tone: 'ink', animate: false },
 )
 
-const montado = ref(false)
-onMounted(() => requestAnimationFrame(() => (montado.value = true)))
+const mounted = ref(false)
+onMounted(() => requestAnimationFrame(() => (mounted.value = true)))
 
-const caracteres = computed(() => {
-  const texto = props.texto.toUpperCase()
-  const relleno = ' '.repeat(Math.max(0, (props.celdas ?? 0) - texto.length))
-  return [...(props.alinear === 'der' ? relleno + texto : texto + relleno)]
+const chars = computed(() => {
+  const text = props.text.toUpperCase()
+  const padding = ' '.repeat(Math.max(0, (props.cells ?? 0) - text.length))
+  return [...(props.align === 'right' ? padding + text : text + padding)]
 })
 
-const vVoltear: Directive<HTMLElement, boolean> = {
+const vFlip: Directive<HTMLElement, boolean> = {
   mounted(el, { value }) {
-    if (value) el.classList.add('voltea')
+    if (value) el.classList.add('flipping')
   },
 }
 </script>
 
 <template>
-  <span class="flaps" :class="[`flaps-${tamano}`, `tono-${tono}`]">
-    <span class="sr-only">{{ texto }}</span>
+  <span class="flaps" :class="[`flaps-${size}`, `tone-${tone}`]">
+    <span class="sr-only">{{ text }}</span>
     <span
-      v-for="(c, i) in caracteres"
+      v-for="(c, i) in chars"
       :key="`${i}-${c}`"
-      v-voltear="montado || animar"
+      v-flip="mounted || animate"
       class="flap"
-      :class="{ vacia: c === ' ' }"
+      :class="{ empty: c === ' ' }"
       :style="{ '--i': i }"
       aria-hidden="true"
       >{{ c === ' ' ? ' ' : c }}</span
@@ -52,7 +50,7 @@ const vVoltear: Directive<HTMLElement, boolean> = {
 .flaps {
   display: inline-flex;
   gap: 0.07em;
-  font-family: var(--font-tablero);
+  font-family: var(--font-board);
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
@@ -66,7 +64,7 @@ const vVoltear: Directive<HTMLElement, boolean> = {
     font-size: 3.6rem;
   }
 }
-.flaps-titulo {
+.flaps-title {
   font-size: clamp(3rem, 5vw + 1rem, 5.5rem);
 }
 .flaps-lg {
@@ -90,10 +88,9 @@ const vVoltear: Directive<HTMLElement, boolean> = {
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.06),
     0 0.03em 0.06em rgb(0 0 0 / 0.7);
-  color: var(--tono);
+  color: var(--tone);
 }
 
-/* Línea de corte entre la mitad de arriba y la de abajo. */
 .flap::after {
   content: '';
   position: absolute;
@@ -103,29 +100,29 @@ const vVoltear: Directive<HTMLElement, boolean> = {
   box-shadow: 0 1px 0 rgb(255 255 255 / 0.04);
 }
 
-.flap.vacia {
+.flap.empty {
   background: linear-gradient(180deg, #19191c 0 50%, #151517 50% 100%);
 }
 
-.tono-tinta {
-  --tono: var(--color-tinta);
+.tone-ink {
+  --tone: var(--color-ink);
 }
-.tono-ambar {
-  --tono: var(--color-ambar);
+.tone-amber {
+  --tone: var(--color-amber);
 }
-.tono-rojo {
-  --tono: var(--color-rojo);
+.tone-danger {
+  --tone: var(--color-danger);
 }
-.tono-acero {
-  --tono: var(--color-acero);
+.tone-steel {
+  --tone: var(--color-steel);
 }
 
-.voltea {
-  animation: voltear 460ms cubic-bezier(0.16, 1, 0.3, 1) both;
+.flipping {
+  animation: flip 460ms cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: calc(var(--i) * 55ms);
 }
 
-@keyframes voltear {
+@keyframes flip {
   0% {
     transform: perspective(6em) rotateX(-92deg);
     filter: brightness(1.8);
@@ -140,7 +137,7 @@ const vVoltear: Directive<HTMLElement, boolean> = {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .voltea {
+  .flipping {
     animation: none;
   }
 }

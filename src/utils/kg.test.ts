@@ -1,20 +1,21 @@
 import { describe, expect, it } from 'vitest'
 
-import { formatearKg, kgRestantes, sumarKg } from './kg'
+import { formatKg, formatKgNumber, remainingKg, sumKg } from './kg'
 
 describe('kg', () => {
-  it('suma sin errores de punto flotante', () => {
-    expect(sumarKg([0.1, 0.2])).toBe(0.3)
-    expect(sumarKg([])).toBe(0)
+  it('sums without floating point drift', () => {
+    expect(sumKg([0.1, 0.2])).toBe(0.3)
+    expect(sumKg([])).toBe(0)
   })
 
-  it('calcula kg restantes, incluso negativos si se entregó de más', () => {
-    expect(kgRestantes(50, [12.5, 7.25])).toBe(30.25)
-    expect(kgRestantes(10, [6, 5])).toBe(-1)
+  it('computes remaining kg, negative on over-delivery', () => {
+    expect(remainingKg(50, [12.5, 7.25])).toBe(30.25)
+    expect(remainingKg(10, [6, 5])).toBe(-1)
   })
 
-  it('formatea en es-MX', () => {
-    expect(formatearKg(1234.5)).toBe('1,234.5 kg')
-    expect(formatearKg(3)).toBe('3 kg')
+  it('formats for es-MX', () => {
+    expect(formatKg(1234.5)).toBe('1,234.5 kg')
+    expect(formatKg(3)).toBe('3 kg')
+    expect(formatKgNumber(12.5)).toBe('12.5')
   })
 })
