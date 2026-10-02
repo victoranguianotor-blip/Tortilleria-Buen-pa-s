@@ -413,3 +413,7 @@ enabled = true
 # formatted with uppercase keywords, indent 2, max width 180, trailing commas,
 # and column/key alignment. Set to "null" to emit raw, unformatted SQL.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"
+
+[functions.admin-usuarios]
+# La plataforma no valida claves sb_*; la función verifica sesión y rol admin en código.
+verify_jwt = false

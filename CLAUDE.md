@@ -52,9 +52,11 @@ Supabase se administra con el **MCP de Supabase** (scope local, proyecto `gmbixc
   cliente no derives "hoy" de UTC.
 - **Login con usuario.** Supabase Auth usa `<usuario>@reparto.local`; si lo tecleado contiene `@`
   se usa tal cual (el admin original entra con su email real). El trigger `handle_new_user` crea el
-  `profiles` con rol `repartidor`. No hay registro público: los usuarios
-  los crea el admin desde la app mediante una Edge Function (usa la service role key, que nunca va
-  en el frontend).
+  `profiles` con rol `repartidor`. No hay registro público: los usuarios los crea el admin con la
+  Edge Function `supabase/functions/admin-usuarios` (acciones `crear`, `cambiar_password`,
+  `activar`; desactivar también bloquea el login vía `ban_duration`). Usa la secret key y se
+  despliega con `deploy_edge_function` y `verify_jwt: false`: la plataforma no valida claves `sb_*`,
+  así que la función verifica sesión y rol admin en su código.
 - **Resumen** (kg iniciales/entregados/restantes) sale de la vista `resumen_rutas`
   (`security_invoker`, respeta RLS). Los cálculos de kg en el cliente usan `src/utils/kg.ts`
   (suma en centésimas para evitar errores de punto flotante). Los kg restantes pueden ser negativos:
@@ -72,7 +74,7 @@ Supabase se administra con el **MCP de Supabase** (scope local, proyecto `gmbixc
 
 ## Fases
 
-1. Setup, PWA y Supabase (tablas, auth, RLS) — hecho; falta Edge Function `admin-usuarios`
+1. Setup, PWA y Supabase (tablas, auth, RLS, Edge Function `admin-usuarios`) — hecho
 2. Login y pantalla del repartidor
 3. Dashboard del admin (incluye alta de usuarios)
 4. Reporte diario PDF/CSV con detalle
