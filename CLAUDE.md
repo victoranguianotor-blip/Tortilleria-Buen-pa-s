@@ -22,7 +22,7 @@ npm run lint           # oxlint + eslint, ambos con --fix
 npm run format         # prettier sobre src/
 npm run test:run       # vitest una vez; `npm test` en modo watch
 npx vitest run src/utils/kg.test.ts   # un solo archivo
-npx vitest run -t "formatea"          # un solo test por nombre
+npx vitest run -t "formats"           # un solo test por nombre
 ```
 
 Detalle del backend (modelo, RLS, Edge Function, pruebas): `docs/backend.md`.
@@ -40,26 +40,26 @@ Supabase se administra con el **MCP de Supabase** (scope local, proyecto `gmbixc
 ## Arquitectura
 
 - **Capa de servicio obligatoria.** Solo `src/services/` importa `@/lib/supabase`. Vistas y stores
-  llaman a funciones de servicio. Motivo: en la fase 2 (offline con Dexie) las escrituras se
-  encolarán en IndexedDB cambiando solo `services/`. Los IDs de filas nuevas se generan en el
-  cliente (`crypto.randomUUID()`) para que reintentar una escritura encolada sea idempotente.
-- **Roles y seguridad en la BD, no en el cliente.** `profiles.rol` es `repartidor | admin`. Las
-  políticas RLS (`supabase/migrations/*_esquema_inicial.sql`) son la fuente de verdad: el repartidor
-  (activo) solo ve lo suyo y solo escribe entregas en su ruta **de hoy y abierta**; el admin lee
-  todo, no captura datos, no edita su propio perfil y reabre rutas con `rpc('reabrir_ruta')`. Hay
-  GRANTs por columna (p. ej. en `rutas` solo se actualizan `kg_iniciales` y `cerrada_at`). Los
-  helpers de las políticas (`is_admin`, `soy_activo`, `es_mi_ruta_abierta`, `handle_new_user`)
-  viven en el schema `private`, no expuesto por la API. Los guards del router son solo UX.
-- **Fecha de negocio = Colima** (`America/Mexico_City`). Usa `public.hoy_colima()` en SQL; en el
-  cliente no derives "hoy" de UTC.
-- **Login con usuario.** Supabase Auth usa `<usuario>@reparto.local`; si lo tecleado contiene `@`
+  llaman a funciones de servicio. Motivo: en la fase offline (Dexie) las escrituras se encolarán en
+  IndexedDB cambiando solo `services/`. Los IDs de filas nuevas se generan en el cliente
+  (`crypto.randomUUID()`) para que reintentar una escritura encolada sea idempotente.
+- **Roles y seguridad en la BD, no en el cliente.** `profiles.role` es `driver | admin`. Las
+  políticas RLS son la fuente de verdad: el driver (activo) solo ve lo suyo y solo escribe
+  `deliveries` en su ruta **de hoy y abierta**; el admin lee todo, no captura datos, no edita su
+  propio perfil y reabre rutas con `rpc('reopen_route')`. Hay GRANTs por columna (p. ej. en
+  `routes` solo se actualizan `initial_kg` y `closed_at`). Los helpers de las políticas
+  (`is_admin`, `is_active`, `is_my_open_route`, `handle_new_user`) viven en el schema `private`, no
+  expuesto por la API. Los guards del router son solo UX.
+- **Fecha de negocio = Colima** (`America/Mexico_City`). Usa `public.business_today()` en SQL; en
+  el cliente no derives "hoy" de UTC.
+- **Login con usuario.** Supabase Auth usa `<username>@reparto.local`; si lo tecleado contiene `@`
   se usa tal cual (el admin original entra con su email real). El trigger `handle_new_user` crea el
-  `profiles` con rol `repartidor`. No hay registro público: los usuarios los crea el admin con la
-  Edge Function `supabase/functions/admin-usuarios` (acciones `crear`, `cambiar_password`,
-  `activar`; desactivar también bloquea el login vía `ban_duration`). Usa la secret key y se
-  despliega con `deploy_edge_function` y `verify_jwt: false`: la plataforma no valida claves `sb_*`,
-  así que la función verifica sesión y rol admin en su código.
-- **Resumen** (kg iniciales/entregados/restantes) sale de la vista `resumen_rutas`
+  `profiles` con rol `driver`. No hay registro público: los usuarios los crea el admin con la Edge
+  Function `supabase/functions/admin-users` (acciones `create`, `set_password`, `set_active`;
+  desactivar también bloquea el login vía `ban_duration`). Usa la secret key y se despliega con
+  `deploy_edge_function` y `verify_jwt: false`: la plataforma no valida claves `sb_*`, así que la
+  función verifica sesión y rol admin en su código.
+- **Resumen** (kg iniciales/entregados/restantes) sale de la vista `route_summaries`
   (`security_invoker`, respeta RLS). Los cálculos de kg en el cliente usan `src/utils/kg.ts`
   (suma en centésimas para evitar errores de punto flotante). Los kg restantes pueden ser negativos:
   la sobre-entrega se advierte, no se bloquea.
@@ -68,14 +68,20 @@ Supabase se administra con el **MCP de Supabase** (scope local, proyecto `gmbixc
 
 Mundo visual "tablero de salidas" (paletas de aeropuerto/terminal). `PRODUCT.md` guarda el
 contexto de producto y `DESIGN.md` los tokens y reglas visuales; respétalos al agregar pantallas.
-`src/components/FlapText.vue` es la pieza central (cifras en celdas que se voltean). El brief y el
+`src/components/FlapText.vue` es la pieza central (cifras en celdas que se voltean). Tokens en
+`src/style.css` (`ink`, `amber`, `danger`, `steel`, `board`…), clases de componente (`.caption`,
+`.board-frame`, `.steel-band`, `.field`, `.btn-primary`, `.btn-steel`, `.btn-plate`,
+`.error-alert`) y variantes `wide:` (tablet horizontal) y `tall:` (tablet vertical). El brief y el
 contrato de dirección de la pantalla del repartidor están en `.impeccable/surfaces/`.
 
 ## Convenciones
 
-- Textos de la interfaz en español (es-MX); nombres de dominio en español (`ruta`, `entrega`,
-  `parada`, `repartidor`).
-- UI para tablet: botones y campos grandes (área táctil ≥ 48px), `inputmode="decimal"` para kg.
+- **Código en inglés** (archivos, componentes, variables, funciones, clases CSS, tablas y columnas,
+  URLs). **Textos de la interfaz en español** (es-MX), incluidos `aria-label` y mensajes de error.
+- Sin comentarios, salvo los que expliquen algo no obvio e importante (p. ej. un comportamiento de
+  RLS o una decisión de seguridad).
+- UI para tablet: botones y campos grandes (área táctil ≥ 48px); los kg se capturan con
+  `KgKeypad` (enteros y medios).
 - Simple y sin dependencias nuevas salvo necesidad clara. Tests de Vitest solo para lógica pura
   (`*.test.ts` junto al archivo, entorno node).
 - Prettier: sin punto y coma, comillas simples, 100 columnas.
@@ -83,7 +89,7 @@ contrato de dirección de la pantalla del repartidor están en `.impeccable/surf
 
 ## Fases
 
-1. Setup, PWA y Supabase (tablas, auth, RLS, Edge Function `admin-usuarios`) — hecho
+1. Setup, PWA y Supabase (tablas, auth, RLS, Edge Function `admin-users`) — hecho
 2. Login y pantalla del repartidor — hecho
 3. Dashboard del admin (incluye alta de usuarios)
 4. Reporte diario PDF/CSV con detalle

@@ -3,21 +3,21 @@ name: Reparto de Tortillas
 description: Tablero de salidas para el repartidor; paletas negras, letra blanca, ámbar de lámpara y marco de acero.
 colors:
   flap: "#0d0d0f"
-  flap-campo: "#111114"
+  board: "#111114"
   flap-2: "#1b1b1e"
   flap-3: "#26262b"
-  tinta: "#f2f2f2"
-  ambar: "#ffb400"
-  ambar-oscuro: "#3a2a00"
-  rojo: "#ff4d4d"
-  rojo-oscuro: "#3b1010"
-  acero: "#b6bbc2"
-  acero-2: "#7d838c"
-  acero-3: "#3a3d42"
-  acero-franja: "#9ea4ac"
-  acero-luz: "#a7adb5"
-  acero-sombra: "#5f656d"
-  regla: "#222327"
+  ink: "#f2f2f2"
+  amber: "#ffb400"
+  amber-dark: "#3a2a00"
+  danger: "#ff4d4d"
+  danger-dark: "#3b1010"
+  steel: "#b6bbc2"
+  steel-2: "#7d838c"
+  steel-3: "#3a3d42"
+  steel-band: "#9ea4ac"
+  steel-light: "#a7adb5"
+  steel-shadow: "#5f656d"
+  rule: "#222327"
 typography:
   display:
     fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
@@ -44,7 +44,7 @@ typography:
     fontSize: "1.15rem"
     fontWeight: 600
     lineHeight: 1
-  parada:
+  stop-name:
     fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
     fontSize: "1.45rem"
     fontWeight: 600
@@ -72,74 +72,74 @@ typography:
 rounded:
   flap: "0.07em"
   control: "6px"
-  marco: "0.5rem"
+  frame: "0.5rem"
 spacing:
-  teclado: "0.45rem"
+  keypad: "0.45rem"
   sm: "0.75rem"
   md: "1rem"
   lg: "1.25rem"
   celda-gap: "0.07em"
 components:
   button-primary:
-    backgroundColor: "{colors.ambar}"
+    backgroundColor: "{colors.amber}"
     textColor: "{colors.flap}"
     typography: "{typography.button}"
     rounded: "{rounded.control}"
     padding: "0 1.6rem"
     height: "clamp(3.6rem, 8.5vh, 4.2rem)"
   button-primary-disabled:
-    backgroundColor: "{colors.acero-3}"
-    textColor: "{colors.acero-2}"
+    backgroundColor: "{colors.steel-3}"
+    textColor: "{colors.steel-2}"
   button-secondary:
     backgroundColor: "transparent"
-    textColor: "{colors.acero}"
+    textColor: "{colors.steel}"
     typography: "{typography.button-sm}"
     rounded: "{rounded.control}"
     padding: "0 1.2rem"
     height: "3.4rem"
   button-secondary-danger:
-    textColor: "{colors.rojo}"
+    textColor: "{colors.danger}"
   button-plate:
     backgroundColor: "{colors.flap-2}"
-    textColor: "{colors.tinta}"
+    textColor: "{colors.ink}"
     typography: "{typography.button-sm}"
     rounded: "{rounded.control}"
     padding: "0 0.9rem"
     height: "3rem"
   input:
     backgroundColor: "{colors.flap-2}"
-    textColor: "{colors.tinta}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.control}"
     padding: "0 1rem"
     height: "3.6rem"
   key:
     backgroundColor: "{colors.flap-2}"
-    textColor: "{colors.tinta}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.control}"
     height: "clamp(3.2rem, 7.5vh, 4.1rem)"
   key-active:
-    backgroundColor: "{colors.ambar}"
+    backgroundColor: "{colors.amber}"
     textColor: "{colors.flap}"
   flap-cell:
     backgroundColor: "{colors.flap-2}"
-    textColor: "{colors.tinta}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.flap}"
     width: "0.72em"
     height: "1.16em"
   board:
-    backgroundColor: "{colors.flap-campo}"
-    rounded: "{rounded.marco}"
+    backgroundColor: "{colors.board}"
+    rounded: "{rounded.frame}"
   header-band:
-    backgroundColor: "{colors.acero-franja}"
+    backgroundColor: "{colors.steel-band}"
     textColor: "{colors.flap}"
   alert-error:
-    backgroundColor: "{colors.rojo-oscuro}"
-    textColor: "{colors.rojo}"
+    backgroundColor: "{colors.danger-dark}"
+    textColor: "{colors.danger}"
     rounded: "{rounded.control}"
     padding: "0.75rem 1rem"
   board-row-active:
-    backgroundColor: "{colors.ambar-oscuro}"
-    textColor: "{colors.ambar}"
+    backgroundColor: "{colors.amber-dark}"
+    textColor: "{colors.amber}"
 ---
 
 # Design System: Reparto de Tortillas
@@ -167,28 +167,28 @@ Se rechaza la app de captura típica: tarjetas blancas, formulario genérico, bo
 Negro de paleta casi total, letra blanca, una lámpara ámbar y un rojo de cancelado; el acero pone el marco.
 
 ### Primary
-- **Ámbar de lámpara** (ambar): la acción principal (REGISTRAR, ENTRAR), el estado activo (lámpara EN RUTA, renglón o cifra en corrección, tecla presionada, kg tecleados), el anillo de foco, el cursor y la selección de texto. Su fondo apagado, **Ámbar apagado** (ambar-oscuro), rellena el renglón o la cifra activos.
+- **Ámbar de lámpara** (amber): la acción principal (REGISTRAR, ENTRAR), el estado activo (lámpara EN RUTA, renglón o cifra en corrección, tecla presionada, kg tecleados), el anillo de foco, el cursor y la selección de texto. Su fondo apagado, **Ámbar apagado** (amber-dark), rellena el renglón o la cifra activos.
 
 ### Secondary
-- **Rojo de cancelado** (rojo): solo sobre-entrega (QUEDAN y REGRESA en negativo, aviso, foco de la lámpara) y acciones de borrar o cerrar armadas. **Rojo apagado** (rojo-oscuro) es el fondo de la alerta de error. Se usa #FF4D4D y no el #D32F2F del contrato porque este último no alcanzaba contraste de texto sobre el negro de paleta.
+- **Rojo de cancelado** (danger): solo sobre-entrega (QUEDAN y REGRESA en negativo, aviso, foco de la lámpara) y acciones de borrar o cerrar armadas. **Rojo apagado** (danger-dark) es el fondo de la alerta de error. Se usa #FF4D4D y no el #D32F2F del contrato porque este último no alcanzaba contraste de texto sobre el negro de paleta.
 
 ### Neutral
 - **Negro de paleta** (flap): fondo de página y texto sobre ámbar o sobre la franja de acero.
-- **Campo del tablero** (flap-campo): el interior de cada marco, un paso más claro que la página.
+- **Campo del tablero** (board): el interior de cada marco, un paso más claro que la página.
 - **Sombra de paleta** (flap-2): fondo de campos de texto, placas y celdas; flap-3 queda como tono intermedio.
-- **Letra de paleta** (tinta): todo el texto principal y todas las cifras, incluidos los relojes.
-- **Acero claro** (acero): rótulos, botón secundario, teclas de función, avisos neutros.
-- **Acero medio** (acero-2): número de renglón, placeholder, pistas, texto deshabilitado.
-- **Acero oscuro** (acero-3): bordes de campos, divisiones entre cifras, regla del encabezado de la lista, fondo del botón deshabilitado.
-- **Franja de acero** (acero-franja) con **luz** (acero-luz) y **sombra** (acero-sombra): la franja de encabezado y el bisel del marco.
-- **Regla** (regla): línea entre renglones de paradas.
+- **Letra de paleta** (ink): todo el texto principal y todas las cifras, incluidos los relojes.
+- **Acero claro** (steel): rótulos, botón secundario, teclas de función, avisos neutros.
+- **Acero medio** (steel-2): número de renglón, placeholder, pistas, texto deshabilitado.
+- **Acero oscuro** (steel-3): bordes de campos, divisiones entre cifras, regla del encabezado de la lista, fondo del botón deshabilitado.
+- **Franja de acero** (steel-band) con **luz** (steel-light) y **sombra** (steel-shadow): la franja de encabezado y el bisel del marco.
+- **Regla** (rule): línea entre renglones de paradas.
 
 ### Named Rules
 **The Lámpara Rule.** El ámbar significa "encendido": estado activo, advertencia o la acción principal. Nunca decora, nunca colorea un reloj ni un rótulo en reposo.
 
 **The Cancelado Rule.** El rojo aparece solo para sobre-entrega y para acciones destructivas armadas. La sobre-entrega es la única advertencia que pasa de ámbar a rojo; se advierte, no se bloquea.
 
-**The Relojes Blancos Rule.** Fecha y hora van en letra de paleta (tinta), en la franja y en la lista (la hora de cada parada va en acero). Los relojes no son estado.
+**The Relojes Blancos Rule.** Fecha y hora van en letra de paleta (ink), en la franja y en la lista (la hora de cada parada va en acero). Los relojes no son estado.
 
 ## Typography
 
@@ -217,8 +217,8 @@ Negro de paleta casi total, letra blanca, una lámpara ámbar y un rojo de cance
 
 La página es negro de paleta; el contenido vive dentro de marcos de acero cuyo campo es un tono más claro. Arriba, una franja de acero de lado a lado con fecha y reloj en celdas, el nombre y SALIR.
 
-- **Tablet horizontal** (`horizontal`: ancho ≥ 960px y landscape): dos columnas, tablero 1.3fr y panel de captura 1fr, separación 1rem, sin scroll de página; el panel se desplaza por dentro si hace falta.
-- **Tablet de pie** (`vertical-alto`: portrait, ancho ≥ 700px, alto ≥ 1000px): una sola columna que no hace scroll de página. El tablero toma el espacio sobrante y la lista de paradas se desplaza por dentro con scroll-snap (cada renglón ajusta al final); el título del panel y la lectura de kg comparten fila y las teclas ceden altura.
+- **Tablet horizontal** (`wide`: ancho ≥ 960px y landscape): dos columnas, tablero 1.3fr y panel de captura 1fr, separación 1rem, sin scroll de página; el panel se desplaza por dentro si hace falta.
+- **Tablet de pie** (`tall`: portrait, ancho ≥ 700px, alto ≥ 1000px): una sola columna que no hace scroll de página. El tablero toma el espacio sobrante y la lista de paradas se desplaza por dentro con scroll-snap (cada renglón ajusta al final); el título del panel y la lectura de kg comparten fila y las teclas ceden altura.
 - **Celular** (≤ 520px): columna con scroll de página; la columna HORA desaparece para dejarle ancho al nombre de la parada.
 - **Ritmo:** separaciones de 0.75rem (sm) y 1rem (md), 1.25rem en formularios; el teclado usa 0.45rem. Renglones de 3.5rem de alto mínimo (3rem en tablet de pie) con columnas fijas: número, hora, parada, kg.
 - **Área táctil:** nada tocable mide menos de 48px (3rem con raíz de 18px).
@@ -249,7 +249,7 @@ Esquinas apenas suavizadas, como piezas troqueladas: 6px en controles, campos, p
 Interruptores de tablero: grandes, en mayúsculas, sin adornos.
 - **Shape:** esquinas troqueladas (6px).
 - **Primary (lámpara):** ámbar con texto negro de paleta, 700 en mayúsculas, alto clamp(3.6rem, 8.5vh, 4.2rem), una flecha de trazo al final. Al presionar baja 1px y se oscurece (brightness 0.92) en 120ms. Deshabilitado: acero oscuro con texto acero medio y sin halo.
-- **Secondary (acero):** contorno de 2px acero oscuro, texto acero claro; al tocar el borde pasa a acero medio y el texto a tinta (160ms). La variante de peligro pone borde y texto en rojo.
+- **Secondary (steel):** contorno de 2px acero oscuro, texto acero claro; al tocar el borde pasa a acero medio y el texto a tinta (160ms). La variante de peligro pone borde y texto en rojo.
 - **Placa:** botón oscuro con filo de luz sobre la franja de acero (SALIR); al presionar se hunde a negro de paleta.
 - **Focus:** anillo ámbar de 3px con 3px de separación en todo lo enfocable.
 

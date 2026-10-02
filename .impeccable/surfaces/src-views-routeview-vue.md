@@ -1,7 +1,7 @@
 ---
 version: 1
-slug: "src-views-rutaview-vue"
-primary_target: "src/views/RutaView.vue"
+slug: "src-views-routeview-vue"
+primary_target: "src/views/RouteView.vue"
 related_targets: ["src/views/LoginView.vue"]
 ---
 

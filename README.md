@@ -18,7 +18,7 @@ Supabase > Authentication > Users > **Add user** con email `tuusuario@reparto.lo
 **Auto Confirm User** marcado. Luego en el SQL Editor:
 
 ```sql
-update public.profiles set rol = 'admin', nombre = 'Tu nombre' where usuario = 'tuusuario';
+update public.profiles set role = 'admin', full_name = 'Tu nombre' where username = 'tuusuario';
 ```
 
 Los demás usuarios se crean desde la app.

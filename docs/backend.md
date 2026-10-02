@@ -1,88 +1,89 @@
 # Backend (Supabase)
 
 Proyecto Supabase: `gmbixckrajmrpovsrymi` (Postgres 17).
-Todo el esquema vive en `supabase/migrations/`; la gestión de usuarios en
-`supabase/functions/admin-usuarios/`.
+El esquema vive en `supabase/migrations/` (la primera migración está en español; la segunda,
+`*_english_names.sql`, renombró todo a inglés conservando los datos). La gestión de usuarios está en
+`supabase/functions/admin-users/`.
 
 ## Modelo de datos
 
 ```
-auth.users ──1:1── profiles ──1:N── rutas ──1:N── entregas
+auth.users ──1:1── profiles ──1:N── routes ──1:N── deliveries
 ```
 
 ### `profiles`
 
 Un registro por usuario de Auth. Lo crea automáticamente el trigger `on_auth_user_created`.
 
-| Columna      | Tipo          | Notas                                                     |
-| ------------ | ------------- | --------------------------------------------------------- |
-| `id`         | uuid PK       | = `auth.users.id` (se borra en cascada)                   |
-| `usuario`    | text único    | `^[a-z0-9._-]{3,30}$`; es lo que se teclea en el login    |
-| `nombre`     | text          | 1–80 caracteres                                           |
-| `rol`        | enum `rol`    | `repartidor` (default) o `admin`                          |
-| `activo`     | boolean       | `false` = no puede entrar ni escribir                     |
-| `created_at` | timestamptz   |                                                           |
+| Columna      | Tipo             | Notas                                                     |
+| ------------ | ---------------- | --------------------------------------------------------- |
+| `id`         | uuid PK          | = `auth.users.id` (se borra en cascada)                   |
+| `username`   | text único       | `^[a-z0-9._-]{3,30}$`; es lo que se teclea en el login    |
+| `full_name`  | text             | 1–80 caracteres                                           |
+| `role`       | enum `user_role` | `driver` (default) o `admin`                              |
+| `active`     | boolean          | `false` = no puede entrar ni escribir                     |
+| `created_at` | timestamptz      |                                                           |
 
-### `rutas`
+### `routes`
 
-Una por repartidor por día (`unique (repartidor_id, fecha)`).
-
-| Columna         | Tipo          | Notas                                               |
-| --------------- | ------------- | --------------------------------------------------- |
-| `id`            | uuid PK       | se puede generar en el cliente                      |
-| `repartidor_id` | uuid FK       | default `auth.uid()`                                |
-| `fecha`         | date          | default `hoy_colima()`                              |
-| `kg_iniciales`  | numeric(8,2)  | `>= 0`                                              |
-| `cerrada_at`    | timestamptz   | `null` = abierta                                    |
-| `created_at`    | timestamptz   |                                                     |
-
-### `entregas`
-
-Cada parada de una ruta.
+Una por repartidor por día (`unique (driver_id, route_date)`).
 
 | Columna      | Tipo          | Notas                                    |
 | ------------ | ------------- | ---------------------------------------- |
 | `id`         | uuid PK       | se puede generar en el cliente           |
-| `ruta_id`    | uuid FK       | se borra en cascada con la ruta          |
-| `parada`     | text          | texto libre, 1–120 caracteres            |
-| `kg_dejados` | numeric(8,2)  | `> 0`                                    |
+| `driver_id`  | uuid FK       | default `auth.uid()`                     |
+| `route_date` | date          | default `business_today()`               |
+| `initial_kg` | numeric(8,2)  | `>= 0`                                   |
+| `closed_at`  | timestamptz   | `null` = abierta                         |
 | `created_at` | timestamptz   |                                          |
 
-### Vista `resumen_rutas`
+### `deliveries`
 
-Una fila por ruta con `repartidor` (nombre), `kg_iniciales`, `kg_entregados`, `kg_restantes`,
-`num_entregas` y `cerrada_at`. Es `security_invoker`, así que cada quien ve solo las filas que su
-RLS le permite. `kg_restantes` puede ser negativo (sobre-entrega: se advierte, no se bloquea).
+Cada parada de una ruta.
+
+| Columna        | Tipo          | Notas                                    |
+| -------------- | ------------- | ---------------------------------------- |
+| `id`           | uuid PK       | se puede generar en el cliente           |
+| `route_id`     | uuid FK       | se borra en cascada con la ruta          |
+| `stop_name`    | text          | texto libre, 1–120 caracteres            |
+| `delivered_kg` | numeric(8,2)  | `> 0`                                    |
+| `created_at`   | timestamptz   |                                          |
+
+### Vista `route_summaries`
+
+Una fila por ruta con `driver_name`, `initial_kg`, `delivered_kg`, `remaining_kg`,
+`delivery_count` y `closed_at`. Es `security_invoker`, así que cada quien ve solo las filas que su
+RLS le permite. `remaining_kg` puede ser negativo (sobre-entrega: se advierte, no se bloquea).
 
 ### Funciones
 
 | Función                          | Schema    | Uso                                                        |
 | -------------------------------- | --------- | ---------------------------------------------------------- |
-| `hoy_colima()`                   | public    | Fecha de hoy en Colima (`America/Mexico_City`). RPC        |
-| `reabrir_ruta(p_ruta_id)`        | public    | Solo admin: reabre una ruta cerrada por error. RPC         |
+| `business_today()`               | public    | Fecha de hoy en Colima (`America/Mexico_City`). RPC        |
+| `reopen_route(p_route_id)`       | public    | Solo admin: reabre una ruta cerrada por error. RPC         |
 | `is_admin()`                     | private   | Usada por las políticas                                    |
-| `soy_activo()`                   | private   | Usada por las políticas                                    |
-| `es_mi_ruta_abierta(ruta_id)`    | private   | Ruta propia, de hoy, abierta y usuario activo              |
+| `is_active()`                    | private   | Usada por las políticas                                    |
+| `is_my_open_route(route_id)`     | private   | Ruta propia, de hoy, abierta y usuario activo              |
 | `handle_new_user()`              | private   | Trigger que crea el perfil                                 |
 
 El schema `private` no está expuesto por la API REST.
 
 ## Reglas de acceso (RLS)
 
-| Acción                                   | Repartidor                              | Admin          | Sin sesión |
-| ---------------------------------------- | --------------------------------------- | -------------- | ---------- |
-| Ver perfiles                             | solo el suyo                            | todos          | no         |
-| Editar perfiles (`nombre`, `rol`, `activo`) | no                                   | los de otros   | no         |
-| Ver rutas / entregas / resumen           | solo las suyas                          | todas          | no         |
-| Crear ruta                               | la suya, de hoy, si está activo         | no             | no         |
-| Editar ruta (`kg_iniciales`, cerrarla)   | la suya, de hoy, abierta                | no             | no         |
-| Reabrir ruta                             | no                                      | `reabrir_ruta` | no         |
-| Crear / editar / borrar entregas         | en su ruta de hoy abierta, si está activo | no           | no         |
-| Borrar rutas                             | no                                      | no             | no         |
+| Acción                                        | Driver                                     | Admin          | Sin sesión |
+| --------------------------------------------- | ------------------------------------------ | -------------- | ---------- |
+| Ver perfiles                                  | solo el suyo                               | todos          | no         |
+| Editar perfiles (`full_name`, `role`, `active`) | no                                       | los de otros   | no         |
+| Ver routes / deliveries / route_summaries     | solo las suyas                             | todas          | no         |
+| Crear ruta                                    | la suya, de hoy, si está activo            | no             | no         |
+| Editar ruta (`initial_kg`, cerrarla)          | la suya, de hoy, abierta                   | no             | no         |
+| Reabrir ruta                                  | no                                         | `reopen_route` | no         |
+| Crear / editar / borrar deliveries            | en su ruta de hoy abierta, si está activo  | no             | no         |
+| Borrar rutas                                  | no                                         | no             | no         |
 
-Además hay permisos por columna: en `rutas` solo se actualizan `kg_iniciales` y `cerrada_at`, y en
-`entregas` solo `parada` y `kg_dejados` (una entrega no se puede mover de ruta ni una ruta cambiar
-de dueño). Los perfiles solo los inserta el trigger.
+Además hay permisos por columna: en `routes` solo se actualizan `initial_kg` y `closed_at`, y en
+`deliveries` solo `stop_name` y `delivered_kg` (una entrega no se puede mover de ruta ni una ruta
+cambiar de dueño). Los perfiles solo los inserta el trigger.
 
 Consecuencias prácticas:
 
@@ -93,9 +94,9 @@ Consecuencias prácticas:
 ## Usuarios y login
 
 - No hay registro público (desactivado en Authentication → Sign In / Providers).
-- Cada usuario existe en Auth como `<usuario>@reparto.local`. El login acepta el usuario solo
+- Cada usuario existe en Auth como `<username>@reparto.local`. El login acepta el usuario solo
   (`juan`) o, si contiene `@`, un email completo (así entra el admin original con su correo).
-- Desactivar a alguien hace dos cosas: bloquea su login en Auth y marca `profiles.activo = false`,
+- Desactivar a alguien hace dos cosas: bloquea su login en Auth y marca `profiles.active = false`,
   con lo que la RLS le impide escribir aunque su sesión siga abierta.
 
 ### Primer admin (proyecto nuevo)
@@ -104,30 +105,30 @@ Consecuencias prácticas:
 2. En el SQL Editor:
 
    ```sql
-   update public.profiles set rol = 'admin', nombre = 'Tu nombre' where usuario = 'tuusuario';
+   update public.profiles set role = 'admin', full_name = 'Tu nombre' where username = 'tuusuario';
    ```
 
-## Edge Function `admin-usuarios`
+## Edge Function `admin-users`
 
-`POST https://gmbixckrajmrpovsrymi.supabase.co/functions/v1/admin-usuarios`
+`POST https://gmbixckrajmrpovsrymi.supabase.co/functions/v1/admin-users`
 
 Requiere la sesión de un **admin activo** en `Authorization: Bearer <access_token>`. Desde la app:
 
 ```ts
-const { data, error } = await supabase.functions.invoke('admin-usuarios', {
-  body: { accion: 'crear', usuario: 'juan', nombre: 'Juan Pérez', password: 'secreta1' },
+const { data, error } = await supabase.functions.invoke('admin-users', {
+  body: { action: 'create', username: 'juan', fullName: 'Juan Pérez', password: 'secreta1' },
 })
 ```
 
 ### Acciones
 
-| `accion`           | Campos                                            | Respuesta OK                            |
-| ------------------ | ------------------------------------------------- | --------------------------------------- |
-| `crear`            | `usuario`, `nombre`, `password`, `rol?`           | `201 { id, usuario, nombre, rol }`      |
-| `cambiar_password` | `id`, `password`                                  | `200 { ok: true }`                      |
-| `activar`          | `id`, `activo` (boolean)                          | `200 { ok: true }`                      |
+| `action`       | Campos                                       | Respuesta OK                              |
+| -------------- | -------------------------------------------- | ----------------------------------------- |
+| `create`       | `username`, `fullName`, `password`, `role?`  | `201 { id, username, fullName, role }`    |
+| `set_password` | `id`, `password`                             | `200 { ok: true }`                        |
+| `set_active`   | `id`, `active` (boolean)                     | `200 { ok: true }`                        |
 
-- `usuario` se normaliza a minúsculas; `rol` es `repartidor` si no se indica.
+- `username` se normaliza a minúsculas; `role` es `driver` si no se indica.
 - `password`: mínimo 6 caracteres.
 
 ### Errores
@@ -155,19 +156,18 @@ el rol en `profiles`. Usa la secret key (lee `SUPABASE_SECRET_KEYS`, con respald
 
 ### RLS: `supabase/tests/rls_test.sql`
 
-Crea un admin y dos repartidores de prueba dentro de una transacción, verifica cada regla de la
-tabla de arriba (más los cálculos de `resumen_rutas`) y hace `ROLLBACK`: no deja datos. Si algo
-falla, aborta con `FALLO: <regla>`; si todo pasa devuelve `OK: todas las pruebas de RLS pasaron`.
+Crea un admin y dos drivers de prueba dentro de una transacción, verifica cada regla de la tabla de
+arriba (más los cálculos de `route_summaries`) y hace `ROLLBACK`: no deja datos. Si algo falla,
+aborta con `FAIL: <regla>`; si todo pasa devuelve `OK: all RLS tests passed`.
 
 Se ejecuta completo en el SQL Editor o con `execute_sql` del MCP. Requiere
 `plpgsql.check_asserts = on` (default en Supabase).
 
 ### Edge Function
 
-Se verificó contra el proyecto real (2026-10-01) con un admin temporal, después borrado: crear
-usuario, duplicados (409), datos inválidos (400), repartidor sin permiso (403), cambio de
-contraseña, desactivar (login bloqueado) y reactivar, protección contra auto-desactivación y
-creación de admin.
+Verificada contra el proyecto real con `prueba_admin` y un usuario temporal (después borrado):
+crear usuario, duplicados (409), repartidor sin permiso (403), cambio de contraseña, desactivar
+(login bloqueado) y reactivar, y acción inválida (400).
 
 ## Hacer cambios
 
@@ -177,13 +177,12 @@ creación de admin.
 3. Actualizar y correr `rls_test.sql`.
 4. Revisar `get_advisors` (security y performance).
 5. Regenerar `src/types/database.ts` con `generate_typescript_types`.
-6. Si cambia la función: editar `supabase/functions/admin-usuarios/index.ts` y desplegar con
+6. Si cambia la función: editar `supabase/functions/admin-users/index.ts` y desplegar con
    `deploy_edge_function` (`verify_jwt: false`).
 
 ## Avisos del linter aceptados
 
 | Aviso                                              | Por qué se acepta                                       |
 | -------------------------------------------------- | ------------------------------------------------------- |
-| `reabrir_ruta` es SECURITY DEFINER ejecutable      | Intencional; valida `is_admin()` adentro (probado)      |
-| `rutas_fecha_idx` sin uso                          | Aún no hay datos; lo usará el dashboard por fecha       |
+| `reopen_route` es SECURITY DEFINER ejecutable      | Intencional; valida `is_admin()` adentro (probado)      |
 | Protección de contraseñas filtradas desactivada    | Requiere plan Pro                                       |

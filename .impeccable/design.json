@@ -4,7 +4,7 @@
   "title": "Design System: Reparto de Tortillas",
   "extensions": {
     "colorMeta": {
-      "ambar": {
+      "amber": {
         "role": "primary",
         "displayName": "Ámbar de lámpara",
         "canonical": "#ffb400",
@@ -20,7 +20,7 @@
         ],
         "purpose": "Acción principal, estado activo, advertencia, foco, cursor y selección."
       },
-      "ambar-oscuro": {
+      "amber-dark": {
         "role": "primary",
         "displayName": "Ámbar apagado",
         "canonical": "#3a2a00",
@@ -36,7 +36,7 @@
         ],
         "purpose": "Fondo del renglón o la cifra activos."
       },
-      "rojo": {
+      "danger": {
         "role": "secondary",
         "displayName": "Rojo de cancelado",
         "canonical": "#ff4d4d",
@@ -53,7 +53,7 @@
         "purpose": "Solo sobre-entrega y acciones destructivas armadas.",
         "note": "Adaptación: el contrato pedía #D32F2F; se usa #FF4D4D por contraste de texto sobre el negro de paleta."
       },
-      "rojo-oscuro": {
+      "danger-dark": {
         "role": "secondary",
         "displayName": "Rojo apagado",
         "canonical": "#3b1010",
@@ -85,7 +85,7 @@
         ],
         "purpose": "Fondo de página; texto sobre ámbar y sobre la franja."
       },
-      "flap-campo": {
+      "board": {
         "role": "neutral",
         "displayName": "Campo del tablero",
         "canonical": "#111114",
@@ -133,7 +133,7 @@
         ],
         "purpose": "Tono intermedio de paleta."
       },
-      "tinta": {
+      "ink": {
         "role": "neutral",
         "displayName": "Letra de paleta",
         "canonical": "#f2f2f2",
@@ -149,7 +149,7 @@
         ],
         "purpose": "Texto principal, cifras y relojes."
       },
-      "acero": {
+      "steel": {
         "role": "neutral",
         "displayName": "Acero claro",
         "canonical": "#b6bbc2",
@@ -165,7 +165,7 @@
         ],
         "purpose": "Rótulos, botón secundario, teclas de función."
       },
-      "acero-2": {
+      "steel-2": {
         "role": "neutral",
         "displayName": "Acero medio",
         "canonical": "#7d838c",
@@ -181,7 +181,7 @@
         ],
         "purpose": "Número de renglón, placeholder, pistas, bisel lateral."
       },
-      "acero-3": {
+      "steel-3": {
         "role": "neutral",
         "displayName": "Acero oscuro",
         "canonical": "#3a3d42",
@@ -197,7 +197,7 @@
         ],
         "purpose": "Bordes de campos, divisiones, botón deshabilitado."
       },
-      "acero-franja": {
+      "steel-band": {
         "role": "neutral",
         "displayName": "Franja de acero",
         "canonical": "#9ea4ac",
@@ -213,7 +213,7 @@
         ],
         "purpose": "Fondo de la franja de encabezado."
       },
-      "acero-luz": {
+      "steel-light": {
         "role": "neutral",
         "displayName": "Luz del acero",
         "canonical": "#a7adb5",
@@ -229,7 +229,7 @@
         ],
         "purpose": "Borde superior del bisel del marco."
       },
-      "acero-sombra": {
+      "steel-shadow": {
         "role": "neutral",
         "displayName": "Sombra del acero",
         "canonical": "#5f656d",
@@ -245,7 +245,7 @@
         ],
         "purpose": "Borde inferior del bisel y de la franja."
       },
-      "regla": {
+      "rule": {
         "role": "neutral",
         "displayName": "Regla",
         "canonical": "#222327",
@@ -283,7 +283,7 @@
         "displayName": "Celda chica",
         "purpose": "Reloj de la franja, hora y kg por renglón, lámpara."
       },
-      "parada": {
+      "stop-name": {
         "displayName": "Nombre de parada",
         "purpose": "Texto libre en mayúsculas planas, nunca en celdas."
       },
@@ -360,17 +360,17 @@
     ],
     "breakpoints": [
       {
-        "name": "celular",
+        "name": "phone",
         "value": "(max-width: 520px)",
         "purpose": "Se oculta la columna HORA."
       },
       {
-        "name": "horizontal",
+        "name": "wide",
         "value": "(min-width: 960px) and (orientation: landscape)",
         "purpose": "Dos columnas sin scroll de página."
       },
       {
-        "name": "vertical-alto",
+        "name": "tall",
         "value": "(orientation: portrait) and (min-width: 700px) and (min-height: 1000px)",
         "purpose": "Una columna sin scroll de página; la lista se desplaza por dentro con scroll-snap."
       }
@@ -382,64 +382,64 @@
       "kind": "button",
       "refersTo": "button-primary",
       "description": "Acción principal en ámbar: REGISTRAR, ENTRAR.",
-      "html": "<button class=\"ds-boton-ambar\">REGISTRAR PARADA <svg viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"square\"><path d=\"M4 12h15\"/><path d=\"M13 6l6 6-6 6\"/></svg></button>",
-      "css": ".ds-boton-ambar { display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; min-height: 4rem; padding: 0 1.6rem; border: none; border-radius: 6px; background: #ffb400; color: #0d0d0f; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 1.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; box-shadow: 0 6px 18px -8px rgb(255 180 0 / 0.55); transition: transform 120ms ease-out, filter 160ms ease-out; cursor: pointer; } .ds-boton-ambar:active { transform: translateY(1px) scale(0.99); filter: brightness(0.92); } .ds-boton-ambar:focus-visible { outline: 3px solid #ffb400; outline-offset: 3px; } .ds-boton-ambar:disabled { background: #3a3d42; color: #7d838c; box-shadow: none; }"
+      "html": "<button class=\"ds-btn-primary\">REGISTRAR PARADA <svg viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"square\"><path d=\"M4 12h15\"/><path d=\"M13 6l6 6-6 6\"/></svg></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; min-height: 4rem; padding: 0 1.6rem; border: none; border-radius: 6px; background: #ffb400; color: #0d0d0f; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 1.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; box-shadow: 0 6px 18px -8px rgb(255 180 0 / 0.55); transition: transform 120ms ease-out, filter 160ms ease-out; cursor: pointer; } .ds-btn-primary:active { transform: translateY(1px) scale(0.99); filter: brightness(0.92); } .ds-btn-primary:focus-visible { outline: 3px solid #ffb400; outline-offset: 3px; } .ds-btn-primary:disabled { background: #3a3d42; color: #7d838c; box-shadow: none; }"
     },
     {
       "name": "Botón de acero",
       "kind": "button",
       "refersTo": "button-secondary",
       "description": "Secundario con contorno de acero; con peligro pasa a rojo.",
-      "html": "<div style=\"display:flex;gap:12px;background:#111114;padding:16px\"><button class=\"ds-boton-acero\">CANCELAR</button><button class=\"ds-boton-acero ds-peligro\">¿BORRAR?</button></div>",
-      "css": ".ds-boton-acero { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 3.4rem; padding: 0 1.2rem; border-radius: 6px; border: 2px solid #3a3d42; background: transparent; color: #b6bbc2; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; transition: border-color 160ms ease-out, color 160ms ease-out; cursor: pointer; } .ds-boton-acero:hover, .ds-boton-acero:active { border-color: #7d838c; color: #f2f2f2; } .ds-boton-acero:focus-visible { outline: 3px solid #ffb400; outline-offset: 3px; } .ds-boton-acero.ds-peligro { border-color: #ff4d4d; color: #ff4d4d; }"
+      "html": "<div style=\"display:flex;gap:12px;background:#111114;padding:16px\"><button class=\"ds-btn-steel\">CANCELAR</button><button class=\"ds-btn-steel ds-danger\">¿BORRAR?</button></div>",
+      "css": ".ds-btn-steel { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 3.4rem; padding: 0 1.2rem; border-radius: 6px; border: 2px solid #3a3d42; background: transparent; color: #b6bbc2; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; transition: border-color 160ms ease-out, color 160ms ease-out; cursor: pointer; } .ds-btn-steel:hover, .ds-btn-steel:active { border-color: #7d838c; color: #f2f2f2; } .ds-btn-steel:focus-visible { outline: 3px solid #ffb400; outline-offset: 3px; } .ds-btn-steel.ds-danger { border-color: #ff4d4d; color: #ff4d4d; }"
     },
     {
       "name": "Campo",
       "kind": "input",
       "refersTo": "input",
       "description": "Campo de texto como celda del tablero.",
-      "html": "<div style=\"background:#111114;padding:16px\"><input class=\"ds-campo\" placeholder=\"Tienda o cliente\" /></div>",
-      "css": ".ds-campo { width: 100%; min-height: 3.6rem; padding: 0 1rem; background: #1b1b1e; border: 2px solid #3a3d42; border-radius: 6px; color: #f2f2f2; caret-color: #ffb400; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 1.5rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; transition: border-color 160ms ease-out; } .ds-campo::placeholder { color: #7d838c; } .ds-campo:focus { outline: none; border-color: #ffb400; }"
+      "html": "<div style=\"background:#111114;padding:16px\"><input class=\"ds-field\" placeholder=\"Tienda o cliente\" /></div>",
+      "css": ".ds-field { width: 100%; min-height: 3.6rem; padding: 0 1rem; background: #1b1b1e; border: 2px solid #3a3d42; border-radius: 6px; color: #f2f2f2; caret-color: #ffb400; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 1.5rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; transition: border-color 160ms ease-out; } .ds-field::placeholder { color: #7d838c; } .ds-field:focus { outline: none; border-color: #ffb400; }"
     },
     {
       "name": "Franja de acero",
       "kind": "nav",
       "refersTo": "header-band",
       "description": "Encabezado con fecha y reloj en celdas, nombre y placa SALIR.",
-      "html": "<header class=\"ds-franja\"><span class=\"ds-celdas\"><span class=\"ds-c\">1</span><span class=\"ds-c\">9</span><span class=\"ds-c\">:</span><span class=\"ds-c\">5</span><span class=\"ds-c\">4</span></span><span class=\"ds-nombre\">REPARTIDOR UNO</span><button class=\"ds-placa\">SALIR</button></header>",
-      "css": ".ds-franja { display: flex; align-items: center; gap: 1rem; padding: 0.5rem 1rem; background: #9ea4ac; border-top: 2px solid #c3c8ce; border-bottom: 3px solid #5f656d; color: #0d0d0f; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; } .ds-celdas { display: inline-flex; gap: 0.07em; font-size: 1.15rem; font-weight: 600; line-height: 1; } .ds-c { display: inline-grid; place-items: center; width: 0.72em; height: 1.16em; border-radius: 0.07em; background: linear-gradient(180deg, #212125 0 50%, #19191c 50% 100%); color: #f2f2f2; } .ds-nombre { margin-left: auto; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.18em; } .ds-placa { min-height: 3rem; padding: 0 0.9rem; border: none; border-radius: 6px; background: #1b1b1e; color: #f2f2f2; font-family: inherit; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.14em; box-shadow: 0 1px 0 rgb(255 255 255 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.06); cursor: pointer; } .ds-placa:active { background: #0d0d0f; } .ds-placa:focus-visible { outline: 3px solid #ffb400; outline-offset: 3px; }"
+      "html": "<header class=\"ds-steel-band\"><span class=\"ds-cells\"><span class=\"ds-c\">1</span><span class=\"ds-c\">9</span><span class=\"ds-c\">:</span><span class=\"ds-c\">5</span><span class=\"ds-c\">4</span></span><span class=\"ds-name\">REPARTIDOR UNO</span><button class=\"ds-btn-plate\">SALIR</button></header>",
+      "css": ".ds-steel-band { display: flex; align-items: center; gap: 1rem; padding: 0.5rem 1rem; background: #9ea4ac; border-top: 2px solid #c3c8ce; border-bottom: 3px solid #5f656d; color: #0d0d0f; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; } .ds-cells { display: inline-flex; gap: 0.07em; font-size: 1.15rem; font-weight: 600; line-height: 1; } .ds-c { display: inline-grid; place-items: center; width: 0.72em; height: 1.16em; border-radius: 0.07em; background: linear-gradient(180deg, #212125 0 50%, #19191c 50% 100%); color: #f2f2f2; } .ds-name { margin-left: auto; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.18em; } .ds-btn-plate { min-height: 3rem; padding: 0 0.9rem; border: none; border-radius: 6px; background: #1b1b1e; color: #f2f2f2; font-family: inherit; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.14em; box-shadow: 0 1px 0 rgb(255 255 255 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.06); cursor: pointer; } .ds-btn-plate:active { background: #0d0d0f; } .ds-btn-plate:focus-visible { outline: 3px solid #ffb400; outline-offset: 3px; }"
     },
     {
       "name": "Celda de paleta",
       "kind": "custom",
       "refersTo": "flap-cell",
       "description": "Firma: cada carácter en su paleta con línea de corte; se voltea en cascada al cambiar.",
-      "html": "<div style=\"background:#111114;padding:20px;display:flex;gap:16px;align-items:end\"><span class=\"ds-flaps\"><span class=\"ds-flap ds-vacia\"> </span><span class=\"ds-flap\">1</span><span class=\"ds-flap\">9</span><span class=\"ds-flap\">.</span><span class=\"ds-flap ds-voltea\" style=\"--i:4\">5</span></span><span class=\"ds-rotulo\">KG</span></div>",
-      "css": ".ds-flaps { display: inline-flex; gap: 0.07em; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 4rem; line-height: 1; } .ds-flap { position: relative; display: inline-grid; place-items: center; width: 0.72em; height: 1.16em; border-radius: 0.07em; background: linear-gradient(180deg, #212125 0 50%, #19191c 50% 100%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 0.03em 0.06em rgb(0 0 0 / 0.7); color: #f2f2f2; } .ds-flap::after { content: ''; position: absolute; inset: calc(50% - 0.5px) 0 auto; height: 1px; background: rgb(0 0 0 / 0.85); } .ds-flap.ds-vacia { background: linear-gradient(180deg, #19191c 0 50%, #151517 50% 100%); } .ds-rotulo { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.18em; color: #b6bbc2; } .ds-voltea { animation: ds-voltear 460ms cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--i) * 55ms); } @keyframes ds-voltear { 0% { transform: perspective(6em) rotateX(-92deg); filter: brightness(1.8); } 55% { transform: perspective(6em) rotateX(14deg); } 100% { transform: none; filter: none; } } @media (prefers-reduced-motion: reduce) { .ds-voltea { animation: none; } }"
+      "html": "<div style=\"background:#111114;padding:20px;display:flex;gap:16px;align-items:end\"><span class=\"ds-flaps\"><span class=\"ds-flap ds-empty\"> </span><span class=\"ds-flap\">1</span><span class=\"ds-flap\">9</span><span class=\"ds-flap\">.</span><span class=\"ds-flap ds-flipping\" style=\"--i:4\">5</span></span><span class=\"ds-caption\">KG</span></div>",
+      "css": ".ds-flaps { display: inline-flex; gap: 0.07em; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 4rem; line-height: 1; } .ds-flap { position: relative; display: inline-grid; place-items: center; width: 0.72em; height: 1.16em; border-radius: 0.07em; background: linear-gradient(180deg, #212125 0 50%, #19191c 50% 100%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 0.03em 0.06em rgb(0 0 0 / 0.7); color: #f2f2f2; } .ds-flap::after { content: ''; position: absolute; inset: calc(50% - 0.5px) 0 auto; height: 1px; background: rgb(0 0 0 / 0.85); } .ds-flap.ds-empty { background: linear-gradient(180deg, #19191c 0 50%, #151517 50% 100%); } .ds-caption { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.18em; color: #b6bbc2; } .ds-flipping { animation: ds-flip 460ms cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--i) * 55ms); } @keyframes ds-flip { 0% { transform: perspective(6em) rotateX(-92deg); filter: brightness(1.8); } 55% { transform: perspective(6em) rotateX(14deg); } 100% { transform: none; filter: none; } } @media (prefers-reduced-motion: reduce) { .ds-flipping { animation: none; } }"
     },
     {
       "name": "Tecla de báscula",
       "kind": "button",
       "refersTo": "key",
       "description": "Tecla del teclado de kg: paleta grande que se enciende en ámbar al presionar.",
-      "html": "<div class=\"ds-teclado\"><button class=\"ds-tecla\">7</button><button class=\"ds-tecla\">8</button><button class=\"ds-tecla\">9</button><button class=\"ds-tecla ds-funcion\">½</button><button class=\"ds-tecla\">0</button><button class=\"ds-tecla ds-funcion\" aria-label=\"Borrar\"><svg viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"square\" stroke-linejoin=\"miter\"><path d=\"M9 5h11v14H9l-6-7z\"/><path d=\"M12.5 9.5l5 5M17.5 9.5l-5 5\"/></svg></button></div>",
-      "css": ".ds-teclado { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.45rem; padding: 16px; background: #111114; } .ds-tecla { position: relative; display: grid; place-items: center; min-height: 3.8rem; border: none; border-radius: 6px; background: linear-gradient(180deg, #222226 0 50%, #1a1a1d 50% 100%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.07), 0 2px 4px rgb(0 0 0 / 0.6); color: #f2f2f2; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 2.3rem; font-weight: 600; transition: transform 90ms ease-out, background 160ms ease-out, color 160ms ease-out; cursor: pointer; } .ds-tecla::after { content: ''; position: absolute; inset: calc(50% - 0.5px) 6px auto; height: 1px; background: rgb(0 0 0 / 0.8); } .ds-tecla.ds-funcion { color: #b6bbc2; } .ds-tecla:active { transform: translateY(1px); background: #ffb400; color: #0d0d0f; transition-duration: 0ms; } .ds-tecla:focus-visible { outline: 3px solid #ffb400; outline-offset: 3px; }"
+      "html": "<div class=\"ds-keypad\"><button class=\"ds-key\">7</button><button class=\"ds-key\">8</button><button class=\"ds-key\">9</button><button class=\"ds-key ds-fn\">½</button><button class=\"ds-key\">0</button><button class=\"ds-key ds-fn\" aria-label=\"Borrar\"><svg viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"square\" stroke-linejoin=\"miter\"><path d=\"M9 5h11v14H9l-6-7z\"/><path d=\"M12.5 9.5l5 5M17.5 9.5l-5 5\"/></svg></button></div>",
+      "css": ".ds-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.45rem; padding: 16px; background: #111114; } .ds-key { position: relative; display: grid; place-items: center; min-height: 3.8rem; border: none; border-radius: 6px; background: linear-gradient(180deg, #222226 0 50%, #1a1a1d 50% 100%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.07), 0 2px 4px rgb(0 0 0 / 0.6); color: #f2f2f2; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 2.3rem; font-weight: 600; transition: transform 90ms ease-out, background 160ms ease-out, color 160ms ease-out; cursor: pointer; } .ds-key::after { content: ''; position: absolute; inset: calc(50% - 0.5px) 6px auto; height: 1px; background: rgb(0 0 0 / 0.8); } .ds-key.ds-fn { color: #b6bbc2; } .ds-key:active { transform: translateY(1px); background: #ffb400; color: #0d0d0f; transition-duration: 0ms; } .ds-key:focus-visible { outline: 3px solid #ffb400; outline-offset: 3px; }"
     },
     {
       "name": "Renglón del tablero",
       "kind": "custom",
       "refersTo": "board-row-active",
       "description": "Renglón de parada con columnas fijas; activo en ámbar al corregir.",
-      "html": "<div style=\"background:#111114\"><div class=\"ds-renglon\"><span class=\"ds-num\">01</span><span class=\"ds-parada\">TIENDA DOÑA MARY</span><span class=\"ds-kg\">12.5</span></div><div class=\"ds-renglon ds-activo\"><span class=\"ds-num\">02</span><span class=\"ds-parada\">ABARROTES LUPITA</span><span class=\"ds-kg\">8</span></div></div>",
-      "css": ".ds-renglon { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr) auto; align-items: center; gap: 0.9rem; min-height: 3.5rem; padding: 0.35rem 0.9rem; border-bottom: 1px solid #222327; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; color: #f2f2f2; } .ds-num { color: #7d838c; font-size: 1.1rem; font-weight: 600; } .ds-parada { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1.45rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; } .ds-kg { font-size: 1.15rem; font-weight: 600; letter-spacing: 0.2em; } .ds-renglon.ds-activo { background: #3a2a00; box-shadow: inset 0 0 0 2px #ffb400; } .ds-activo .ds-parada, .ds-activo .ds-kg { color: #ffb400; }"
+      "html": "<div style=\"background:#111114\"><div class=\"ds-row\"><span class=\"ds-num\">01</span><span class=\"ds-stop\">TIENDA DOÑA MARY</span><span class=\"ds-kg\">12.5</span></div><div class=\"ds-row ds-active\"><span class=\"ds-num\">02</span><span class=\"ds-stop\">ABARROTES LUPITA</span><span class=\"ds-kg\">8</span></div></div>",
+      "css": ".ds-row { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr) auto; align-items: center; gap: 0.9rem; min-height: 3.5rem; padding: 0.35rem 0.9rem; border-bottom: 1px solid #222327; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; color: #f2f2f2; } .ds-num { color: #7d838c; font-size: 1.1rem; font-weight: 600; } .ds-stop { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1.45rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; } .ds-kg { font-size: 1.15rem; font-weight: 600; letter-spacing: 0.2em; } .ds-row.ds-active { background: #3a2a00; box-shadow: inset 0 0 0 2px #ffb400; } .ds-active .ds-stop, .ds-active .ds-kg { color: #ffb400; }"
     },
     {
       "name": "Alerta de error",
       "kind": "custom",
       "refersTo": "alert-error",
       "description": "Error en oración normal: nombra el problema y cómo seguir.",
-      "html": "<p class=\"ds-alerta\">No se pudo guardar. Revisa la señal e inténtalo otra vez.</p>",
-      "css": ".ds-alerta { margin: 0; padding: 0.75rem 1rem; border-radius: 6px; background: #3b1010; color: #ff4d4d; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 1.15rem; font-weight: 600; letter-spacing: 0.04em; }"
+      "html": "<p class=\"ds-error-alert\">No se pudo guardar. Revisa la señal e inténtalo otra vez.</p>",
+      "css": ".ds-error-alert { margin: 0; padding: 0.75rem 1rem; border-radius: 6px; background: #3b1010; color: #ff4d4d; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 1.15rem; font-weight: 600; letter-spacing: 0.04em; }"
     }
   ],
   "narrative": {
@@ -466,7 +466,7 @@
       },
       {
         "name": "The Relojes Blancos Rule",
-        "body": "Fecha y hora van en letra de paleta (tinta), en la franja y en la lista (la hora de cada parada va en acero). Los relojes no son estado.",
+        "body": "Fecha y hora van en letra de paleta (ink), en la franja y en la lista (la hora de cada parada va en acero). Los relojes no son estado.",
         "section": "colors"
       },
       {
