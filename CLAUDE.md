@@ -110,4 +110,7 @@ dirección están en `.impeccable/surfaces/`.
 3. Dashboard del admin (incluye alta de usuarios) — hecho
 4. Reporte diario PDF/CSV con detalle — hecho
 5. Pulido para tablet y despliegue en Netlify
+   - Pendiente para lanzar: llenar `owner` y `address` en `src/legal.ts` (aviso de privacidad
+     y términos en `/privacy` y `/terms`), poner `IN_DEVELOPMENT = false` (quita los avisos de
+     "en prueba") y borrar las cuentas `prueba_*` con sus rutas.
 6. (después) Offline con Dexie

@@ -3,8 +3,10 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import PasswordField from '@/components/PasswordField.vue'
+import DevNotice from '@/components/DevNotice.vue'
 import StrokeIcon from '@/components/StrokeIcon.vue'
 import { useClock } from '@/composables/clock'
+import { IN_DEVELOPMENT } from '@/legal'
 import { homeForRole } from '@/router'
 import { useAuthStore } from '@/stores/auth'
 import { errorMessage } from '@/utils/errors'
@@ -45,10 +47,24 @@ async function submit() {
         <div class="flex flex-col gap-3">
           <h1 class="text-3xl leading-tight font-extrabold sm:text-4xl">Reparto de Tortillas</h1>
           <p class="text-lg text-ink-2">Entra con el usuario que te dio el encargado.</p>
+          <DevNotice v-if="IN_DEVELOPMENT">
+            Esta aplicación está en pruebas y todavía no se usa de forma oficial. Los datos que se
+            capturan son de prueba y pueden borrarse.
+          </DevNotice>
         </div>
-        <p class="text-ink-3 tabular-nums">
-          Hora en Colima <span class="ml-1 font-bold text-ink">{{ time }}</span>
-        </p>
+        <div class="flex flex-col gap-2">
+          <p class="text-ink-3 tabular-nums">
+            Hora en Colima <span class="ml-1 font-bold text-ink">{{ time }}</span>
+          </p>
+          <nav class="flex flex-wrap gap-2" aria-label="Documentos legales">
+            <RouterLink :to="{ name: 'privacy' }" class="btn-secondary quiet"
+              >Aviso de privacidad</RouterLink
+            >
+            <RouterLink :to="{ name: 'terms' }" class="btn-secondary quiet"
+              >Términos de uso</RouterLink
+            >
+          </nav>
+        </div>
       </div>
 
       <form class="flex flex-col gap-4" novalidate @submit.prevent="submit">

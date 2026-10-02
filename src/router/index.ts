@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/auth'
 declare module 'vue-router' {
   interface RouteMeta {
     public?: boolean
+    open?: boolean
     role?: Profile['role']
   }
 }
@@ -22,6 +23,18 @@ const router = createRouter({
       name: 'login',
       component: () => import('@/views/LoginView.vue'),
       meta: { public: true },
+    },
+    {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('@/views/PrivacyView.vue'),
+      meta: { open: true },
+    },
+    {
+      path: '/terms',
+      name: 'terms',
+      component: () => import('@/views/TermsView.vue'),
+      meta: { open: true },
     },
     {
       path: '/route',
@@ -47,6 +60,7 @@ const router = createRouter({
 
 // UX only: the real access control is RLS in the database.
 router.beforeEach(async (to) => {
+  if (to.meta.open) return true
   const auth = useAuthStore()
   await auth.init()
   const profile = auth.profile

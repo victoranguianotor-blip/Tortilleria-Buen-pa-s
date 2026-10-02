@@ -3,6 +3,7 @@ import { computed } from 'vue'
 
 import StrokeIcon from '@/components/StrokeIcon.vue'
 import { useClock } from '@/composables/clock'
+import { IN_DEVELOPMENT } from '@/legal'
 import { formatShortDate } from '@/utils/date'
 
 const props = defineProps<{ date?: string | null; name: string }>()
@@ -22,6 +23,13 @@ const dateText = computed(() => (props.date ? formatShortDate(props.date) : ''))
       <span>{{ time }}</span>
     </p>
     <slot />
+    <span
+      v-if="IN_DEVELOPMENT"
+      class="dev-tag"
+      title="Versión en desarrollo: todavía no se usa de forma oficial"
+    >
+      En prueba
+    </span>
     <p class="ml-auto hidden truncate font-semibold text-ink-2 sm:block">{{ name }}</p>
     <button
       type="button"
@@ -34,3 +42,14 @@ const dateText = computed(() => (props.date ? formatShortDate(props.date) : ''))
     </button>
   </header>
 </template>
+
+<style scoped>
+/* Plain text, no outline: anything outlined in this bar is a button. */
+.dev-tag {
+  flex-shrink: 0;
+  color: var(--color-signal);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+</style>
