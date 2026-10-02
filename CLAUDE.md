@@ -64,6 +64,13 @@ Supabase se administra con el **MCP de Supabase** (scope local, proyecto `gmbixc
   (suma en centésimas para evitar errores de punto flotante). Los kg restantes pueden ser negativos:
   la sobre-entrega se advierte, no se bloquea.
 
+## Diseño
+
+Mundo visual "tablero de salidas" (paletas de aeropuerto/terminal). `PRODUCT.md` guarda el
+contexto de producto y `DESIGN.md` los tokens y reglas visuales; respétalos al agregar pantallas.
+`src/components/FlapText.vue` es la pieza central (cifras en celdas que se voltean). El brief y el
+contrato de dirección de la pantalla del repartidor están en `.impeccable/surfaces/`.
+
 ## Convenciones
 
 - Textos de la interfaz en español (es-MX); nombres de dominio en español (`ruta`, `entrega`,
@@ -77,7 +84,7 @@ Supabase se administra con el **MCP de Supabase** (scope local, proyecto `gmbixc
 ## Fases
 
 1. Setup, PWA y Supabase (tablas, auth, RLS, Edge Function `admin-usuarios`) — hecho
-2. Login y pantalla del repartidor
+2. Login y pantalla del repartidor — hecho
 3. Dashboard del admin (incluye alta de usuarios)
 4. Reporte diario PDF/CSV con detalle
 5. Pulido para tablet y despliegue en Netlify
