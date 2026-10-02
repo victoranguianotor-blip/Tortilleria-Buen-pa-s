@@ -1,307 +1,323 @@
 ---
 name: Reparto de Tortillas
-description: Tablero de salidas para el repartidor; paletas negras, letra blanca, ámbar de lámpara y marco de acero.
+description: Señalamiento vial para el repartidor; lámina oscura plana, letra blanca de carretera y un solo amarillo de señal.
 colors:
-  flap: "#0d0d0f"
-  board: "#111114"
-  flap-2: "#1b1b1e"
-  flap-3: "#26262b"
-  ink: "#f2f2f2"
-  amber: "#ffb400"
-  amber-dark: "#3a2a00"
-  danger: "#ff4d4d"
-  danger-dark: "#3b1010"
-  steel: "#b6bbc2"
-  steel-2: "#7d838c"
-  steel-3: "#3a3d42"
-  steel-band: "#9ea4ac"
-  steel-light: "#a7adb5"
-  steel-shadow: "#5f656d"
-  rule: "#222327"
+  ground: "#101214"
+  panel: "#1a1d21"
+  raised: "#24282d"
+  line: "#343a41"
+  ink: "#ffffff"
+  ink-2: "#c4cbd3"
+  ink-3: "#9aa3ad"
+  signal: "#ffd000"
+  signal-ink: "#101214"
+  signal-soft: "#332b05"
+  go: "#3ddc84"
+  danger: "#ff5a4a"
+  danger-soft: "#3a1714"
 typography:
   display:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "clamp(4rem, 7vw + 1rem, 7rem)"
-    fontWeight: 600
+    fontFamily: "Overpass, system-ui, sans-serif"
+    fontSize: "clamp(2.75rem, 4vw + 1rem, 4.5rem)"
+    fontWeight: 800
     lineHeight: 1
+    letterSpacing: "-0.01em"
+    fontFeature: "tnum"
   headline:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "clamp(3rem, 5vw + 1rem, 5.5rem)"
-    fontWeight: 600
+    fontFamily: "Overpass, system-ui, sans-serif"
+    fontSize: "2.25rem"
+    fontWeight: 800
     lineHeight: 1
+    letterSpacing: "-0.01em"
+    fontFeature: "tnum"
+  figure:
+    fontFamily: "Overpass, system-ui, sans-serif"
+    fontSize: "1.5rem"
+    fontWeight: 800
+    lineHeight: 1
+    letterSpacing: "-0.01em"
+    fontFeature: "tnum"
   title:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "clamp(2.4rem, 4.4vw, 3.4rem)"
-    fontWeight: 600
-    lineHeight: 1
-  title-md:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "clamp(1.3rem, 1.2vw + 0.9rem, 1.7rem)"
-    fontWeight: 600
-    lineHeight: 1
-  flap-sm:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "1.15rem"
-    fontWeight: 600
-    lineHeight: 1
+    fontFamily: "Overpass, system-ui, sans-serif"
+    fontSize: "1.25rem"
+    fontWeight: 800
+    lineHeight: 1.3
   stop-name:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "1.45rem"
+    fontFamily: "Overpass, system-ui, sans-serif"
+    fontSize: "1.125rem"
     fontWeight: 600
-    letterSpacing: "0.08em"
+    lineHeight: 1.3
   body:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "1.15rem"
-    fontWeight: 500
-    letterSpacing: "0.04em"
+    fontFamily: "Overpass, system-ui, sans-serif"
+    fontSize: "1rem"
+    fontWeight: 400
+    lineHeight: 1.4
   button:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "1.6rem"
-    fontWeight: 700
-    letterSpacing: "0.14em"
+    fontFamily: "Overpass, system-ui, sans-serif"
+    fontSize: "1.125rem"
+    fontWeight: 800
+    lineHeight: 1
   button-sm:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "1.1rem"
-    fontWeight: 600
-    letterSpacing: "0.14em"
+    fontFamily: "Overpass, system-ui, sans-serif"
+    fontSize: "1rem"
+    fontWeight: 700
+    lineHeight: 1
+  key:
+    fontFamily: "Overpass, system-ui, sans-serif"
+    fontSize: "1.75rem"
+    fontWeight: 700
+    lineHeight: 1
+    fontFeature: "tnum"
   label:
-    fontFamily: "Barlow Condensed, Arial Narrow, sans-serif"
-    fontSize: "0.78rem"
+    fontFamily: "Overpass, system-ui, sans-serif"
+    fontSize: "0.8125rem"
     fontWeight: 600
-    letterSpacing: "0.18em"
+    lineHeight: 1.2
 rounded:
-  flap: "0.07em"
   control: "6px"
-  frame: "0.5rem"
+  pill: "999px"
 spacing:
-  keypad: "0.45rem"
+  keypad: "0.5rem"
   sm: "0.75rem"
   md: "1rem"
-  lg: "1.25rem"
-  celda-gap: "0.07em"
+  row-x: "0.9rem"
 components:
   button-primary:
-    backgroundColor: "{colors.amber}"
-    textColor: "{colors.flap}"
+    backgroundColor: "{colors.signal}"
+    textColor: "{colors.signal-ink}"
     typography: "{typography.button}"
     rounded: "{rounded.control}"
-    padding: "0 1.6rem"
-    height: "clamp(3.6rem, 8.5vh, 4.2rem)"
+    padding: "0 1.25rem"
+    height: "3.5rem"
   button-primary-disabled:
-    backgroundColor: "{colors.steel-3}"
-    textColor: "{colors.steel-2}"
+    backgroundColor: "{colors.raised}"
+    textColor: "{colors.ink-3}"
   button-secondary:
     backgroundColor: "transparent"
-    textColor: "{colors.steel}"
-    typography: "{typography.button-sm}"
-    rounded: "{rounded.control}"
-    padding: "0 1.2rem"
-    height: "3.4rem"
-  button-secondary-danger:
-    textColor: "{colors.danger}"
-  button-plate:
-    backgroundColor: "{colors.flap-2}"
     textColor: "{colors.ink}"
     typography: "{typography.button-sm}"
-    rounded: "{rounded.control}"
-    padding: "0 0.9rem"
-    height: "3rem"
-  input:
-    backgroundColor: "{colors.flap-2}"
-    textColor: "{colors.ink}"
     rounded: "{rounded.control}"
     padding: "0 1rem"
-    height: "3.6rem"
-  key:
-    backgroundColor: "{colors.flap-2}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.control}"
-    height: "clamp(3.2rem, 7.5vh, 4.1rem)"
-  key-active:
-    backgroundColor: "{colors.amber}"
-    textColor: "{colors.flap}"
-  flap-cell:
-    backgroundColor: "{colors.flap-2}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.flap}"
-    width: "0.72em"
-    height: "1.16em"
-  board:
-    backgroundColor: "{colors.board}"
-    rounded: "{rounded.frame}"
-  header-band:
-    backgroundColor: "{colors.steel-band}"
-    textColor: "{colors.flap}"
-  alert-error:
-    backgroundColor: "{colors.danger-dark}"
+    height: "3rem"
+  button-secondary-active:
+    backgroundColor: "{colors.raised}"
+  button-secondary-danger:
     textColor: "{colors.danger}"
+  button-secondary-quiet:
+    textColor: "{colors.ink-2}"
+  input:
+    backgroundColor: "{colors.raised}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.control}"
-    padding: "0.75rem 1rem"
-  board-row-active:
-    backgroundColor: "{colors.amber-dark}"
-    textColor: "{colors.amber}"
+    padding: "0 0.9rem"
+    height: "3.25rem"
+  key:
+    backgroundColor: "{colors.raised}"
+    textColor: "{colors.ink}"
+    typography: "{typography.key}"
+    rounded: "{rounded.control}"
+    height: "clamp(3rem, 7vh, 3.75rem)"
+  key-active:
+    backgroundColor: "{colors.signal}"
+    textColor: "{colors.signal-ink}"
+  panel:
+    backgroundColor: "{colors.panel}"
+    rounded: "{rounded.control}"
+  topbar:
+    backgroundColor: "{colors.panel}"
+    textColor: "{colors.ink}"
+    height: "3.5rem"
+  list-row:
+    textColor: "{colors.ink}"
+    padding: "0.3rem 0.9rem"
+    height: "3.25rem"
+  list-row-selected:
+    backgroundColor: "{colors.signal-soft}"
+  kg-readout:
+    backgroundColor: "{colors.ground}"
+    rounded: "{rounded.control}"
+    padding: "0.625rem 1rem"
+  status-pill:
+    textColor: "{colors.ink-2}"
+    rounded: "{rounded.pill}"
+    padding: "0 0.7rem"
+    height: "2rem"
+  status-pill-go:
+    textColor: "{colors.go}"
+  status-pill-danger:
+    textColor: "{colors.danger}"
+  alert-error:
+    backgroundColor: "{colors.danger-soft}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.control}"
+    padding: "0.7rem 0.9rem"
 ---
 
 # Design System: Reparto de Tortillas
 
 ## Overview
 
-**Creative North Star: "El tablero de salidas"**
+**Creative North Star: "Señalamiento vial"**
 
-La ruta del día se lee como el tablero de una terminal: un marco de acero que encierra un campo de paletas negras, renglones con regla y columnas fijas, y cifras que se voltean carácter por carácter cuando cambian. Todo está hecho para leerse de un vistazo desde una tablet montada en el vehículo: cifras enormes, una sola familia condensada en mayúsculas con espaciado amplio y muy pocos colores, cada uno con un trabajo fijo.
+La app se lee como un letrero de carretera: lámina plana oscura, letra blanca de trazo carretero y un solo amarillo preventivo. Está hecha para leerse a distancia y con sol, desde una tablet montada en el vehículo: cifras grandes en peso 800 con dígitos tabulares, pocos colores con un trabajo fijo cada uno, y nada que brille, se levante o se mueva sin motivo.
 
-La densidad es de tablero, no de formulario: cada pantalla cabe en un viewport sin scroll de página en tablet, y lo que crece (la lista de paradas) se desplaza dentro de su propio marco. El fondo es oscuro por decisión explícita del usuario, que lo eligió por encima del riesgo de legibilidad bajo sol directo; el contraste se gana con letra casi blanca, cifras grandes y el rojo aclarado.
+La estructura es de consola, no de tarjetas: paneles de lámina separados por costuras de 1px, renglones con costura entre ellos y cifras en celdas de una rejilla. La jerarquía sale del peso y del tamaño dentro de una escala corta, no de colores ni de una segunda familia. Todo el texto va en oración normal. Las acciones destructivas quedan apartadas y piden un segundo toque.
 
-Se rechaza la app de captura típica: tarjetas blancas, formulario genérico, botón azul.
+Se rechazan las tarjetas grises con acento azul, cualquier relieve, brillo o sombra, y la animación decorativa.
 
 **Key Characteristics:**
-- Paletas negras con línea de corte horizontal para cifras, horas y rótulos cortos fijos.
-- Una sola sans condensada (Barlow Condensed), en mayúsculas y con tracking amplio.
-- Ámbar como lámpara encendida: estado activo, advertencia y acción principal, nada más.
-- Acero en tonos planos, con la luz arriba, para marcos, franja de encabezado y etiquetas.
-- Cascada de volteo como única animación firma; instantánea con reduced motion.
-- Confirmación destructiva con doble toque, sin modales.
+- Fondo de asfalto con paneles de lámina un paso más claros y costuras de 1px.
+- Una sola familia, Overpass (heredera de Highway Gothic), autoalojada en 400, 600, 700 y 800.
+- Cifras en peso 800 con dígitos tabulares; texto siempre en oración normal.
+- Amarillo de señal solo para la acción principal, foco, selección y el destello de advertencia.
+- Verde informativo para lo que está vivo; rojo para sobre-entrega y lo destructivo.
+- Un solo momento de movimiento: el destello amarillo del restante y del renglón nuevo.
+- Plano: esquinas de 6px, sin sombras proyectadas.
 
 ## Colors
 
-Negro de paleta casi total, letra blanca, una lámpara ámbar y un rojo de cancelado; el acero pone el marco.
+Asfalto, lámina y letra blanca sin medias tintas; un amarillo de señal, un verde informativo y un rojo de alto.
 
 ### Primary
-- **Ámbar de lámpara** (amber): la acción principal (REGISTRAR, ENTRAR), el estado activo (lámpara EN RUTA, renglón o cifra en corrección, tecla presionada, kg tecleados), el anillo de foco, el cursor y la selección de texto. Su fondo apagado, **Ámbar apagado** (amber-dark), rellena el renglón o la cifra activos.
+- **Amarillo de señal** (signal): la acción principal (Registrar parada, Entrar, Iniciar ruta), el anillo de foco, el cursor, la selección de texto, la tecla presionada, el renglón o la cifra que se está corrigiendo, la opción elegida y la sección actual del menú (subrayado de 2px). También es el destello del restante y del renglón nuevo, y advierte en el resumen del encargado que la fecha vista no es hoy. Sobre amarillo, el texto va en **Asfalto de señal** (signal-ink). Su fondo apagado, **Amarillo apagado** (signal-soft), rellena el renglón seleccionado, la cifra en corrección y la opción elegida, siempre con contorno interior amarillo de 1px.
 
 ### Secondary
-- **Rojo de cancelado** (danger): solo sobre-entrega (QUEDAN y REGRESA en negativo, aviso, foco de la lámpara) y acciones de borrar o cerrar armadas. **Rojo apagado** (danger-dark) es el fondo de la alerta de error. Se usa #FF4D4D y no el #D32F2F del contrato porque este último no alcanzaba contraste de texto sobre el negro de paleta.
+- **Verde de paso** (go): solo "En ruta", en la píldora de estado y en el punto del tablero de repartidores. Nunca es acción, botón, cuenta activa ni aviso de confirmación (esos van en letra blanca).
+
+### Tertiary
+- **Rojo de alto** (danger): sobre-entrega (restante y "Regresa" en negativo, aviso "Se registra igual", píldora "Sobre-entrega"), botones destructivos (Borrar, el segundo toque de Cerrar ruta), campos inválidos y pistas de validación. **Rojo apagado** (danger-soft) es el fondo de la alerta de error, con borde rojo y texto blanco.
 
 ### Neutral
-- **Negro de paleta** (flap): fondo de página y texto sobre ámbar o sobre la franja de acero.
-- **Campo del tablero** (board): el interior de cada marco, un paso más claro que la página.
-- **Sombra de paleta** (flap-2): fondo de campos de texto, placas y celdas; flap-3 queda como tono intermedio.
-- **Letra de paleta** (ink): todo el texto principal y todas las cifras, incluidos los relojes.
-- **Acero claro** (steel): rótulos, botón secundario, teclas de función, avisos neutros.
-- **Acero medio** (steel-2): número de renglón, placeholder, pistas, texto deshabilitado.
-- **Acero oscuro** (steel-3): bordes de campos, divisiones entre cifras, regla del encabezado de la lista, fondo del botón deshabilitado.
-- **Franja de acero** (steel-band) con **luz** (steel-light) y **sombra** (steel-shadow): la franja de encabezado y el bisel del marco.
-- **Regla** (rule): línea entre renglones de paradas.
+- **Asfalto** (ground): fondo de página y la ventanilla de lectura de kg.
+- **Lámina** (panel): paneles y banda superior.
+- **Lámina alzada** (raised): campos, teclas, botón primario deshabilitado y el fondo de respuesta al tocar.
+- **Costura** (line): todos los bordes de 1px: paneles, campos, teclas, renglones, divisiones entre cifras.
+- **Blanco carretero** (ink): texto principal y todas las cifras, incluido el reloj.
+- **Gris claro** (ink-2): texto secundario: hora de la parada, nombre en la banda, fecha, unidades "kg", avisos neutros, botón discreto, teclas de función.
+- **Gris rótulo** (ink-3): rótulos de cifras y columnas, número de renglón, placeholder, pistas, texto deshabilitado.
 
 ### Named Rules
-**The Lámpara Rule.** El ámbar significa "encendido": estado activo, advertencia o la acción principal. Nunca decora, nunca colorea un reloj ni un rótulo en reposo.
+**The Una Señal Rule.** El amarillo significa "actúa aquí" o "mira esto ahora": acción principal, foco, selección y advertencia. Nunca decora, nunca colorea un rótulo, un título ni un reloj en reposo.
 
-**The Cancelado Rule.** El rojo aparece solo para sobre-entrega y para acciones destructivas armadas. La sobre-entrega es la única advertencia que pasa de ámbar a rojo; se advierte, no se bloquea.
+**The Sin Medias Tintas Rule.** Los textos son blanco, gris claro o gris rótulo; no hay gris medio. Si un texto no alcanza a leerse en gris rótulo, sube a gris claro, no baja.
 
-**The Relojes Blancos Rule.** Fecha y hora van en letra de paleta (ink), en la franja y en la lista (la hora de cada parada va en acero). Los relojes no son estado.
+**The Alto Rule.** El rojo es solo para sobre-entrega y para lo que borra o cierra. La sobre-entrega se advierte, no se bloquea.
 
 ## Typography
 
-**Display Font:** Barlow Condensed (con Arial Narrow, sans-serif)
-**Body Font:** Barlow Condensed (misma familia; 500, 600 y 700)
+**Display Font:** Overpass (con system-ui, sans-serif)
+**Body Font:** Overpass (misma familia; 400, 600, 700 y 800, autoalojada vía @fontsource)
 
-**Character:** Una sola condensada de rótulo de terminal. La jerarquía sale del tamaño, el peso y la celda, no de un segundo tipo. La raíz es de 18px para que todo en rem crezca para la tablet.
+**Character:** Una sola grotesca de señalamiento. La jerarquía sale del peso (800 para cifras y títulos, 600–700 para texto de interfaz) y de una escala corta. La raíz es de 16px.
 
 ### Hierarchy
-- **Display** (600, clamp(4rem, 7vw + 1rem, 7rem), 1; 3.6rem en tablet de pie): solo los kg que QUEDAN, en celdas.
-- **Headline** (600, clamp(3rem, 5vw + 1rem, 5.5rem), 1): la marca del login en celdas.
-- **Title** (600, clamp(2.4rem, 4.4vw, 3.4rem), 1): lectura de kg tecleados, cifras del cierre, estados de carga.
-- **Title md** (600, clamp(1.3rem, 1.2vw + 0.9rem, 1.7rem), 1): SALIÓ / ENTREGADO / PARADAS, título del panel, reloj del login.
-- **Flap sm** (600, 1.15rem, 1): reloj de la franja, hora y kg de cada renglón, lámpara.
-- **Parada** (600, 1.45rem, 0.08em, mayúsculas): el nombre de la parada como texto plano.
-- **Body** (500, base 18px, 0.04em): texto corrido y mensajes; los avisos van en 600, 1.15rem, 0.1em, mayúsculas.
-- **Button** (700, 1.6rem, 0.14em, mayúsculas) y **Button sm** (600, 1.1rem, 0.14em, mayúsculas).
-- **Label** (600, 0.78rem, 0.18em, mayúsculas, acero): el rótulo pintado en el marco que nombra una cifra o una columna.
+- **Display** (800, clamp(2.75rem, 4vw + 1rem, 4.5rem), 1, tabular; 3.25rem en tablet de pie): solo la cifra de "Quedan".
+- **Headline** (800, 2.25rem, 1, tabular): lectura de kg tecleados. El título del login usa 800 en 1.875–2.25rem con interlínea ajustada.
+- **Figure** (800, 1.5rem, 1, tabular): Salió / Entregado / Paradas, cifras del cierre y del detalle del encargado.
+- **Title** (800, 1.25rem): título del panel de captura ("Parada 5", "Carga de hoy", nombre del repartidor).
+- **Stop name** (600, 1.125rem): nombre de la parada o del repartidor en un renglón; se recorta con puntos suspensivos.
+- **Body** (400, 1rem, 1.4): texto corrido y mensajes; avisos en 600.
+- **Button** (800, 1.125rem) y **Button sm** (700, 1rem).
+- **Key** (700, 1.75rem, tabular): dígitos del teclado; ½ y borrar en 1.5rem gris claro.
+- **Label** (600, 0.8125rem, gris rótulo, oración normal): el rótulo que nombra una cifra, un campo o una columna.
 
 ### Named Rules
-**The Celda Rule.** Las celdas de paleta son para números, horas y rótulos cortos fijos. El texto libre (nombres de parada de hasta 120 caracteres) va en mayúsculas planas con tracking, nunca en celdas.
+**The Cifra Tabular Rule.** Toda cifra de kg, hora o conteo usa dígitos tabulares; las cifras protagonistas van en peso 800 con -0.01em.
 
-**The Mayúsculas Rule.** Todo texto corto de interfaz va en mayúsculas con tracking. La excepción es la alerta de error: conserva mayúsculas y minúsculas de oración para que un mensaje completo se lea bien.
+**The Oración Rule.** Todo texto va en oración normal: botones, rótulos, encabezados de columna, estados. Sin mayúsculas sostenidas ni tracking abierto.
 
 ## Layout
 
-La página es negro de paleta; el contenido vive dentro de marcos de acero cuyo campo es un tono más claro. Arriba, una franja de acero de lado a lado con fecha y reloj en celdas, el nombre y SALIR.
+La página es asfalto; el contenido vive en paneles de lámina. Arriba, una banda delgada (3.5rem) de lado a lado con fecha y hora, el nombre y Salir; en el encargado suma el menú de secciones.
 
-- **Tablet horizontal** (`wide`: ancho ≥ 960px y landscape): dos columnas, tablero 1.3fr y panel de captura 1fr, separación 1rem, sin scroll de página; el panel se desplaza por dentro si hace falta.
-- **Tablet de pie** (`tall`: portrait, ancho ≥ 700px, alto ≥ 1000px): una sola columna que no hace scroll de página. El tablero toma el espacio sobrante y la lista de paradas se desplaza por dentro con scroll-snap (cada renglón ajusta al final); el título del panel y la lectura de kg comparten fila y las teclas ceden altura.
-- **Celular** (≤ 520px): columna con scroll de página; la columna HORA desaparece para dejarle ancho al nombre de la parada.
-- **Ritmo:** separaciones de 0.75rem (sm) y 1rem (md), 1.25rem en formularios; el teclado usa 0.45rem. Renglones de 3.5rem de alto mínimo (3rem en tablet de pie) con columnas fijas: número, hora, parada, kg.
-- **Área táctil:** nada tocable mide menos de 48px (3rem con raíz de 18px).
+- **Tablet horizontal** (`wide`: ancho ≥ 960px y landscape): dos columnas, tablero 1.3fr y captura 1fr, separación 0.75rem, sin scroll de página; la lista y el panel de captura se desplazan por dentro.
+- **Tablet de pie** (`tall`: portrait, ancho ≥ 700px, alto ≥ 1000px): una columna sin scroll de página. El tablero toma el espacio sobrante y la lista se desplaza por dentro; el título del panel y la lectura de kg comparten fila, las teclas bajan a 3.25rem y los renglones a 3rem.
+- **Celular**: columna con scroll de página. La lista de paradas se limita a 20rem de alto (mín. 16rem) y se desplaza por dentro para que la captura quede alcanzable; ≤ 520px desaparece la columna Hora y ≤ 640px el tablero de repartidores oculta Salió y Entregó.
+- **Ritmo:** 0.75rem entre paneles y en el margen de página, 1rem de relleno de panel y entre bloques de captura (0.75rem en tablet), 0.5rem entre teclas. Renglones de 3.25rem con relleno lateral de 0.9rem y columnas fijas (#, hora, parada, kg).
+- **Área táctil:** nada tocable mide menos de 48px.
 
 La parada más reciente siempre queda a la vista: la lista baja al final cuando entra un renglón.
 
 ## Elevation & Depth
 
-El sistema es plano con dos materiales. El acero se resuelve en tonos planos con la luz arriba (borde superior más claro, inferior más oscuro); no hay relieve CSS ni remaches. Las paletas llevan su propio material: mitad superior un poco más clara que la inferior, línea de corte negra y un filo de luz de 1px. La única sombra proyectada es la del marco sobre la página y el halo ámbar del botón principal.
-
-### Shadow Vocabulary
-- **Marco** (`box-shadow: inset 0 0 0 1px #000, 0 10px 30px -12px rgb(0 0 0 / 0.8)`): el tablero se asienta sobre la página.
-- **Celda** (`box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 0.03em 0.06em rgb(0 0 0 / 0.7)`): cada paleta.
-- **Tecla** (`box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.07), 0 2px 4px rgb(0 0 0 / 0.6)`): teclas del teclado de báscula.
-- **Placa** (`box-shadow: 0 1px 0 rgb(255 255 255 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.06)`): botón oscuro sobre la franja de acero.
-- **Lámpara encendida** (`box-shadow: 0 6px 18px -8px rgb(255 180 0 / 0.55)`): halo del botón ámbar; el foco de la lámpara de estado brilla con `0 0 10px 1px` en ámbar o rojo al 60%.
+El sistema es plano. La profundidad sale del tono (asfalto, lámina, lámina alzada) y de las costuras de 1px, nunca de sombras proyectadas. Los únicos `box-shadow` son contornos interiores de 1px en amarillo (campo enfocado, renglón o cifra seleccionados) y el subrayado interior de 2px de la sección actual; son trazos, no elevación.
 
 ### Named Rules
-**The Acero Plano Rule.** El acero es color, no relieve: bordes de tono con la luz arriba y la franja de encabezado. Sin degradados metálicos, sin biseles en relieve, sin remaches.
+**The Lámina Plana Rule.** Sin sombras proyectadas, degradados, brillos ni relieves. Un nivel se distingue por su tono y su costura.
 
 ## Shapes
 
-Esquinas apenas suavizadas, como piezas troqueladas: 6px en controles, campos, placas, teclas y alertas; 0.5rem en los marcos; 0.07em en cada paleta. El bisel del marco es un borde de 5px con cuatro tonos de acero (claro arriba, medio a los lados, oscuro abajo). La línea de corte horizontal a media altura es la firma de forma: aparece en cada celda y en cada tecla. Los iconos son de trazo propio, 2.2px, extremos y uniones cuadrados, sin rellenos.
+Esquinas apenas suavizadas de 6px en paneles, campos, teclas, botones, alertas y la ventanilla de kg. Todos los bordes son costuras de 1px. La única forma redonda es la de los indicadores de estado: la píldora de estado y su punto, y el punto del tablero de repartidores. Los iconos son de trazo propio, 2.2px, extremos y uniones cuadrados, sin relleno, en 1em.
 
 ## Components
 
 ### Buttons
-Interruptores de tablero: grandes, en mayúsculas, sin adornos.
-- **Shape:** esquinas troqueladas (6px).
-- **Primary (lámpara):** ámbar con texto negro de paleta, 700 en mayúsculas, alto clamp(3.6rem, 8.5vh, 4.2rem), una flecha de trazo al final. Al presionar baja 1px y se oscurece (brightness 0.92) en 120ms. Deshabilitado: acero oscuro con texto acero medio y sin halo.
-- **Secondary (steel):** contorno de 2px acero oscuro, texto acero claro; al tocar el borde pasa a acero medio y el texto a tinta (160ms). La variante de peligro pone borde y texto en rojo.
-- **Placa:** botón oscuro con filo de luz sobre la franja de acero (SALIR); al presionar se hunde a negro de paleta.
-- **Focus:** anillo ámbar de 3px con 3px de separación en todo lo enfocable.
+Interruptores de lámina: grandes, en oración normal, sin adornos.
+- **Shape:** esquinas de 6px.
+- **Primary:** amarillo con texto asfalto, 800 en 1.125rem, alto 3.5rem, a todo lo ancho en la captura, con flecha de trazo al final. Al presionar se oscurece (brightness 0.88, 120ms). Deshabilitado: lámina alzada con texto gris rótulo.
+- **Secondary:** costura de 1px, texto blanco 700, alto 3rem; al tocar se rellena de lámina alzada (140ms).
+- **Danger:** borde y texto rojos (Borrar, Cerrar ruta armada).
+- **Quiet:** sin borde, texto gris claro (Salir, Cerrar ruta en reposo, flechas de día).
+- **Focus:** anillo amarillo de 3px con 2px de separación en todo lo enfocable.
+
+### Chips
+- **Píldora de estado:** píldora redonda de 2rem con punto y texto 700. "En ruta" en verde, "Sobre-entrega" en rojo, "Cerrada" / "Sin iniciar" / "Activo" / "Desactivado" en gris claro con costura.
+- **Opción de selección** (rol al dar de alta): placa de 3rem con costura; la elegida se enciende con borde amarillo y fondo amarillo apagado.
+
+### Cards / Containers
+- **Corner Style:** 6px.
+- **Background:** lámina sobre asfalto.
+- **Shadow Strategy:** ninguna (ver Elevation & Depth).
+- **Border:** costura de 1px.
+- **Internal Padding:** 1rem; las cifras y listas llegan al borde del panel, separadas por costuras.
 
 ### Inputs / Fields
-- **Style:** celda del tablero: sombra de paleta, borde de 2px acero oscuro, 6px, alto 3.6rem, texto 1.5rem 600. El nombre de parada se teclea en mayúsculas; el placeholder va en acero medio.
-- **Focus:** el borde pasa a ámbar en 160ms; el cursor es ámbar.
-- **Error:** la alerta de error (fondo rojo apagado, texto rojo, 600 en 1.15rem, oración normal) va bajo los campos y nombra el problema y cómo seguir.
+- **Style:** lámina alzada, costura de 1px, 6px, alto 3.25rem, texto 1.125rem 600; placeholder en gris rótulo 400.
+- **Focus:** el borde pasa a amarillo con contorno interior de 1px (140ms); cursor amarillo.
+- **Error / Disabled:** campo inválido con borde rojo. La alerta de error (rojo apagado, borde rojo, texto blanco 600) va bajo los campos y nombra el problema y cómo seguir.
 
 ### Navigation
-- **Franja de acero:** banda gris acero con luz arriba (2px) y sombra abajo (3px); fecha y reloj en celdas pequeñas en tinta, nombre en rótulo negro, placa SALIR. En celular el nombre se oculta y SALIR queda solo con su icono.
+- **Banda superior:** lámina con costura inferior; fecha en gris claro y hora en blanco 700 tabular, nombre en gris claro 600, Salir discreto (en celular solo su icono).
+- **Secciones del encargado** (Rutas, Usuarios): enlaces de 3rem en gris claro 700; la actual se rellena de lámina alzada, va en blanco y lleva subrayado interior amarillo de 2px.
 
-### Tablero de paradas
-- Encabezado de rótulos (#, HORA, PARADA, KG) sobre regla acero oscuro; renglones de alto fijo separados por la regla.
-- Número en acero medio con dos dígitos, hora en celdas acero, nombre en mayúsculas planas, kg en 5 celdas alineadas a la derecha.
-- El renglón tocado para corregir se enciende: fondo ámbar apagado, contorno interior ámbar de 2px, nombre y kg en ámbar.
-- Vacío: renglón con regla punteada y un rótulo que dice dónde aparecerá la primera parada.
+### Tablero de renglones
+- Encabezado de columnas en gris rótulo 600 de 0.8125rem sobre costura; renglones de 3.25rem separados por costura.
+- Número en gris rótulo, hora en gris claro tabular, nombre en blanco 600, kg en cifra 800 alineada a la derecha.
+- El renglón tocado para corregir se selecciona: fondo amarillo apagado con contorno interior amarillo de 1px.
+- Vacío y pista ("Toca una parada para corregirla o borrarla.") en gris rótulo.
+- El encargado usa el mismo tablero para repartidores (punto de estado, nombre, Salió, Entregó, Queda, paradas) y usuarios.
 
-### Teclado de báscula
-- Rejilla de 3×4 (7-8-9 arriba, ½ / 0 / borrar abajo), cada tecla es una paleta grande con su línea de corte, dígitos en tinta 2.3rem, teclas de función en acero.
-- Al presionar la tecla se enciende en ámbar al instante y baja 1px; deshabilitado al 40%.
-- La lectura de kg es una ventanilla negra con contorno acero oscuro: rótulo a la izquierda y 5 celdas a la derecha, acero cuando está en cero y ámbar cuando hay valor.
+### Teclado de kg
+- Rejilla 3×4 (7-8-9 arriba; ½ / 0 / borrar abajo), teclas de lámina alzada con costura, 6px, dígitos blancos 700 tabulares.
+- Al presionar la tecla se enciende en amarillo al instante y vuelve en 140ms; deshabilitado al 40%.
+- La lectura de kg es una ventanilla de asfalto con costura: rótulo a la izquierda, cifra a la derecha (gris rótulo en cero, blanca con valor) y "kg" en gris claro.
 
-### Lámpara de estado
-Placa negra con un foco redondo y el estado en celdas: EN RUTA en ámbar con foco encendido, SOBRE-ENTREGA en rojo, CERRADA y SIN INICIAR en acero con foco apagado.
-
-### Celda de paleta (firma)
-Cada carácter en su paleta (0.72em × 1.16em, separación 0.07em), mitad superior #212125 y mitad inferior #19191C, línea de corte negra a media altura; las celdas vacías son más oscuras para mantener columnas fijas. Tonos: tinta, ámbar, rojo, acero. Cinco tamaños: xl, titulo, lg, md, sm. Al cambiar, solo la celda cuyo carácter cambió se voltea: giro en X de -92° a 14° y a reposo en 460ms con cubic-bezier(0.16, 1, 0.3, 1), destello de brillo al inicio y 55ms de retraso por posición, en cascada. En el primer render nada se mueve salvo un renglón recién agregado. Con reduced motion el cambio es instantáneo. El texto real se ofrece a lectores de pantalla; las celdas son decorativas.
-
-### Pantallas del encargado
-Mismo tablero, mismas reglas. La franja de acero suma dos placas de sección (RUTAS, USUARIOS); la de la sección actual se hunde a negro de paleta con texto ámbar. En celular la franja oculta fecha y reloj para dejarles lugar.
-- **Rutas:** a la izquierda el resumen del día (selector de día con flechas y la fecha en celdas, que pasa a ámbar cuando no es hoy; totales SALIÓ / ENTREGADO / QUEDAN / CERRADAS) y el tablero de repartidores: foco de estado, nombre, SALIÓ, ENTREGÓ, QUEDA y paradas en celdas `sm`. Hoy también aparecen los repartidores activos sin iniciar, en acero. A la derecha el detalle del repartidor tocado: lámpara, cifras, sus paradas de solo lectura y REABRIR RUTA (solo una ruta cerrada de hoy). Se actualiza solo cada minuto cuando se ve hoy.
-- **Reporte:** placas PDF y CSV junto al botón de actualizar descargan el día elegido. El PDF es un documento para imprimir y no usa el tablero: carta, blanco, Helvetica en negro con grises y rojo solo para kg negativos y el aviso de rutas abiertas; resumen por repartidor con total y luego el detalle de paradas de cada uno, con encabezado repetido y "(continúa)" al cambiar de página. El CSV es una fila por parada (UTF-8 con BOM, números sin separador de miles).
-- **Usuarios:** tablero de usuarios (foco ámbar = activo, nombre, usuario, rol) y a la derecha el alta (nombre, usuario, contraseña visible, rol en dos placas de selección que se encienden en ámbar) o la ficha del usuario tocado (cambiar contraseña, desactivar con dos toques, activar con uno).
+### Destello de señal (firma)
+El único movimiento del sistema. Cuando cambia "Quedan" la cifra se ilumina en amarillo; cuando entra una parada su renglón se enciende en amarillo apagado con contorno amarillo. Dura 1400ms: amarillo pleno el primer 30% para que se lea con sol y luego se apaga con cubic-bezier(0.16, 1, 0.3, 1). Con reduced motion el mismo resaltado aparece fijo y se quita sin transición al terminar. Ninguna otra pantalla anima entradas, cambios de cifra ni decoraciones.
 
 ### Confirmación de dos toques
-Borrar una parada y cerrar la ruta no abren modales: el primer toque arma el botón (pasa a rojo y pregunta "¿Borrar?" / "¿Cerrar? Toca otra vez") y el segundo ejecuta. CERRAR RUTA en reposo es discreto: texto acero medio, sin borde.
+Borrar una parada, cerrar la ruta y desactivar un usuario no abren modales: el primer toque arma el botón (pasa a rojo y pregunta "¿Borrar?" / "¿Cerrar? Toca otra vez") y el segundo ejecuta. Las destructivas quedan apartadas de la acción principal.
+
+### Reporte impreso
+El PDF del reporte diario (src/utils/reportPdf.ts) es un documento claro para imprimir, tamaño carta, en Helvetica; no sigue este sistema de pantalla y no debe tomarse como referencia para él.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** poner números, horas y rótulos cortos fijos en celdas de paleta con columnas de ancho fijo (kg en 5 celdas alineadas a la derecha).
-- **Do** reservar el ámbar (#FFB400) para estado activo, advertencia y la acción principal.
-- **Do** usar el rojo #FF4D4D para sobre-entrega y acciones destructivas armadas, con #3B1010 como su fondo.
-- **Do** escribir en mayúsculas con tracking todo texto corto de interfaz; las alertas de error conservan oración normal.
+- **Do** usar el amarillo de señal (#FFD000) solo para la acción principal, el foco, la selección y la advertencia.
+- **Do** poner cifras de kg, horas y conteos en peso 800 con dígitos tabulares.
+- **Do** escribir todo en oración normal, incluidos botones, rótulos y encabezados de columna.
+- **Do** separar niveles con tono y costuras de 1px (#343A41), con esquinas de 6px.
+- **Do** reservar el verde (#3DDC84) para "En ruta" y nada más.
 - **Do** confirmar acciones destructivas con un segundo toque sobre el mismo botón.
-- **Do** mantener cada pantalla de tablet sin scroll de página y dejar que la lista de paradas se desplace por dentro.
-- **Do** dar a cualquier cambio de cifra la cascada de volteo, y dejarla instantánea con prefers-reduced-motion.
+- **Do** dejar el destello de señal como único movimiento, y fijo bajo prefers-reduced-motion.
+- **Do** mantener cada pantalla de tablet sin scroll de página y dejar que las listas se desplacen por dentro.
 
 ### Don't:
-- **Don't** poner texto libre (nombres de parada) en celdas de paleta.
-- **Don't** pintar relojes ni rótulos en reposo de ámbar.
-- **Don't** dar relieve al acero: sin embossing CSS, sin degradados metálicos, sin remaches.
+- **Don't** usar sombras proyectadas, degradados, brillos ni relieves.
+- **Don't** usar mayúsculas sostenidas ni tracking abierto.
+- **Don't** pintar de amarillo rótulos, títulos o relojes en reposo.
+- **Don't** usar gris medio para texto; los textos son blanco, #C4CBD3 o #9AA3AD.
 - **Don't** abrir modales para confirmar.
-- **Don't** usar tarjetas blancas, formularios genéricos ni botones azules.
+- **Don't** usar tarjetas grises con acento azul.
 - **Don't** introducir una segunda familia tipográfica.

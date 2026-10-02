@@ -2,39 +2,43 @@
 version: 1
 slug: "src-views-routeview-vue"
 primary_target: "src/views/RouteView.vue"
-related_targets: ["src/views/LoginView.vue"]
+related_targets: ["src/views/LoginView.vue","src/views/AdminView.vue","src/views/UsersView.vue"]
 ---
 
-# Superficie: app del repartidor (login + ruta del día)
+# Superficie: toda la app (login, ruta del repartidor, rutas y usuarios del encargado)
 
-Modo: Operate. Usuario: repartidor con tablet montada en el vehículo, a menudo bajo sol directo;
-perfil tecnológico mixto. Tarea: iniciar la ruta con kg cargados, registrar cada parada (texto
-libre + kg en enteros y medios, menos de 15 al día), corregir o borrar, cerrar la ruta.
-Restricciones: orientación variable (horizontal y vertical), sobre-entrega se advierte y no se
-bloquea, ruta cerrada o de otro día es de solo lectura. El admin ve aquí solo un aviso provisional.
+Modo: Operate. Usuarios: repartidor con tablet montada en el vehículo, a menudo bajo sol directo,
+perfil tecnológico mixto; encargado en tablet o celular. Tareas: iniciar ruta, registrar paradas
+(texto + kg en enteros y medios), corregir, cerrar; el encargado consulta el día, reabre rutas,
+gestiona usuarios y descarga el reporte. Restricciones del usuario (rediseño de 2026-10-01): fondo
+oscuro con más contraste, plano, sin celdas de paleta ni volteo, letra normal en oración, tamaños
+más contenidos, la distribución actual se conserva, todo responsivo.
 
 ## Direction contract
 
-THESIS: La ruta del día es un tablero de salidas: un marco de acero con paletas negras donde cada
-parada es un renglón y los kilos que quedan se voltean en celdas fijas. Rechaza la app de captura
-típica (tarjetas blancas, formulario genérico, botón azul).
+THESIS: La app se lee como un señalamiento vial: lámina plana, letra blanca de carretera y un solo
+amarillo preventivo, hecha para leerse a distancia con sol. Rechaza las tarjetas grises con acento
+azul y cualquier relieve, brillo o animación decorativa.
 
-OWN-WORLD: Negro de paleta (#0D0D0F) con sombra de paleta (#1B1B1E), letra blanca de paleta
-(#F2F2F2), ámbar de lámpara (#FFB400) solo para estado activo, advertencia y acción principal,
-rojo de cancelado (#D32F2F) solo para sobre-entrega y borrar, acero (#B6BBC2 / #7D838C) para
-marcos y etiquetas. Una sola sans condensada en mayúsculas con espaciado amplio; cada carácter
-importante vive en una celda con su línea de corte horizontal. Renglones con regla, columnas fijas.
+OWN-WORLD: Asfalto #101214 de fondo, lámina #1A1D21 para paneles, #24282D para campos y teclas,
+costuras de 1px #343A41. Letra blanca #FFFFFF y gris claro #C4CBD3 / #9AA3AD, nunca gris medio.
+Amarillo de señal #FFD000 solo para la acción principal, foco y advertencia; verde informativo para
+"en ruta"; rojo #FF5A4A para sobre-entrega y borrar. Overpass (heredera de Highway Gothic), cifras
+tabulares, oración normal. Esquinas de 6px, sin sombras.
 
-STORY: El repartidor ve de un vistazo cuánto le queda, toca para capturar la parada con un teclado
-de báscula grande, y ve el renglón nuevo caer en el tablero mientras el restante se voltea.
+STORY: El repartidor ve cuánto le queda, teclea la parada con un teclado plano grande y ve el
+renglón aparecer y el restante cambiar. El encargado ve todos los repartidores en un tablero de
+renglones y entra al detalle con un toque.
 
-FIRST VIEWPORT: Franja de acero arriba (fecha y reloj en paletas, nombre, salir). Izquierda (o
-arriba en vertical): tablero QUEDAN con los kg en celdas gigantes, debajo SALIÓ / ENTREGADO /
-PARADAS en celdas medianas, y el tablero de paradas (HORA, PARADA, KG). Derecha (o abajo): panel de
-captura con campo PARADA, display de kg en celdas, teclado 0–9 + ½ + borrar, y REGISTRAR ámbar.
+FIRST VIEWPORT: Banda superior delgada (fecha, hora, nombre, salir). Izquierda: panel con "Quedan"
+y la cifra blanca grande (máx. 4.5rem), fila Salió / Entregado / Paradas, lista de paradas con
+costuras de 1px. Derecha: panel de captura con campo, lectura de kg, teclado 3×4 y "Registrar
+parada" en amarillo a todo lo ancho.
 
-FORM: Tablero de salidas de terminal (challenger competitivo elegido por el usuario sobre la
-asignada, candidata 3 de la lista propia). Interacción firma: cascada de volteo carácter por
-carácter al cambiar cifras y al entrar un renglón; instantáneo con reduced motion. Seed 71187f1a.
+FORM: Señalamiento vial (dirección asignada por el sorteo, candidata 4 de la lista propia, elegida
+por el usuario). Raises: costuras de 1px y destructivas apartadas (consola), paleta sin medias
+tintas (Ikeda), escala corta con jerarquía por peso (horario). Interacción firma: el restante y el
+renglón nuevo se iluminan en amarillo un instante y se apagan (sin movimiento con reduced motion).
+Seed 98bfed7e.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

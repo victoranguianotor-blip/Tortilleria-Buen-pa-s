@@ -1,437 +1,226 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-02T01:58:56.738Z",
+  "generatedAt": "2026-10-01T12:00:00.000Z",
   "title": "Design System: Reparto de Tortillas",
   "extensions": {
     "colorMeta": {
-      "amber": {
+      "signal": {
         "role": "primary",
-        "displayName": "Ámbar de lámpara",
-        "canonical": "#ffb400",
-        "tonalRamp": [
-          "#4d3600",
-          "#855e00",
-          "#bd8500",
-          "#f5ad00",
-          "#ffc333",
-          "#ffd570",
-          "#ffe7ad",
-          "#fff8e5"
-        ],
-        "purpose": "Acción principal, estado activo, advertencia, foco, cursor y selección."
+        "displayName": "Amarillo de señal",
+        "canonical": "#ffd000",
+        "tonalRamp": ["#4d3e00", "#856c00", "#bd9a00", "#f5c800", "#ffd82e", "#ffe366", "#ffeea3", "#fffae5"],
+        "purpose": "Acción principal, foco, cursor, selección, tecla presionada, sección actual, destello y advertencia."
       },
-      "amber-dark": {
+      "signal-ink": {
         "role": "primary",
-        "displayName": "Ámbar apagado",
-        "canonical": "#3a2a00",
-        "tonalRamp": [
-          "#4d3700",
-          "#856000",
-          "#bd8900",
-          "#f5b100",
-          "#ffc733",
-          "#ffd870",
-          "#ffe8ad",
-          "#fff8e5"
-        ],
-        "purpose": "Fondo del renglón o la cifra activos."
+        "displayName": "Asfalto de señal",
+        "canonical": "#101214",
+        "tonalRamp": ["#22262b", "#3b424a", "#545e69", "#6d7a88", "#8b96a2", "#aab3bb", "#ccd1d6", "#f1f2f4"],
+        "purpose": "Texto sobre amarillo."
+      },
+      "signal-soft": {
+        "role": "primary",
+        "displayName": "Amarillo apagado",
+        "canonical": "#332b05",
+        "tonalRamp": ["#463b07", "#79660c", "#ac9111", "#dfbc16", "#ecce41", "#f1db74", "#f7eaab", "#fdf9e8"],
+        "purpose": "Fondo de renglón seleccionado, cifra en corrección, opción elegida y destello del renglón nuevo."
+      },
+      "go": {
+        "role": "secondary",
+        "displayName": "Verde de paso",
+        "canonical": "#3ddc84",
+        "tonalRamp": ["#0c4123", "#14703d", "#1da057", "#25cf71", "#4edf8f", "#7de8ad", "#b1f1ce", "#e9fbf1"],
+        "purpose": "Solo \"En ruta\": píldora de estado y punto del tablero de repartidores. Nunca acción, cuenta activa ni aviso."
       },
       "danger": {
-        "role": "secondary",
-        "displayName": "Rojo de cancelado",
-        "canonical": "#ff4d4d",
-        "tonalRamp": [
-          "#4d0000",
-          "#850000",
-          "#bd0000",
-          "#f50000",
-          "#ff3333",
-          "#ff7070",
-          "#ffadad",
-          "#ffe5e5"
-        ],
-        "purpose": "Solo sobre-entrega y acciones destructivas armadas.",
-        "note": "Adaptación: el contrato pedía #D32F2F; se usa #FF4D4D por contraste de texto sobre el negro de paleta."
+        "role": "tertiary",
+        "displayName": "Rojo de alto",
+        "canonical": "#ff5a4a",
+        "tonalRamp": ["#4d0700", "#850c00", "#bd1100", "#f51600", "#ff402e", "#ff7466", "#ffaba3", "#ffe8e5"],
+        "purpose": "Sobre-entrega, botones destructivos, campos inválidos."
       },
-      "danger-dark": {
-        "role": "secondary",
+      "danger-soft": {
+        "role": "tertiary",
         "displayName": "Rojo apagado",
-        "canonical": "#3b1010",
-        "tonalRamp": [
-          "#3c1010",
-          "#681c1c",
-          "#942828",
-          "#c13434",
-          "#d35f5f",
-          "#e18f8f",
-          "#eebfbf",
-          "#faebeb"
-        ],
+        "canonical": "#3a1714",
+        "tonalRamp": ["#391714", "#632722", "#8c3830", "#b6483f", "#c96c64", "#d8938d", "#e7bebb", "#f8edec"],
         "purpose": "Fondo de la alerta de error."
       },
-      "flap": {
+      "ground": {
         "role": "neutral",
-        "displayName": "Negro de paleta",
-        "canonical": "#0d0d0f",
-        "tonalRamp": [
-          "#242429",
-          "#3e3e47",
-          "#585865",
-          "#727283",
-          "#9292a0",
-          "#b3b3bd",
-          "#d3d3d9",
-          "#f1f1f3"
-        ],
-        "purpose": "Fondo de página; texto sobre ámbar y sobre la franja."
+        "displayName": "Asfalto",
+        "canonical": "#101214",
+        "tonalRamp": ["#22262b", "#3b424a", "#545e69", "#6d7a88", "#8b96a2", "#aab3bb", "#ccd1d6", "#f1f2f4"],
+        "purpose": "Fondo de página y ventanilla de lectura de kg."
       },
-      "board": {
+      "panel": {
         "role": "neutral",
-        "displayName": "Campo del tablero",
-        "canonical": "#111114",
-        "tonalRamp": [
-          "#232329",
-          "#3d3d48",
-          "#575766",
-          "#707084",
-          "#9191a1",
-          "#b2b2bd",
-          "#d3d3da",
-          "#f1f1f3"
-        ],
-        "purpose": "Interior de cada marco."
+        "displayName": "Lámina",
+        "canonical": "#1a1d21",
+        "tonalRamp": ["#22262b", "#3a414a", "#535d6a", "#6c7889", "#8a95a3", "#a9b1bc", "#ccd0d7", "#f1f2f4"],
+        "purpose": "Paneles y banda superior."
       },
-      "flap-2": {
+      "raised": {
         "role": "neutral",
-        "displayName": "Sombra de paleta",
-        "canonical": "#1b1b1e",
-        "tonalRamp": [
-          "#242428",
-          "#3f3f46",
-          "#595963",
-          "#747481",
-          "#94949e",
-          "#b4b4bb",
-          "#d4d4d8",
-          "#f2f2f3"
-        ],
-        "purpose": "Campos, placas, celdas."
+        "displayName": "Lámina alzada",
+        "canonical": "#24282d",
+        "tonalRamp": ["#22262b", "#3b414a", "#545d69", "#6d7988", "#8b95a2", "#aab2bb", "#ccd1d6", "#f1f2f4"],
+        "purpose": "Campos, teclas, primario deshabilitado, respuesta al tocar."
       },
-      "flap-3": {
+      "line": {
         "role": "neutral",
-        "displayName": "Sombra de paleta profunda",
-        "canonical": "#26262b",
-        "tonalRamp": [
-          "#242429",
-          "#3e3e46",
-          "#595964",
-          "#737382",
-          "#93939f",
-          "#b3b3bc",
-          "#d4d4d9",
-          "#f1f1f3"
-        ],
-        "purpose": "Tono intermedio de paleta."
+        "displayName": "Costura",
+        "canonical": "#343a41",
+        "tonalRamp": ["#22262b", "#3b424a", "#545e69", "#6d7988", "#8b96a2", "#aab2bb", "#ccd1d6", "#f1f2f4"],
+        "purpose": "Todos los bordes de 1px."
       },
       "ink": {
         "role": "neutral",
-        "displayName": "Letra de paleta",
-        "canonical": "#f2f2f2",
-        "tonalRamp": [
-          "#262626",
-          "#424242",
-          "#5e5e5e",
-          "#7a7a7a",
-          "#999999",
-          "#b8b8b8",
-          "#d6d6d6",
-          "#f2f2f2"
-        ],
-        "purpose": "Texto principal, cifras y relojes."
+        "displayName": "Blanco carretero",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#262626", "#424242", "#5e5e5e", "#7a7a7a", "#969696", "#b3b3b3", "#d1d1d1", "#f2f2f2"],
+        "purpose": "Texto principal y todas las cifras."
       },
-      "steel": {
+      "ink-2": {
         "role": "neutral",
-        "displayName": "Acero claro",
-        "canonical": "#b6bbc2",
-        "tonalRamp": [
-          "#23262a",
-          "#3c4148",
-          "#565d67",
-          "#6f7985",
-          "#9097a2",
-          "#b1b7be",
-          "#d3d6da",
-          "#f1f2f3"
-        ],
-        "purpose": "Rótulos, botón secundario, teclas de función."
+        "displayName": "Gris claro",
+        "canonical": "#c4cbd3",
+        "tonalRamp": ["#21262c", "#39424c", "#515d6c", "#69798c", "#8795a6", "#a7b2be", "#cad1d8", "#f0f2f4"],
+        "purpose": "Texto secundario, unidades, botón discreto, teclas de función."
       },
-      "steel-2": {
+      "ink-3": {
         "role": "neutral",
-        "displayName": "Acero medio",
-        "canonical": "#7d838c",
-        "tonalRamp": [
-          "#242629",
-          "#3e4146",
-          "#595d64",
-          "#737982",
-          "#93989f",
-          "#b3b7bc",
-          "#d4d6d9",
-          "#f1f2f3"
-        ],
-        "purpose": "Número de renglón, placeholder, pistas, bisel lateral."
-      },
-      "steel-3": {
-        "role": "neutral",
-        "displayName": "Acero oscuro",
-        "canonical": "#3a3d42",
-        "tonalRamp": [
-          "#242629",
-          "#3e4147",
-          "#585d64",
-          "#737882",
-          "#9297a0",
-          "#b3b6bc",
-          "#d4d6d9",
-          "#f1f2f3"
-        ],
-        "purpose": "Bordes de campos, divisiones, botón deshabilitado."
-      },
-      "steel-band": {
-        "role": "neutral",
-        "displayName": "Franja de acero",
-        "canonical": "#9ea4ac",
-        "tonalRamp": [
-          "#232629",
-          "#3d4247",
-          "#575d66",
-          "#717984",
-          "#9198a1",
-          "#b2b7bd",
-          "#d3d6d9",
-          "#f1f2f3"
-        ],
-        "purpose": "Fondo de la franja de encabezado."
-      },
-      "steel-light": {
-        "role": "neutral",
-        "displayName": "Luz del acero",
-        "canonical": "#a7adb5",
-        "tonalRamp": [
-          "#23262a",
-          "#3d4148",
-          "#565d67",
-          "#707985",
-          "#9098a2",
-          "#b1b7be",
-          "#d3d6da",
-          "#f1f2f3"
-        ],
-        "purpose": "Borde superior del bisel del marco."
-      },
-      "steel-shadow": {
-        "role": "neutral",
-        "displayName": "Sombra del acero",
-        "canonical": "#5f656d",
-        "tonalRamp": [
-          "#242629",
-          "#3e4247",
-          "#585d65",
-          "#727983",
-          "#9298a0",
-          "#b3b7bc",
-          "#d3d6d9",
-          "#f1f2f3"
-        ],
-        "purpose": "Borde inferior del bisel y de la franja."
-      },
-      "rule": {
-        "role": "neutral",
-        "displayName": "Regla",
-        "canonical": "#222327",
-        "tonalRamp": [
-          "#242529",
-          "#3e4047",
-          "#585a65",
-          "#727583",
-          "#9295a0",
-          "#b3b5bc",
-          "#d3d5d9",
-          "#f1f2f3"
-        ],
-        "purpose": "Línea entre renglones de paradas."
+        "displayName": "Gris rótulo",
+        "canonical": "#9aa3ad",
+        "tonalRamp": ["#22262a", "#3b4249", "#555e68", "#6e7a87", "#8c96a1", "#abb2ba", "#ccd1d6", "#f1f2f4"],
+        "purpose": "Rótulos, número de renglón, placeholder, pistas, deshabilitado."
       }
     },
     "typographyMeta": {
-      "display": {
-        "displayName": "Display en celdas",
-        "purpose": "Solo los kg que QUEDAN; 3.6rem en tablet de pie."
-      },
-      "headline": {
-        "displayName": "Titular en celdas",
-        "purpose": "Marca del login."
-      },
-      "title": {
-        "displayName": "Título en celdas",
-        "purpose": "Lectura de kg tecleados, cifras del cierre, estados de carga."
-      },
-      "title-md": {
-        "displayName": "Cifra mediana",
-        "purpose": "SALIÓ / ENTREGADO / PARADAS, título del panel, reloj del login."
-      },
-      "flap-sm": {
-        "displayName": "Celda chica",
-        "purpose": "Reloj de la franja, hora y kg por renglón, lámpara."
-      },
-      "stop-name": {
-        "displayName": "Nombre de parada",
-        "purpose": "Texto libre en mayúsculas planas, nunca en celdas."
-      },
-      "body": {
-        "displayName": "Texto",
-        "purpose": "Texto corrido y mensajes; raíz de 18px."
-      },
-      "button": {
-        "displayName": "Botón principal",
-        "purpose": "Mayúsculas 700 con tracking 0.14em."
-      },
-      "button-sm": {
-        "displayName": "Botón secundario",
-        "purpose": "Mayúsculas 600 con tracking 0.14em."
-      },
-      "label": {
-        "displayName": "Rótulo",
-        "purpose": "Etiqueta pintada en el marco: acero, mayúsculas, 0.18em."
-      }
+      "display": { "displayName": "Display", "purpose": "Solo la cifra de Quedan; 3.25rem en tablet de pie." },
+      "headline": { "displayName": "Lectura", "purpose": "Lectura de kg tecleados; el título del login usa el mismo peso." },
+      "figure": { "displayName": "Cifra", "purpose": "Salió / Entregado / Paradas, cierre y detalle del encargado." },
+      "title": { "displayName": "Título de panel", "purpose": "Parada 5, Carga de hoy, nombre del repartidor." },
+      "stop-name": { "displayName": "Nombre en renglón", "purpose": "Parada o repartidor; se recorta con puntos suspensivos." },
+      "body": { "displayName": "Texto", "purpose": "Texto corrido y mensajes; raíz de 16px." },
+      "button": { "displayName": "Botón principal", "purpose": "800 en oración normal." },
+      "button-sm": { "displayName": "Botón secundario", "purpose": "700 en oración normal." },
+      "key": { "displayName": "Tecla", "purpose": "Dígitos del teclado de kg." },
+      "label": { "displayName": "Rótulo", "purpose": "Nombra una cifra, un campo o una columna; gris rótulo, oración normal." }
     },
     "shadows": [
       {
-        "name": "marco",
-        "value": "inset 0 0 0 1px #000, 0 10px 30px -12px rgb(0 0 0 / 0.8)",
-        "purpose": "El tablero se asienta sobre la página."
+        "name": "contorno-señal",
+        "value": "inset 0 0 0 1px #ffd000",
+        "purpose": "Trazo, no elevación: campo enfocado, renglón o cifra seleccionados, destello del renglón nuevo."
       },
       {
-        "name": "celda",
-        "value": "inset 0 1px 0 rgb(255 255 255 / 0.06), 0 0.03em 0.06em rgb(0 0 0 / 0.7)",
-        "purpose": "Cada paleta."
-      },
-      {
-        "name": "tecla",
-        "value": "inset 0 1px 0 rgb(255 255 255 / 0.07), 0 2px 4px rgb(0 0 0 / 0.6)",
-        "purpose": "Teclas del teclado de báscula."
-      },
-      {
-        "name": "placa",
-        "value": "0 1px 0 rgb(255 255 255 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.06)",
-        "purpose": "Botón oscuro sobre la franja de acero."
-      },
-      {
-        "name": "lampara-encendida",
-        "value": "0 6px 18px -8px rgb(255 180 0 / 0.55)",
-        "purpose": "Halo del botón ámbar."
-      },
-      {
-        "name": "foco",
-        "value": "0 0 10px 1px rgb(255 180 0 / 0.6)",
-        "purpose": "Foco encendido de la lámpara de estado (rojo al 60% en sobre-entrega)."
+        "name": "subrayado-sección",
+        "value": "inset 0 -2px 0 #ffd000",
+        "purpose": "Sección actual del menú del encargado."
       }
     ],
     "motion": [
       {
-        "name": "voltear",
-        "value": "460ms cubic-bezier(0.16, 1, 0.3, 1), retraso 55ms por posición",
-        "purpose": "Cascada de volteo de celdas que cambian; instantánea con prefers-reduced-motion."
+        "name": "destello-señal",
+        "value": "1400ms cubic-bezier(0.16, 1, 0.3, 1), amarillo pleno de 0% a 30%",
+        "purpose": "Único momento de movimiento: cifra de Quedan y renglón nuevo. Fijo bajo prefers-reduced-motion."
       },
       {
         "name": "estado",
-        "value": "160ms ease-out",
-        "purpose": "Cambios de borde, color y fondo."
+        "value": "140ms ease-out",
+        "purpose": "Cambios de borde y fondo (campos, botón secundario, renglones, teclas al soltar)."
       },
       {
         "name": "presion",
         "value": "120ms ease-out",
-        "purpose": "Botón principal al presionar (translateY 1px, brightness 0.92)."
+        "purpose": "Botón principal al presionar (brightness 0.88)."
       },
       {
         "name": "tecla",
-        "value": "0ms al presionar, 90ms al soltar",
-        "purpose": "La tecla se enciende al instante."
+        "value": "0ms al presionar",
+        "purpose": "La tecla se enciende en amarillo al instante."
       }
     ],
     "breakpoints": [
-      {
-        "name": "phone",
-        "value": "(max-width: 520px)",
-        "purpose": "Se oculta la columna HORA."
-      },
-      {
-        "name": "wide",
-        "value": "(min-width: 960px) and (orientation: landscape)",
-        "purpose": "Dos columnas sin scroll de página."
-      },
-      {
-        "name": "tall",
-        "value": "(orientation: portrait) and (min-width: 700px) and (min-height: 1000px)",
-        "purpose": "Una columna sin scroll de página; la lista se desplaza por dentro con scroll-snap."
-      }
+      { "name": "phone-narrow", "value": "(max-width: 520px)", "purpose": "Se oculta la columna Hora del tablero de paradas." },
+      { "name": "phone", "value": "(max-width: 640px)", "purpose": "El tablero de repartidores oculta Salió y Entregó." },
+      { "name": "wide", "value": "(min-width: 960px) and (orientation: landscape)", "purpose": "Dos columnas 1.3fr / 1fr sin scroll de página." },
+      { "name": "tall", "value": "(orientation: portrait) and (min-width: 700px) and (min-height: 1000px)", "purpose": "Una columna sin scroll de página; la lista se desplaza por dentro." }
     ]
   },
   "components": [
     {
-      "name": "Botón principal (lámpara)",
+      "name": "Botón principal",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Acción principal en ámbar: REGISTRAR, ENTRAR.",
-      "html": "<button class=\"ds-btn-primary\">REGISTRAR PARADA <svg viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"square\"><path d=\"M4 12h15\"/><path d=\"M13 6l6 6-6 6\"/></svg></button>",
-      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; min-height: 4rem; padding: 0 1.6rem; border: none; border-radius: 6px; background: #ffb400; color: #0d0d0f; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 1.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; box-shadow: 0 6px 18px -8px rgb(255 180 0 / 0.55); transition: transform 120ms ease-out, filter 160ms ease-out; cursor: pointer; } .ds-btn-primary:active { transform: translateY(1px) scale(0.99); filter: brightness(0.92); } .ds-btn-primary:focus-visible { outline: 3px solid #ffb400; outline-offset: 3px; } .ds-btn-primary:disabled { background: #3a3d42; color: #7d838c; box-shadow: none; }"
+      "description": "Acción principal en amarillo de señal: Registrar parada, Entrar.",
+      "html": "<button class=\"ds-btn-primary\">Registrar parada <svg viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"square\" stroke-linejoin=\"miter\"><path d=\"M4 12h15\"/><path d=\"M13 6l6 6-6 6\"/></svg></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 3.5rem; padding: 0 1.25rem; border: none; border-radius: 6px; background: #ffd000; color: #101214; font-family: 'Overpass', system-ui, sans-serif; font-size: 1.125rem; font-weight: 800; white-space: nowrap; transition: filter 120ms ease-out; cursor: pointer; } .ds-btn-primary:active:not(:disabled) { filter: brightness(0.88); } .ds-btn-primary:focus-visible { outline: 3px solid #ffd000; outline-offset: 2px; } .ds-btn-primary:disabled { background: #24282d; color: #9aa3ad; cursor: default; }"
     },
     {
-      "name": "Botón de acero",
+      "name": "Botón secundario",
       "kind": "button",
       "refersTo": "button-secondary",
-      "description": "Secundario con contorno de acero; con peligro pasa a rojo.",
-      "html": "<div style=\"display:flex;gap:12px;background:#111114;padding:16px\"><button class=\"ds-btn-steel\">CANCELAR</button><button class=\"ds-btn-steel ds-danger\">¿BORRAR?</button></div>",
-      "css": ".ds-btn-steel { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 3.4rem; padding: 0 1.2rem; border-radius: 6px; border: 2px solid #3a3d42; background: transparent; color: #b6bbc2; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; transition: border-color 160ms ease-out, color 160ms ease-out; cursor: pointer; } .ds-btn-steel:hover, .ds-btn-steel:active { border-color: #7d838c; color: #f2f2f2; } .ds-btn-steel:focus-visible { outline: 3px solid #ffb400; outline-offset: 3px; } .ds-btn-steel.ds-danger { border-color: #ff4d4d; color: #ff4d4d; }"
+      "description": "Costura de 1px; variantes de peligro (roja) y discreta (sin borde).",
+      "html": "<div style=\"display:flex;gap:12px;background:#1a1d21;padding:16px\"><button class=\"ds-btn-secondary\">Cancelar</button><button class=\"ds-btn-secondary ds-danger\">¿Borrar?</button><button class=\"ds-btn-secondary ds-quiet\">Cerrar ruta</button></div>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; min-height: 3rem; padding: 0 1rem; border-radius: 6px; border: 1px solid #343a41; background: transparent; color: #ffffff; font-family: 'Overpass', system-ui, sans-serif; font-size: 1rem; font-weight: 700; white-space: nowrap; transition: background 140ms ease-out, border-color 140ms ease-out; cursor: pointer; } .ds-btn-secondary:active { background: #24282d; } .ds-btn-secondary:focus-visible { outline: 3px solid #ffd000; outline-offset: 2px; } .ds-btn-secondary.ds-danger { border-color: #ff5a4a; color: #ff5a4a; } .ds-btn-secondary.ds-quiet { border-color: transparent; color: #c4cbd3; }"
     },
     {
       "name": "Campo",
       "kind": "input",
       "refersTo": "input",
-      "description": "Campo de texto como celda del tablero.",
-      "html": "<div style=\"background:#111114;padding:16px\"><input class=\"ds-field\" placeholder=\"Tienda o cliente\" /></div>",
-      "css": ".ds-field { width: 100%; min-height: 3.6rem; padding: 0 1rem; background: #1b1b1e; border: 2px solid #3a3d42; border-radius: 6px; color: #f2f2f2; caret-color: #ffb400; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 1.5rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; transition: border-color 160ms ease-out; } .ds-field::placeholder { color: #7d838c; } .ds-field:focus { outline: none; border-color: #ffb400; }"
+      "description": "Campo de lámina alzada; el foco lo enciende en amarillo.",
+      "html": "<div style=\"background:#1a1d21;padding:16px\"><input class=\"ds-field\" placeholder=\"Tienda o cliente\" /></div>",
+      "css": ".ds-field { width: 100%; min-height: 3.25rem; padding: 0 0.9rem; background: #24282d; border: 1px solid #343a41; border-radius: 6px; color: #ffffff; caret-color: #ffd000; font-family: 'Overpass', system-ui, sans-serif; font-size: 1.125rem; font-weight: 600; transition: border-color 140ms ease-out; } .ds-field::placeholder { color: #9aa3ad; font-weight: 400; } .ds-field:focus { outline: none; border-color: #ffd000; box-shadow: inset 0 0 0 1px #ffd000; }"
     },
     {
-      "name": "Franja de acero",
+      "name": "Banda superior",
       "kind": "nav",
-      "refersTo": "header-band",
-      "description": "Encabezado con fecha y reloj en celdas, nombre y placa SALIR.",
-      "html": "<header class=\"ds-steel-band\"><span class=\"ds-cells\"><span class=\"ds-c\">1</span><span class=\"ds-c\">9</span><span class=\"ds-c\">:</span><span class=\"ds-c\">5</span><span class=\"ds-c\">4</span></span><span class=\"ds-name\">REPARTIDOR UNO</span><button class=\"ds-btn-plate\">SALIR</button></header>",
-      "css": ".ds-steel-band { display: flex; align-items: center; gap: 1rem; padding: 0.5rem 1rem; background: #9ea4ac; border-top: 2px solid #c3c8ce; border-bottom: 3px solid #5f656d; color: #0d0d0f; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; } .ds-cells { display: inline-flex; gap: 0.07em; font-size: 1.15rem; font-weight: 600; line-height: 1; } .ds-c { display: inline-grid; place-items: center; width: 0.72em; height: 1.16em; border-radius: 0.07em; background: linear-gradient(180deg, #212125 0 50%, #19191c 50% 100%); color: #f2f2f2; } .ds-name { margin-left: auto; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.18em; } .ds-btn-plate { min-height: 3rem; padding: 0 0.9rem; border: none; border-radius: 6px; background: #1b1b1e; color: #f2f2f2; font-family: inherit; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.14em; box-shadow: 0 1px 0 rgb(255 255 255 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.06); cursor: pointer; } .ds-btn-plate:active { background: #0d0d0f; } .ds-btn-plate:focus-visible { outline: 3px solid #ffb400; outline-offset: 3px; }"
+      "refersTo": "topbar",
+      "description": "Fecha y hora, menú del encargado con sección actual subrayada en amarillo, nombre y Salir.",
+      "html": "<header class=\"ds-topbar\"><p class=\"ds-clock\"><span class=\"ds-date\">Jue 1 oct</span> <span>21:15</span></p><nav class=\"ds-nav\"><a class=\"ds-nav-link ds-current\">Rutas</a><a class=\"ds-nav-link\">Usuarios</a></nav><span class=\"ds-name\">Repartidor Uno</span><button class=\"ds-quiet\">Salir</button></header>",
+      "css": ".ds-topbar { display: flex; align-items: center; gap: 0.75rem; min-height: 3.5rem; padding: 0 1rem; background: #1a1d21; border-bottom: 1px solid #343a41; color: #ffffff; font-family: 'Overpass', system-ui, sans-serif; } .ds-clock { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; } .ds-date { color: #c4cbd3; } .ds-nav { display: flex; gap: 0.25rem; } .ds-nav-link { display: inline-flex; align-items: center; min-height: 3rem; padding: 0 0.9rem; border-radius: 6px; color: #c4cbd3; font-weight: 700; cursor: pointer; } .ds-nav-link:active { background: #24282d; } .ds-nav-link.ds-current { background: #24282d; color: #ffffff; box-shadow: inset 0 -2px 0 #ffd000; } .ds-name { margin-left: auto; color: #c4cbd3; font-weight: 600; } .ds-quiet { min-height: 3rem; padding: 0 1rem; border: none; border-radius: 6px; background: transparent; color: #c4cbd3; font: inherit; font-weight: 700; cursor: pointer; } .ds-quiet:focus-visible, .ds-nav-link:focus-visible { outline: 3px solid #ffd000; outline-offset: 2px; }"
     },
     {
-      "name": "Celda de paleta",
-      "kind": "custom",
-      "refersTo": "flap-cell",
-      "description": "Firma: cada carácter en su paleta con línea de corte; se voltea en cascada al cambiar.",
-      "html": "<div style=\"background:#111114;padding:20px;display:flex;gap:16px;align-items:end\"><span class=\"ds-flaps\"><span class=\"ds-flap ds-empty\"> </span><span class=\"ds-flap\">1</span><span class=\"ds-flap\">9</span><span class=\"ds-flap\">.</span><span class=\"ds-flap ds-flipping\" style=\"--i:4\">5</span></span><span class=\"ds-caption\">KG</span></div>",
-      "css": ".ds-flaps { display: inline-flex; gap: 0.07em; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 4rem; line-height: 1; } .ds-flap { position: relative; display: inline-grid; place-items: center; width: 0.72em; height: 1.16em; border-radius: 0.07em; background: linear-gradient(180deg, #212125 0 50%, #19191c 50% 100%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 0.03em 0.06em rgb(0 0 0 / 0.7); color: #f2f2f2; } .ds-flap::after { content: ''; position: absolute; inset: calc(50% - 0.5px) 0 auto; height: 1px; background: rgb(0 0 0 / 0.85); } .ds-flap.ds-empty { background: linear-gradient(180deg, #19191c 0 50%, #151517 50% 100%); } .ds-caption { font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.18em; color: #b6bbc2; } .ds-flipping { animation: ds-flip 460ms cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--i) * 55ms); } @keyframes ds-flip { 0% { transform: perspective(6em) rotateX(-92deg); filter: brightness(1.8); } 55% { transform: perspective(6em) rotateX(14deg); } 100% { transform: none; filter: none; } } @media (prefers-reduced-motion: reduce) { .ds-flipping { animation: none; } }"
+      "name": "Píldora de estado",
+      "kind": "chip",
+      "refersTo": "status-pill",
+      "description": "Estado de la ruta: En ruta en verde, Sobre-entrega en rojo, Cerrada en gris.",
+      "html": "<div style=\"display:flex;gap:8px;background:#1a1d21;padding:16px\"><span class=\"ds-status ds-go\"><span class=\"ds-dot\"></span>En ruta</span><span class=\"ds-status ds-danger\"><span class=\"ds-dot\"></span>Sobre-entrega</span><span class=\"ds-status\"><span class=\"ds-dot\"></span>Cerrada</span></div>",
+      "css": ".ds-status { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 2rem; padding: 0 0.7rem; border-radius: 999px; border: 1px solid #343a41; color: #c4cbd3; font-family: 'Overpass', system-ui, sans-serif; font-size: 0.9375rem; font-weight: 700; white-space: nowrap; } .ds-dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: #9aa3ad; } .ds-status.ds-go { border-color: #3ddc84; color: #3ddc84; } .ds-go .ds-dot { background: #3ddc84; } .ds-status.ds-danger { border-color: #ff5a4a; color: #ff5a4a; } .ds-danger .ds-dot { background: #ff5a4a; }"
     },
     {
-      "name": "Tecla de báscula",
-      "kind": "button",
-      "refersTo": "key",
-      "description": "Tecla del teclado de kg: paleta grande que se enciende en ámbar al presionar.",
-      "html": "<div class=\"ds-keypad\"><button class=\"ds-key\">7</button><button class=\"ds-key\">8</button><button class=\"ds-key\">9</button><button class=\"ds-key ds-fn\">½</button><button class=\"ds-key\">0</button><button class=\"ds-key ds-fn\" aria-label=\"Borrar\"><svg viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"square\" stroke-linejoin=\"miter\"><path d=\"M9 5h11v14H9l-6-7z\"/><path d=\"M12.5 9.5l5 5M17.5 9.5l-5 5\"/></svg></button></div>",
-      "css": ".ds-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.45rem; padding: 16px; background: #111114; } .ds-key { position: relative; display: grid; place-items: center; min-height: 3.8rem; border: none; border-radius: 6px; background: linear-gradient(180deg, #222226 0 50%, #1a1a1d 50% 100%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.07), 0 2px 4px rgb(0 0 0 / 0.6); color: #f2f2f2; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 2.3rem; font-weight: 600; transition: transform 90ms ease-out, background 160ms ease-out, color 160ms ease-out; cursor: pointer; } .ds-key::after { content: ''; position: absolute; inset: calc(50% - 0.5px) 6px auto; height: 1px; background: rgb(0 0 0 / 0.8); } .ds-key.ds-fn { color: #b6bbc2; } .ds-key:active { transform: translateY(1px); background: #ffb400; color: #0d0d0f; transition-duration: 0ms; } .ds-key:focus-visible { outline: 3px solid #ffb400; outline-offset: 3px; }"
+      "name": "Panel con cifras",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Lámina con costura; cifras protagonistas en 800 tabular separadas por costuras.",
+      "html": "<section class=\"ds-panel\"><div class=\"ds-head\"><span class=\"ds-label\">Quedan</span><p class=\"ds-big\"><span class=\"ds-fig\">48.5</span> <span class=\"ds-unit\">kg</span></p></div><div class=\"ds-figures\"><div class=\"ds-figure\"><span class=\"ds-label\">Salió</span><span class=\"ds-fig ds-md\">80</span></div><div class=\"ds-figure\"><span class=\"ds-label\">Entregado</span><span class=\"ds-fig ds-md\">31.5</span></div><div class=\"ds-figure\"><span class=\"ds-label\">Paradas</span><span class=\"ds-fig ds-md\">4</span></div></div></section>",
+      "css": ".ds-panel { background: #1a1d21; border: 1px solid #343a41; border-radius: 6px; color: #ffffff; font-family: 'Overpass', system-ui, sans-serif; } .ds-head { display: flex; flex-direction: column; gap: 0.25rem; padding: 1rem 1rem 0.75rem; } .ds-label { color: #9aa3ad; font-size: 0.8125rem; font-weight: 600; line-height: 1.2; } .ds-big { margin: 0; display: flex; align-items: baseline; gap: 0.5rem; } .ds-fig { font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: -0.01em; font-size: 4.5rem; } .ds-fig.ds-md { font-size: 1.5rem; } .ds-unit { color: #c4cbd3; font-size: 1.25rem; font-weight: 700; } .ds-figures { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid #343a41; } .ds-figure { display: flex; flex-direction: column; gap: 0.35rem; padding: 0.65rem 1rem; } .ds-figure + .ds-figure { border-left: 1px solid #343a41; }"
     },
     {
       "name": "Renglón del tablero",
       "kind": "custom",
-      "refersTo": "board-row-active",
-      "description": "Renglón de parada con columnas fijas; activo en ámbar al corregir.",
-      "html": "<div style=\"background:#111114\"><div class=\"ds-row\"><span class=\"ds-num\">01</span><span class=\"ds-stop\">TIENDA DOÑA MARY</span><span class=\"ds-kg\">12.5</span></div><div class=\"ds-row ds-active\"><span class=\"ds-num\">02</span><span class=\"ds-stop\">ABARROTES LUPITA</span><span class=\"ds-kg\">8</span></div></div>",
-      "css": ".ds-row { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr) auto; align-items: center; gap: 0.9rem; min-height: 3.5rem; padding: 0.35rem 0.9rem; border-bottom: 1px solid #222327; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; color: #f2f2f2; } .ds-num { color: #7d838c; font-size: 1.1rem; font-weight: 600; } .ds-stop { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1.45rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; } .ds-kg { font-size: 1.15rem; font-weight: 600; letter-spacing: 0.2em; } .ds-row.ds-active { background: #3a2a00; box-shadow: inset 0 0 0 2px #ffb400; } .ds-active .ds-stop, .ds-active .ds-kg { color: #ffb400; }"
+      "refersTo": "list-row",
+      "description": "Renglón de parada con columnas fijas; seleccionado en amarillo apagado con contorno amarillo.",
+      "html": "<div style=\"background:#1a1d21\"><div class=\"ds-row ds-head\"><span>#</span><span>Hora</span><span>Parada</span><span class=\"ds-r\">Kg</span></div><button class=\"ds-row ds-item\"><span class=\"ds-num\">1</span><span class=\"ds-time\">19:59</span><span class=\"ds-stop\">Tienda Doña Mary</span><span class=\"ds-kg\">12.5</span></button><button class=\"ds-row ds-item ds-selected\"><span class=\"ds-num\">2</span><span class=\"ds-time\">20:01</span><span class=\"ds-stop\">Abarrotes Lupita</span><span class=\"ds-kg\">8</span></button></div>",
+      "css": ".ds-row { display: grid; grid-template-columns: 1.75rem 3.5rem minmax(0, 1fr) 4.5rem; align-items: center; gap: 0.75rem; min-height: 3.25rem; padding: 0.3rem 0.9rem; width: 100%; border: none; border-bottom: 1px solid #343a41; background: transparent; color: #ffffff; font-family: 'Overpass', system-ui, sans-serif; text-align: left; transition: background 140ms ease-out; } .ds-row.ds-head { min-height: 2.25rem; color: #9aa3ad; font-size: 0.8125rem; font-weight: 600; } .ds-r, .ds-kg { text-align: right; } .ds-item { cursor: pointer; } .ds-item:active { background: #24282d; } .ds-item:focus-visible { outline: 3px solid #ffd000; outline-offset: -3px; } .ds-num { color: #9aa3ad; font-variant-numeric: tabular-nums; } .ds-time { color: #c4cbd3; font-variant-numeric: tabular-nums; } .ds-stop { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1.125rem; font-weight: 600; } .ds-kg { font-size: 1.125rem; font-weight: 800; font-variant-numeric: tabular-nums; } .ds-item.ds-selected { background: #332b05; box-shadow: inset 0 0 0 1px #ffd000; }"
+    },
+    {
+      "name": "Teclado de kg",
+      "kind": "custom",
+      "refersTo": "key",
+      "description": "Rejilla 3×4 de teclas planas; la tecla se enciende en amarillo al instante.",
+      "html": "<div class=\"ds-keypad\"><button class=\"ds-key\">7</button><button class=\"ds-key\">8</button><button class=\"ds-key\">9</button><button class=\"ds-key ds-fn\">½</button><button class=\"ds-key\">0</button><button class=\"ds-key ds-fn\" aria-label=\"Borrar\"><svg viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"square\" stroke-linejoin=\"miter\"><path d=\"M9 5h11v14H9l-6-7z\"/><path d=\"M12.5 9.5l5 5M17.5 9.5l-5 5\"/></svg></button></div>",
+      "css": ".ds-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; padding: 16px; background: #1a1d21; } .ds-key { display: grid; place-items: center; min-height: 3.5rem; border-radius: 6px; background: #24282d; border: 1px solid #343a41; color: #ffffff; font-family: 'Overpass', system-ui, sans-serif; font-size: 1.75rem; font-weight: 700; font-variant-numeric: tabular-nums; transition: background 140ms ease-out, color 140ms ease-out; cursor: pointer; } .ds-key.ds-fn { color: #c4cbd3; font-size: 1.5rem; } .ds-key:active { background: #ffd000; border-color: #ffd000; color: #101214; transition-duration: 0ms; } .ds-key:focus-visible { outline: 3px solid #ffd000; outline-offset: 2px; }"
+    },
+    {
+      "name": "Destello de señal",
+      "kind": "custom",
+      "refersTo": "list-row-selected",
+      "description": "Firma: la cifra de Quedan y el renglón nuevo se iluminan en amarillo 1400ms y se apagan; fijo con reduced motion.",
+      "html": "<div style=\"background:#1a1d21;padding:16px;font-family:'Overpass',system-ui,sans-serif;color:#fff\"><span class=\"ds-flash\">47.5</span><div class=\"ds-fresh\">Abarrotes Lupita <b>1</b></div></div>",
+      "css": ".ds-flash { font-size: 3rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; animation: ds-signal-flash 1400ms cubic-bezier(0.16, 1, 0.3, 1) infinite; } .ds-fresh { display: flex; justify-content: space-between; margin-top: 12px; padding: 0.8rem 0.9rem; font-size: 1.125rem; font-weight: 600; border-bottom: 1px solid #343a41; animation: ds-signal-row 1400ms cubic-bezier(0.16, 1, 0.3, 1) infinite; } .ds-fresh b { font-weight: 800; animation: ds-signal-flash 1400ms cubic-bezier(0.16, 1, 0.3, 1) infinite; } @keyframes ds-signal-flash { 0%, 30% { color: #ffd000; } } @keyframes ds-signal-row { 0%, 30% { background: #332b05; box-shadow: inset 0 0 0 1px #ffd000; } } @media (prefers-reduced-motion: reduce) { .ds-flash, .ds-fresh b { animation: none; color: #ffd000; } .ds-fresh { animation: none; background: #332b05; } }"
     },
     {
       "name": "Alerta de error",
@@ -439,67 +228,70 @@
       "refersTo": "alert-error",
       "description": "Error en oración normal: nombra el problema y cómo seguir.",
       "html": "<p class=\"ds-error-alert\">No se pudo guardar. Revisa la señal e inténtalo otra vez.</p>",
-      "css": ".ds-error-alert { margin: 0; padding: 0.75rem 1rem; border-radius: 6px; background: #3b1010; color: #ff4d4d; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-size: 1.15rem; font-weight: 600; letter-spacing: 0.04em; }"
+      "css": ".ds-error-alert { margin: 0; padding: 0.7rem 0.9rem; border-radius: 6px; border: 1px solid #ff5a4a; background: #3a1714; color: #ffffff; font-family: 'Overpass', system-ui, sans-serif; font-size: 1rem; font-weight: 600; }"
     }
   ],
   "narrative": {
-    "northStar": "El tablero de salidas",
-    "overview": "La ruta del día se lee como el tablero de una terminal: un marco de acero que encierra un campo de paletas negras, renglones con regla y columnas fijas, y cifras que se voltean carácter por carácter cuando cambian. Todo está hecho para leerse de un vistazo desde una tablet montada en el vehículo: cifras enormes, una sola familia condensada en mayúsculas con espaciado amplio y muy pocos colores, cada uno con un trabajo fijo.\n\nLa densidad es de tablero, no de formulario: cada pantalla cabe en un viewport sin scroll de página en tablet, y lo que crece (la lista de paradas) se desplaza dentro de su propio marco. El fondo es oscuro por decisión explícita del usuario, que lo eligió por encima del riesgo de legibilidad bajo sol directo; el contraste se gana con letra casi blanca, cifras grandes y el rojo aclarado.\n\nSe rechaza la app de captura típica: tarjetas blancas, formulario genérico, botón azul.",
+    "northStar": "Señalamiento vial",
+    "overview": "La app se lee como un letrero de carretera: lámina plana oscura, letra blanca de trazo carretero y un solo amarillo preventivo. Está hecha para leerse a distancia y con sol, desde una tablet montada en el vehículo: cifras grandes en peso 800 con dígitos tabulares, pocos colores con un trabajo fijo cada uno, y nada que brille, se levante o se mueva sin motivo.\n\nLa estructura es de consola, no de tarjetas: paneles de lámina separados por costuras de 1px, renglones con costura entre ellos y cifras en celdas de una rejilla. La jerarquía sale del peso y del tamaño dentro de una escala corta, no de colores ni de una segunda familia. Todo el texto va en oración normal. Las acciones destructivas quedan apartadas y piden un segundo toque.\n\nSe rechazan las tarjetas grises con acento azul, cualquier relieve, brillo o sombra, y la animación decorativa.",
     "keyCharacteristics": [
-      "Paletas negras con línea de corte horizontal para cifras, horas y rótulos cortos fijos.",
-      "Una sola sans condensada (Barlow Condensed), en mayúsculas y con tracking amplio.",
-      "Ámbar como lámpara encendida: estado activo, advertencia y acción principal, nada más.",
-      "Acero en tonos planos, con la luz arriba, para marcos, franja de encabezado y etiquetas.",
-      "Cascada de volteo como única animación firma; instantánea con reduced motion.",
-      "Confirmación destructiva con doble toque, sin modales."
+      "Fondo de asfalto con paneles de lámina un paso más claros y costuras de 1px.",
+      "Una sola familia, Overpass (heredera de Highway Gothic), autoalojada en 400, 600, 700 y 800.",
+      "Cifras en peso 800 con dígitos tabulares; texto siempre en oración normal.",
+      "Amarillo de señal solo para la acción principal, foco, selección y el destello de advertencia.",
+      "Verde informativo para lo que está vivo; rojo para sobre-entrega y lo destructivo.",
+      "Un solo momento de movimiento: el destello amarillo del restante y del renglón nuevo.",
+      "Plano: esquinas de 6px, sin sombras proyectadas."
     ],
     "rules": [
       {
-        "name": "The Lámpara Rule",
-        "body": "El ámbar significa \"encendido\": estado activo, advertencia o la acción principal. Nunca decora, nunca colorea un reloj ni un rótulo en reposo.",
+        "name": "The Una Señal Rule",
+        "body": "El amarillo significa \"actúa aquí\" o \"mira esto ahora\": acción principal, foco, selección y advertencia. Nunca decora, nunca colorea un rótulo, un título ni un reloj en reposo.",
         "section": "colors"
       },
       {
-        "name": "The Cancelado Rule",
-        "body": "El rojo aparece solo para sobre-entrega y para acciones destructivas armadas. La sobre-entrega es la única advertencia que pasa de ámbar a rojo; se advierte, no se bloquea.",
+        "name": "The Sin Medias Tintas Rule",
+        "body": "Los textos son blanco, gris claro o gris rótulo; no hay gris medio. Si un texto no alcanza a leerse en gris rótulo, sube a gris claro, no baja.",
         "section": "colors"
       },
       {
-        "name": "The Relojes Blancos Rule",
-        "body": "Fecha y hora van en letra de paleta (ink), en la franja y en la lista (la hora de cada parada va en acero). Los relojes no son estado.",
+        "name": "The Alto Rule",
+        "body": "El rojo es solo para sobre-entrega y para lo que borra o cierra. La sobre-entrega se advierte, no se bloquea.",
         "section": "colors"
       },
       {
-        "name": "The Celda Rule",
-        "body": "Las celdas de paleta son para números, horas y rótulos cortos fijos. El texto libre (nombres de parada de hasta 120 caracteres) va en mayúsculas planas con tracking, nunca en celdas.",
+        "name": "The Cifra Tabular Rule",
+        "body": "Toda cifra de kg, hora o conteo usa dígitos tabulares; las cifras protagonistas van en peso 800 con -0.01em.",
         "section": "typography"
       },
       {
-        "name": "The Mayúsculas Rule",
-        "body": "Todo texto corto de interfaz va en mayúsculas con tracking. La excepción es la alerta de error: conserva mayúsculas y minúsculas de oración para que un mensaje completo se lea bien.",
+        "name": "The Oración Rule",
+        "body": "Todo texto va en oración normal: botones, rótulos, encabezados de columna, estados. Sin mayúsculas sostenidas ni tracking abierto.",
         "section": "typography"
       },
       {
-        "name": "The Acero Plano Rule",
-        "body": "El acero es color, no relieve: bordes de tono con la luz arriba y la franja de encabezado. Sin degradados metálicos, sin biseles en relieve, sin remaches.",
+        "name": "The Lámina Plana Rule",
+        "body": "Sin sombras proyectadas, degradados, brillos ni relieves. Un nivel se distingue por su tono y su costura.",
         "section": "elevation"
       }
     ],
     "dos": [
-      "**Do** poner números, horas y rótulos cortos fijos en celdas de paleta con columnas de ancho fijo (kg en 5 celdas alineadas a la derecha).",
-      "**Do** reservar el ámbar (#FFB400) para estado activo, advertencia y la acción principal.",
-      "**Do** usar el rojo #FF4D4D para sobre-entrega y acciones destructivas armadas, con #3B1010 como su fondo.",
-      "**Do** escribir en mayúsculas con tracking todo texto corto de interfaz; las alertas de error conservan oración normal.",
+      "**Do** usar el amarillo de señal (#FFD000) solo para la acción principal, el foco, la selección y la advertencia.",
+      "**Do** poner cifras de kg, horas y conteos en peso 800 con dígitos tabulares.",
+      "**Do** escribir todo en oración normal, incluidos botones, rótulos y encabezados de columna.",
+      "**Do** separar niveles con tono y costuras de 1px (#343A41), con esquinas de 6px.",
+      "**Do** reservar el verde (#3DDC84) para \"En ruta\" y nada más.",
       "**Do** confirmar acciones destructivas con un segundo toque sobre el mismo botón.",
-      "**Do** mantener cada pantalla de tablet sin scroll de página y dejar que la lista de paradas se desplace por dentro.",
-      "**Do** dar a cualquier cambio de cifra la cascada de volteo, y dejarla instantánea con prefers-reduced-motion."
+      "**Do** dejar el destello de señal como único movimiento, y fijo bajo prefers-reduced-motion.",
+      "**Do** mantener cada pantalla de tablet sin scroll de página y dejar que las listas se desplacen por dentro."
     ],
     "donts": [
-      "**Don't** poner texto libre (nombres de parada) en celdas de paleta.",
-      "**Don't** pintar relojes ni rótulos en reposo de ámbar.",
-      "**Don't** dar relieve al acero: sin embossing CSS, sin degradados metálicos, sin remaches.",
+      "**Don't** usar sombras proyectadas, degradados, brillos ni relieves.",
+      "**Don't** usar mayúsculas sostenidas ni tracking abierto.",
+      "**Don't** pintar de amarillo rótulos, títulos o relojes en reposo.",
+      "**Don't** usar gris medio para texto; los textos son blanco, #C4CBD3 o #9AA3AD.",
       "**Don't** abrir modales para confirmar.",
-      "**Don't** usar tarjetas blancas, formularios genéricos ni botones azules.",
+      "**Don't** usar tarjetas grises con acento azul.",
       "**Don't** introducir una segunda familia tipográfica."
     ]
   }

@@ -70,13 +70,17 @@ Supabase se administra con el **MCP de Supabase** (scope local, proyecto `gmbixc
 
 ## Diseño
 
-Mundo visual "tablero de salidas" (paletas de aeropuerto/terminal). `PRODUCT.md` guarda el
-contexto de producto y `DESIGN.md` los tokens y reglas visuales; respétalos al agregar pantallas.
-`src/components/FlapText.vue` es la pieza central (cifras en celdas que se voltean). Tokens en
-`src/style.css` (`ink`, `amber`, `danger`, `steel`, `board`…), clases de componente (`.caption`,
-`.board-frame`, `.steel-band`, `.field`, `.btn-primary`, `.btn-steel`, `.btn-plate`,
-`.error-alert`) y variantes `wide:` (tablet horizontal) y `tall:` (tablet vertical). El brief y el
-contrato de dirección de la pantalla del repartidor están en `.impeccable/surfaces/`.
+Mundo visual "señalamiento vial": oscuro, plano y de alto contraste para leerse con sol. `PRODUCT.md`
+guarda el contexto de producto y `DESIGN.md` los tokens y reglas visuales; respétalos al agregar
+pantallas. Tokens en `src/style.css` (`ground`, `panel`, `raised`, `line`, `ink`/`ink-2`/`ink-3`,
+`signal` = amarillo solo para la acción principal, el foco y la advertencia, `go` = verde solo para
+"en ruta", `danger` = sobre-entrega y borrar), fuente Overpass en oración normal y cifras
+tabulares. Clases de componente: `.panel`, `.topbar`, `.label`, `.figure-value`, `.field`,
+`.btn-primary`, `.btn-secondary` (`.quiet`, `.danger`), `.list-row` (`.selected`, `.fresh`),
+`.list-head`, `.error-alert`; variantes `wide:` (tablet horizontal) y `tall:` (tablet vertical).
+Sin sombras, relieves ni animaciones decorativas: el único momento animado es el destello amarillo
+de `FlashValue` (cifra de Quedan) y de la parada recién registrada. El brief y el contrato de
+dirección están en `.impeccable/surfaces/`.
 
 ## Convenciones
 
