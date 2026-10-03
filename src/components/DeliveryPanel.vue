@@ -8,10 +8,12 @@ import { useTwoTapConfirm } from '@/composables/twoTapConfirm'
 import type { Delivery, StopInput, StopKind } from '@/services/routes'
 import { amountToValue, kgToValue, valueToAmount, valueToKg } from '@/utils/keypad'
 import { formatKg, roundKg } from '@/utils/kg'
-import { formatMoney, suggestedAmount } from '@/utils/money'
+import { formatMoney } from '@/utils/money'
+import { pickupSuggestion } from '@/utils/pickup'
 
 const props = defineProps<{
   delivery: Delivery | null
+  stops: Delivery[]
   stopNumber: number
   availableKg: number
   pricePerKg: number | null
@@ -31,7 +33,7 @@ const value = ref('')
 const notes = ref('')
 const showNotes = ref(false)
 const field = ref<'kg' | 'amount'>('kg')
-// Until the driver types an amount, it follows kg × base price.
+// Until the driver types an amount, it follows what the store owes for the kg left there.
 const amountValue = ref('')
 const amountEdited = ref(false)
 const deleteConfirm = useTwoTapConfirm()
@@ -55,7 +57,15 @@ watch(
 const editing = computed(() => props.delivery !== null)
 const pickup = computed(() => kind.value === 'pickup')
 const kg = computed(() => valueToKg(value.value))
-const suggested = computed(() => suggestedAmount(kg.value, props.pricePerKg))
+const suggested = computed(() =>
+  pickupSuggestion(
+    props.stops,
+    stopName.value,
+    kg.value,
+    props.pricePerKg,
+    props.delivery?.id ?? null,
+  ),
+)
 const amountShown = computed(() => {
   if (amountEdited.value) return amountValue.value
   return suggested.value === null ? '' : amountToValue(suggested.value)
@@ -106,7 +116,7 @@ function save() {
     kind: kind.value,
     stopName: stopName.value.trim(),
     kg: kg.value,
-    amount: pickup.value ? 0 : amount.value,
+    amount: pickup.value ? amount.value : 0,
     notes: notes.value.trim() || null,
   })
 }
@@ -209,8 +219,7 @@ defineExpose({ reset })
       />
     </label>
 
-    <KgReadout v-if="pickup" :value="value" label="Kilos que recoges" />
-    <div v-else class="grid grid-cols-2 gap-2">
+    <div v-if="pickup" class="grid grid-cols-2 gap-2">
       <button
         type="button"
         class="text-left"
@@ -220,7 +229,7 @@ defineExpose({ reset })
       >
         <KgReadout
           :value="value"
-          label="Kilos que dejas"
+          label="Kilos que recoges"
           :active="field === 'kg'"
           selectable
           stacked
@@ -235,7 +244,7 @@ defineExpose({ reset })
       >
         <KgReadout
           :value="amountShown"
-          :label="amountEdited || suggested === null ? 'Cobrado' : 'Cobrado (sugerido)'"
+          :label="amountEdited || suggested === null ? 'Dinero recibido' : 'Dinero (sugerido)'"
           unit="money"
           :active="field === 'amount'"
           selectable
@@ -243,6 +252,7 @@ defineExpose({ reset })
         />
       </button>
     </div>
+    <KgReadout v-else :value="value" label="Kilos que dejas" />
 
     <KgKeypad
       v-model="keypadValue"
@@ -251,37 +261,35 @@ defineExpose({ reset })
       :disabled="busy"
     />
 
-    <p v-if="pickup" class="notice" role="status">
-      Lo recogido se cuenta aparte; no cambia lo que traes.
-    </p>
-    <div v-else class="flex flex-col gap-1">
-      <p class="notice" :class="{ over: overDelivery }" role="status">
-        <template v-if="overDelivery"
-          >Quedarían {{ formatKg(leftover) }}. Se registra igual.</template
+    <div v-if="pickup" class="flex min-h-6 flex-wrap items-center gap-x-3">
+      <p class="notice" role="status">
+        <template v-if="suggested === null && pricePerKg === null"
+          >Sin precio base: anota lo que te dieron.</template
         >
-        <template v-else-if="kg > 0">Te quedarían {{ formatKg(leftover) }}.</template>
-        <template v-else>Traes {{ formatKg(availableKg) }}.</template>
+        <template v-else-if="suggested === null">Anota lo que te dieron.</template>
+        <template v-else-if="!amountEdited"
+          >A {{ formatMoney(pricePerKg!) }} el kilo, por lo que dejaste. Toca Dinero si te dieron
+          otra cantidad.</template
+        >
+        <template v-else>Dinero recibido: {{ formatMoney(amount) }}.</template>
       </p>
-      <div class="flex min-h-6 flex-wrap items-center gap-x-3">
-        <p class="notice">
-          <template v-if="pricePerKg === null">Sin precio base: anota lo que te dieron.</template>
-          <template v-else-if="!amountEdited"
-            >A {{ formatMoney(pricePerKg) }} el kilo. Toca Cobrado si te dieron otra
-            cantidad.</template
-          >
-          <template v-else>Cobrado: {{ formatMoney(amount) }}.</template>
-        </p>
-        <button
-          v-if="showUseSuggested"
-          type="button"
-          class="btn-secondary"
-          :disabled="busy"
-          @click="useSuggested"
-        >
-          Usar {{ formatMoney(suggested!) }}
-        </button>
-      </div>
+      <button
+        v-if="showUseSuggested"
+        type="button"
+        class="btn-secondary"
+        :disabled="busy"
+        @click="useSuggested"
+      >
+        Usar {{ formatMoney(suggested!) }}
+      </button>
     </div>
+    <p v-else class="notice" :class="{ over: overDelivery }" role="status">
+      <template v-if="overDelivery"
+        >Quedarían {{ formatKg(leftover) }}. Se registra igual.</template
+      >
+      <template v-else-if="kg > 0">Te quedarían {{ formatKg(leftover) }}.</template>
+      <template v-else>Traes {{ formatKg(availableKg) }}.</template>
+    </p>
 
     <p v-if="error" class="error-alert" role="alert">{{ error }}</p>
 

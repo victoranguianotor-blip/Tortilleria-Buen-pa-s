@@ -27,8 +27,8 @@ defineEmits<{ select: [delivery: Delivery] }>()
 function describe(d: Delivery, number: number): string {
   const what =
     d.kind === 'pickup'
-      ? `recolección de ${formatKgNumber(d.kg)} kilos`
-      : `${formatKgNumber(d.kg)} kilos, cobrado ${formatMoney(d.received_amount)}`
+      ? `recolección de ${formatKgNumber(d.kg)} kilos, recibido ${formatMoney(d.received_amount)}`
+      : `${formatKgNumber(d.kg)} kilos`
   const note = d.notes ? `. Nota: ${d.notes}` : ''
   const hint = props.editable ? '. Tocar para corregir' : ''
   return `Parada ${number}: ${d.stop_name}, ${what}${note}${hint}`
@@ -86,8 +86,10 @@ watch(
           >
             {{ formatKgNumber(d.kg) }}
           </span>
-          <span v-if="d.kind === 'pickup'" class="money text-right text-ink-3">—</span>
-          <span v-else class="money text-right">{{ formatMoney(d.received_amount) }}</span>
+          <span v-if="d.kind === 'pickup'" class="money text-right">
+            {{ formatMoney(d.received_amount) }}
+          </span>
+          <span v-else class="money text-right text-ink-3">—</span>
         </button>
       </li>
 

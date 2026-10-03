@@ -18,7 +18,7 @@ function stopColumns(input: StopInput) {
     kind: input.kind,
     stop_name: input.stopName,
     kg: input.kg,
-    received_amount: input.kind === 'pickup' ? 0 : input.amount,
+    received_amount: input.kind === 'pickup' ? input.amount : 0,
     notes: input.notes,
   }
 }

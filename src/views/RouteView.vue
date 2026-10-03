@@ -320,6 +320,7 @@ onMounted(load)
           v-else
           ref="deliveryPanel"
           :delivery="selected"
+          :stops="store.deliveries"
           :stop-number="stopNumber"
           :available-kg="availableKg"
           :price-per-kg="store.pricePerKg"
