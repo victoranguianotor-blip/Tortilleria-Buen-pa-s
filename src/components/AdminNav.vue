@@ -3,8 +3,14 @@
     <RouterLink :to="{ name: 'admin' }" class="nav-link" exact-active-class="current">
       Rutas
     </RouterLink>
-    <RouterLink :to="{ name: 'users' }" class="nav-link" exact-active-class="current">
-      Usuarios
+    <RouterLink :to="{ name: 'sales' }" class="nav-link" exact-active-class="current">
+      Ventas
+    </RouterLink>
+    <RouterLink :to="{ name: 'reports' }" class="nav-link" exact-active-class="current">
+      Reportes
+    </RouterLink>
+    <RouterLink :to="{ name: 'settings' }" class="nav-link" active-class="current">
+      Ajustes
     </RouterLink>
   </nav>
 </template>

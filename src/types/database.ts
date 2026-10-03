@@ -129,16 +129,49 @@ export type Database = {
           },
         ]
       }
+      sales: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string
+          id: string
+          kg: number
+          notes: string | null
+          sale_date: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          created_by?: string
+          id?: string
+          kg: number
+          notes?: string | null
+          sale_date?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string
+          id?: string
+          kg?: number
+          notes?: string | null
+          sale_date?: string
+        }
+        Relationships: []
+      }
       settings: {
         Row: {
+          counter_price_per_kg: number | null
           id: boolean
           price_per_kg: number | null
         }
         Insert: {
+          counter_price_per_kg?: number | null
           id?: boolean
           price_per_kg?: number | null
         }
         Update: {
+          counter_price_per_kg?: number | null
           id?: boolean
           price_per_kg?: number | null
         }

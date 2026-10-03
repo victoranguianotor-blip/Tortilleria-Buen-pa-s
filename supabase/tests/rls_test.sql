@@ -23,10 +23,19 @@ insert into public.routes (id, driver_id, route_date, initial_kg)
 values ('00000000-0000-0000-0000-0000000000f0', '00000000-0000-0000-0000-0000000000b1',
         public.business_today() - 1, 40);
 
+insert into public.sales (id, sale_date, kg, amount, created_by)
+values ('00000000-0000-0000-0000-0000000000d0', public.business_today() - 1, 5, 100,
+        '00000000-0000-0000-0000-0000000000a1');
+
 set local role anon;
 do $$ begin
   perform 1 from public.routes;
   raise exception 'FAIL: anon can read routes';
+exception when insufficient_privilege then null;
+end $$;
+do $$ begin
+  perform 1 from public.sales;
+  raise exception 'FAIL: anon can read sales';
 exception when insufficient_privilege then null;
 end $$;
 reset role;
@@ -97,36 +106,38 @@ begin
   exception when insufficient_privilege then null;
   end;
 
-  insert into public.deliveries (id, route_id, stop_name, kg, received_amount) values
-    ('00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000c1', 'Tienda Doña Mary', 12.5, 281.25),
-    ('00000000-0000-0000-0000-0000000000e2', '00000000-0000-0000-0000-0000000000c1', 'Abarrotes Lupita', 7.25, 0),
-    ('00000000-0000-0000-0000-0000000000e3', '00000000-0000-0000-0000-0000000000c1', 'To delete', 1, 20);
+  insert into public.deliveries (id, route_id, stop_name, kg) values
+    ('00000000-0000-0000-0000-0000000000e1', '00000000-0000-0000-0000-0000000000c1', 'Tienda Doña Mary', 12.5),
+    ('00000000-0000-0000-0000-0000000000e2', '00000000-0000-0000-0000-0000000000c1', 'Abarrotes Lupita', 7.25),
+    ('00000000-0000-0000-0000-0000000000e3', '00000000-0000-0000-0000-0000000000c1', 'To delete', 1);
 
-  update public.deliveries set kg = 8, received_amount = 150.10
+  update public.deliveries set kg = 8
   where id = '00000000-0000-0000-0000-0000000000e2';
   get diagnostics n = row_count;
   assert n = 1, 'FAIL: driver could not edit own delivery';
 
   begin
-    insert into public.deliveries (route_id, stop_name, kg, received_amount)
-    values ('00000000-0000-0000-0000-0000000000c1', 'Negative', 1, -5);
+    insert into public.deliveries (route_id, kind, stop_name, kg, received_amount)
+    values ('00000000-0000-0000-0000-0000000000c1', 'pickup', 'Negative', 1, -5);
     raise exception 'FAIL: accepted a negative amount';
   exception when check_violation then null;
   end;
 
-  insert into public.deliveries (id, route_id, kind, stop_name, kg, notes) values
+  insert into public.deliveries (id, route_id, kind, stop_name, kg, received_amount, notes) values
     ('00000000-0000-0000-0000-0000000000e4', '00000000-0000-0000-0000-0000000000c1', 'pickup',
-     'Tienda Doña Mary', 3, 'Sobró de ayer');
+     'Tienda Doña Mary', 3, 281.25, 'Sobró'),
+    ('00000000-0000-0000-0000-0000000000e5', '00000000-0000-0000-0000-0000000000c1', 'pickup',
+     'Abarrotes Lupita', 1, 0, null);
 
-  update public.deliveries set kg = 3.5, notes = 'Sobró de ayer, venía húmeda'
+  update public.deliveries set kg = 3.5, received_amount = 431.35, notes = 'Sobró, venía húmeda'
   where id = '00000000-0000-0000-0000-0000000000e4';
   get diagnostics n = row_count;
   assert n = 1, 'FAIL: driver could not edit own pickup';
 
   begin
     insert into public.deliveries (route_id, kind, stop_name, kg, received_amount)
-    values ('00000000-0000-0000-0000-0000000000c1', 'pickup', 'Charged pickup', 1, 10);
-    raise exception 'FAIL: accepted money on a pickup';
+    values ('00000000-0000-0000-0000-0000000000c1', 'delivery', 'Paid delivery', 1, 10);
+    raise exception 'FAIL: accepted money on a delivery';
   exception when check_violation then null;
   end;
 
@@ -142,6 +153,10 @@ begin
   update public.settings set price_per_kg = 1;
   get diagnostics n = row_count;
   assert n = 0, 'FAIL: driver changed the price';
+
+  update public.settings set counter_price_per_kg = 1;
+  get diagnostics n = row_count;
+  assert n = 0, 'FAIL: driver changed the counter price';
 
   delete from public.deliveries where id = '00000000-0000-0000-0000-0000000000e3';
   get diagnostics n = row_count;
@@ -167,10 +182,17 @@ begin
     'FAIL: wrong remaining_kg';
   assert (select received_amount from public.route_summaries where route_id = '00000000-0000-0000-0000-0000000000c1') = 431.35,
     'FAIL: wrong received_amount';
-  assert (select (picked_kg, pickup_count, delivery_count) = (3.5::numeric, 1, 2)
+  assert (select (picked_kg, pickup_count, delivery_count) = (4.5::numeric, 2, 2)
           from public.route_summaries where route_id = '00000000-0000-0000-0000-0000000000c1'),
     'FAIL: pickups not summarized apart from deliveries';
   assert (select count(*) from public.route_summaries) = 2, 'FAIL: driver does not see exactly own 2 routes';
+
+  assert (select count(*) from public.sales) = 0, 'FAIL: driver reads sales';
+  begin
+    insert into public.sales (kg, amount) values (1, 20);
+    raise exception 'FAIL: driver registered a sale';
+  exception when insufficient_privilege then null;
+  end;
 end $$;
 
 -- Driver 2 cannot see or touch driver 1's data
@@ -238,7 +260,7 @@ begin
   assert (select count(*) from public.profiles where username like 'test\_%') = 3, 'FAIL: admin does not see all profiles';
   assert (select count(*) from public.routes where driver_id = '00000000-0000-0000-0000-0000000000b1') = 2,
     'FAIL: admin does not see driver 1 routes';
-  assert (select count(*) from public.deliveries where route_id = '00000000-0000-0000-0000-0000000000c1') = 3,
+  assert (select count(*) from public.deliveries where route_id = '00000000-0000-0000-0000-0000000000c1') = 4,
     'FAIL: admin does not see driver 1 deliveries';
 
   begin
@@ -252,7 +274,7 @@ begin
   get diagnostics n = row_count;
   assert n = 0, 'FAIL: admin changed another route''s kg';
 
-  update public.deliveries set received_amount = 1 where id = '00000000-0000-0000-0000-0000000000e1';
+  update public.deliveries set received_amount = 1 where id = '00000000-0000-0000-0000-0000000000e4';
   get diagnostics n = row_count;
   assert n = 0, 'FAIL: admin changed a received amount';
 
@@ -266,6 +288,16 @@ begin
   exception when check_violation then null;
   end;
 
+  update public.settings set counter_price_per_kg = 25;
+  get diagnostics n = row_count;
+  assert n = 1, 'FAIL: admin could not set the counter price';
+
+  begin
+    update public.settings set counter_price_per_kg = 0;
+    raise exception 'FAIL: accepted a zero counter price';
+  exception when check_violation then null;
+  end;
+
   begin
     insert into public.settings (id) values (false);
     raise exception 'FAIL: admin inserted a second settings row';
@@ -275,6 +307,71 @@ begin
   perform public.reopen_route('00000000-0000-0000-0000-0000000000c1');
   assert (select closed_at is null from public.routes where id = '00000000-0000-0000-0000-0000000000c1'),
     'FAIL: admin could not reopen the route';
+
+  insert into public.sales (id, kg, amount, notes) values
+    ('00000000-0000-0000-0000-0000000000d1', 2.5, 56.25, 'Cliente del barrio'),
+    ('00000000-0000-0000-0000-0000000000d2', 1, 0, null);
+  assert (select sale_date from public.sales where id = '00000000-0000-0000-0000-0000000000d1') = public.business_today(),
+    'FAIL: sale did not default to business_today()';
+  assert (select created_by from public.sales where id = '00000000-0000-0000-0000-0000000000d1') = auth.uid(),
+    'FAIL: sale did not record who created it';
+  assert (select count(*) from public.sales where created_by = auth.uid()) = 3,
+    'FAIL: admin does not see all sales';
+
+  begin
+    insert into public.sales (sale_date, kg, amount) values (public.business_today() - 1, 1, 20);
+    raise exception 'FAIL: admin registered a sale on a past day';
+  exception when insufficient_privilege then null;
+  end;
+
+  begin
+    insert into public.sales (kg, amount, created_by)
+    values (1, 20, '00000000-0000-0000-0000-0000000000b1');
+    raise exception 'FAIL: admin registered a sale as someone else';
+  exception when insufficient_privilege then null;
+  end;
+
+  begin
+    insert into public.sales (kg, amount) values (0, 20);
+    raise exception 'FAIL: accepted a 0 kg sale';
+  exception when check_violation then null;
+  end;
+
+  begin
+    insert into public.sales (kg, amount) values (1, -1);
+    raise exception 'FAIL: accepted a negative sale amount';
+  exception when check_violation then null;
+  end;
+
+  begin
+    insert into public.sales (kg, amount, notes) values (1, 1, repeat('x', 501));
+    raise exception 'FAIL: accepted a sale note over 500 characters';
+  exception when check_violation then null;
+  end;
+
+  update public.sales set kg = 3, amount = 67.5, notes = 'Corregida'
+  where id = '00000000-0000-0000-0000-0000000000d1';
+  get diagnostics n = row_count;
+  assert n = 1, 'FAIL: admin could not edit today''s sale';
+
+  update public.sales set kg = 9 where id = '00000000-0000-0000-0000-0000000000d0';
+  get diagnostics n = row_count;
+  assert n = 0, 'FAIL: admin edited a sale of a past day';
+
+  begin
+    update public.sales set sale_date = public.business_today() - 1
+    where id = '00000000-0000-0000-0000-0000000000d1';
+    raise exception 'FAIL: admin moved a sale to a past day';
+  exception when insufficient_privilege then null;
+  end;
+
+  delete from public.sales where id = '00000000-0000-0000-0000-0000000000d0';
+  get diagnostics n = row_count;
+  assert n = 0, 'FAIL: admin deleted a sale of a past day';
+
+  delete from public.sales where id = '00000000-0000-0000-0000-0000000000d2';
+  get diagnostics n = row_count;
+  assert n = 1, 'FAIL: admin could not delete today''s sale';
 
   update public.profiles set active = false where id = '00000000-0000-0000-0000-0000000000b2';
   get diagnostics n = row_count;

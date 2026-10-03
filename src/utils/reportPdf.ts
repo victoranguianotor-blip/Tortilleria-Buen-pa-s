@@ -1,9 +1,9 @@
 import type { jsPDF } from 'jspdf'
 
 import { colimaTime, formatLongDate } from './date'
-import { formatKgNumber } from './kg'
+import { formatKgNumber, roundKg } from './kg'
 import { formatMoney } from './money'
-import type { DayReport, ReportStop } from './report'
+import { MOVEMENT_LABEL, type DayReport, type ReportMovement } from './report'
 
 const PAGE = { width: 215.9, height: 279.4, margin: 15 }
 const CONTENT_WIDTH = PAGE.width - PAGE.margin * 2
@@ -38,24 +38,42 @@ const SUMMARY_COLUMNS: Column[] = [
   { title: 'Estado', width: CONTENT_WIDTH - 168 },
 ]
 
-const STOP_COLUMNS: Column[] = [
+const MOVEMENT_COLUMNS: Column[] = [
   { title: '#', width: 10, align: 'right' },
-  { title: 'Hora', width: 18 },
-  { title: 'Parada', width: CONTENT_WIDTH - 80 },
+  { title: 'Hora', width: 16 },
+  { title: 'Tipo', width: 26 },
+  { title: 'Detalle', width: CONTENT_WIDTH - 104 },
   { title: 'Kg', width: 24, align: 'right' },
   { title: 'Cobrado', width: 28, align: 'right' },
+]
+
+const SALE_COLUMNS: Column[] = [
+  { title: '#', width: 10, align: 'right' },
+  { title: 'Hora', width: 16 },
+  { title: 'Nota', width: CONTENT_WIDTH - 78 },
+  { title: 'Kg', width: 24, align: 'right' },
+  { title: 'Cobrado', width: 28, align: 'right' },
+]
+
+const STORE_COLUMNS: Column[] = [
+  { title: 'Tienda', width: CONTENT_WIDTH - 100 },
+  { title: 'Dejó kg', width: 25, align: 'right' },
+  { title: 'Recogió kg', width: 25, align: 'right' },
+  { title: 'Sin recoger kg', width: 25, align: 'right' },
+  { title: 'Cobrado', width: 25, align: 'right' },
 ]
 
 function capitalize(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
-function stopText(stop: ReportStop): string {
-  const name = stop.pickup ? `Recolección: ${stop.stopName}` : stop.stopName
-  return stop.notes
-    ? `${name}
-Nota: ${stop.notes}`
-    : name
+function movementText(m: ReportMovement, loadKg: number): string {
+  if (m.type === 'departure') return `Sale a ruta con ${formatKgNumber(loadKg)} kg`
+  if (m.type === 'close') return 'Cierra la ruta'
+  return m.notes
+    ? `${m.stopName}
+Nota: ${m.notes}`
+    : m.stopName
 }
 
 function kgCell(kg: number): Cell {
@@ -210,18 +228,70 @@ export async function reportToPdf(report: DayReport, generatedAt = new Date()): 
     w.y += 2
     if (r.stops.length === 0) {
       w.text('Sin paradas registradas.', 9.5, 'normal', MUTED)
-      continue
     }
-    w.header(STOP_COLUMNS)
-    for (const s of r.stops) {
-      w.row(STOP_COLUMNS, [
+    if (r.movements.length > 0) {
+      w.header(MOVEMENT_COLUMNS)
+      for (const m of r.movements) {
+        w.row(MOVEMENT_COLUMNS, [
+          { text: m.number === null ? '' : String(m.number) },
+          { text: m.time },
+          { text: MOVEMENT_LABEL[m.type] },
+          { text: movementText(m, r.initialKg) },
+          m.kg === null ? { text: '' } : kgCell(m.kg),
+          { text: m.type === 'pickup' ? formatMoney(m.amount ?? 0) : '' },
+        ])
+      }
+    }
+    if (r.stores.length > 0) {
+      w.y += 5
+      w.ensure(20)
+      w.text('Por tienda', 10, 'bold')
+      w.section = `${r.driverName} · por tienda`
+      w.y += 1
+      w.header(STORE_COLUMNS)
+      for (const s of r.stores) {
+        w.row(STORE_COLUMNS, [
+          { text: s.name },
+          kgCell(s.deliveredKg),
+          kgCell(s.pickedKg),
+          kgCell(roundKg(s.deliveredKg - s.pickedKg)),
+          { text: formatMoney(s.amount) },
+        ])
+      }
+    }
+  }
+
+  w.y += 8
+  w.ensure(30)
+  w.text('Ventas de mostrador', 12, 'bold')
+  w.section = 'Ventas de mostrador'
+  w.y += 2
+  if (report.sales.length === 0) {
+    w.text('Sin ventas registradas.', 9.5, 'normal', MUTED)
+  } else {
+    w.header(SALE_COLUMNS)
+    for (const s of report.sales) {
+      w.row(SALE_COLUMNS, [
         { text: String(s.number) },
         { text: s.time },
-        { text: stopText(s) },
+        { text: s.notes || '—', color: s.notes ? undefined : MUTED },
         kgCell(s.kg),
-        { text: s.pickup ? '—' : formatMoney(s.amount) },
+        { text: formatMoney(s.amount) },
       ])
     }
+    w.row(
+      SALE_COLUMNS,
+      [
+        { text: '' },
+        { text: '' },
+        {
+          text: `Total · ${report.salesTotals.count} ${report.salesTotals.count === 1 ? 'venta' : 'ventas'}`,
+        },
+        kgCell(report.salesTotals.kg),
+        { text: formatMoney(report.salesTotals.amount) },
+      ],
+      { bold: true },
+    )
   }
 
   const pages = doc.getNumberOfPages()

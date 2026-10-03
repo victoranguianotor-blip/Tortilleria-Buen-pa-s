@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 
 import * as routes from '@/services/routes'
 import type { Delivery, Route, StopInput } from '@/services/routes'
-import { fetchPricePerKg } from '@/services/settings'
+import { fetchPrices } from '@/services/settings'
 import { remainingKg as computeRemainingKg, sumKg } from '@/utils/kg'
 import { sumMoney } from '@/utils/money'
 
@@ -36,7 +36,9 @@ export const useRouteStore = defineStore('route', () => {
     route.value = await routes.fetchRoute(driverId, today.value)
     deliveries.value = route.value ? await routes.fetchDeliveries(route.value.id) : []
     recentStops.value = await routes.fetchRecentStops().catch(() => [])
-    pricePerKg.value = await fetchPricePerKg().catch(() => null)
+    pricePerKg.value = await fetchPrices()
+      .then((p) => p.storePrice)
+      .catch(() => null)
   }
 
   async function start(initialKg: number) {
@@ -52,7 +54,9 @@ export const useRouteStore = defineStore('route', () => {
   async function depart() {
     if (!route.value) return
     route.value = await routes.departRoute(route.value.id)
-    pricePerKg.value = await fetchPricePerKg().catch(() => pricePerKg.value)
+    pricePerKg.value = await fetchPrices()
+      .then((p) => p.storePrice)
+      .catch(() => pricePerKg.value)
   }
 
   async function addDelivery(input: StopInput): Promise<Delivery> {

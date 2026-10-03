@@ -1,24 +1,18 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
 
-import AdminNav from '@/components/AdminNav.vue'
 import NewUserPanel from '@/components/NewUserPanel.vue'
 import StrokeIcon from '@/components/StrokeIcon.vue'
-import TopBar from '@/components/TopBar.vue'
 import UserPanel from '@/components/UserPanel.vue'
 import UsersBoard from '@/components/UsersBoard.vue'
 import * as admin from '@/services/admin'
 import type { UserProfile, UserRole } from '@/services/admin'
-import { businessToday } from '@/services/routes'
 import { useAuthStore } from '@/stores/auth'
 import { errorMessage } from '@/utils/errors'
 
 const auth = useAuthStore()
-const router = useRouter()
 
 const status = ref<'loading' | 'ready' | 'failed'>('loading')
-const today = ref<string | null>(null)
 const users = ref<UserProfile[]>([])
 const selectedId = ref<string | null>(null)
 const busy = ref(false)
@@ -35,7 +29,7 @@ const activeDrivers = computed(
 async function load() {
   status.value = 'loading'
   try {
-    ;[today.value, users.value] = await Promise.all([businessToday(), admin.fetchUsers()])
+    users.value = await admin.fetchUsers()
     status.value = 'ready'
   } catch {
     status.value = 'failed'
@@ -103,20 +97,11 @@ function showNewUser() {
   selectedId.value = null
 }
 
-async function logout() {
-  await auth.signOut()
-  router.replace({ name: 'login' })
-}
-
 onMounted(load)
 </script>
 
 <template>
-  <div class="flex h-dvh flex-col overflow-hidden">
-    <TopBar :date="today" :name="auth.profile?.full_name ?? ''" @logout="logout">
-      <AdminNav />
-    </TopBar>
-
+  <div class="flex min-h-0 flex-1 flex-col">
     <div v-if="status !== 'ready'" class="grid flex-1 place-items-center p-6">
       <div class="flex max-w-md flex-col items-center gap-4 text-center">
         <p class="text-2xl font-extrabold" :class="{ 'text-danger': status === 'failed' }">

@@ -49,11 +49,24 @@ const router = createRouter({
       meta: { role: 'admin' },
     },
     {
-      path: '/admin/users',
-      name: 'users',
-      component: () => import('@/views/UsersView.vue'),
+      path: '/admin/sales',
+      name: 'sales',
+      component: () => import('@/views/SalesView.vue'),
       meta: { role: 'admin' },
     },
+    {
+      path: '/admin/reports',
+      name: 'reports',
+      component: () => import('@/views/ReportsView.vue'),
+      meta: { role: 'admin' },
+    },
+    {
+      path: '/admin/settings',
+      name: 'settings',
+      component: () => import('@/views/SettingsView.vue'),
+      meta: { role: 'admin' },
+    },
+    { path: '/admin/users', redirect: { name: 'settings', query: { section: 'users' } } },
     { path: '/:pathMatch(.*)*', redirect: '/route' },
   ],
 })
