@@ -45,7 +45,7 @@ Supabase se administra con el **MCP de Supabase** (scope local, proyecto `gmbixc
   (`crypto.randomUUID()`) para que reintentar una escritura encolada sea idempotente.
 - **Roles y seguridad en la BD, no en el cliente.** `profiles.role` es `driver | admin`. Las
   políticas RLS son la fuente de verdad: el driver (activo) solo ve lo suyo y solo escribe
-  `deliveries` en su ruta **de hoy y abierta**; el admin lee todo, no captura datos, no edita su
+  `deliveries` en su ruta **de hoy y abierta**; el admin lee todo, no captura rutas ni paradas (solo ventas de mostrador), no edita su
   propio perfil y reabre rutas con `rpc('reopen_route')`. Hay GRANTs por columna (p. ej. en
   `routes` solo se actualizan `initial_kg`, `departed_at` y `closed_at`). Los helpers de las políticas
   (`is_admin`, `is_active`, `is_my_open_route`, `handle_new_user`) viven en el schema `private`, no
@@ -61,18 +61,30 @@ Supabase se administra con el **MCP de Supabase** (scope local, proyecto `gmbixc
   función verifica sesión y rol admin en su código.
 - **Salida y cobro.** La ruta se crea al capturar la carga y queda "Por salir" hasta que el
   repartidor toca "Salir a ruta" (`routes.departed_at`, inmutable una vez puesta); antes de eso la
-  RLS no deja registrar paradas. Cada parada guarda `received_amount` (pesos con centavos, 0
-  permitido). El admin fija `settings.price_per_kg` y la captura sugiere `kg × precio`
-  (`src/utils/money.ts`, suma en centavos); el repartidor puede cambiarlo.
+  RLS no deja registrar paradas. Una entrega solo deja kg, sin dinero. Al final del día el
+  repartidor vuelve a cada tienda y registra **una recolección por tienda** con los kg sobrantes que
+  recoge y el dinero que recibe (`received_amount`, pesos con centavos, 0 permitido; la BD solo lo
+  admite en `pickup`). El admin fija dos precios globales en `settings`: `price_per_kg` = precio a tienda y `counter_price_per_kg` = precio en tortillería, ambos en Ajustes → Precios. La recolección usa el de tienda y sugiere el dinero de
+  lo que se dejó en esa tienda (`src/utils/pickup.ts`, por nombre de parada); el repartidor puede
+  cambiarlo. Suma en centavos en `src/utils/money.ts`.
 - **Tipos de parada.** `deliveries.kind` es `delivery` o `pickup` (recolección: kilos que se
-  recogen de una tienda; sin cobro). Las recolecciones se cuentan aparte ("Recogido") y no tocan
+  recogen de una tienda y su dinero). Las recolecciones se cuentan aparte ("Recogido") y no tocan
   entregado ni restante. Cualquier parada puede llevar `notes`.
 - **Resumen** (kg iniciales/entregados/restantes y cobrado) sale de la vista `route_summaries`
   (`security_invoker`, respeta RLS). Los cálculos de kg en el cliente usan `src/utils/kg.ts`
   (suma en centésimas para evitar errores de punto flotante). Los kg restantes pueden ser negativos:
   la sobre-entrega se advierte, no se bloquea.
-- **Reporte diario.** `src/utils/report.ts` arma el modelo del día y el CSV (lógica pura, con
-  tests); `src/utils/reportPdf.ts` dibuja el PDF carta con jsPDF, importado bajo demanda. Las
+- **Ventas de mostrador.** Lo que se vende en el propio negocio (`sales`: kg, dinero y nota, sin
+  método de pago) las registra el encargado (admin) en `/admin/sales`. Solo se crean, corrigen y
+  borran las del día actual (RLS). Los permisos pasan por `private.can_register_sales()`: cuando
+  exista el cajero se agrega ahí, sin tocar las políticas. El dinero sugerido es `kg × precio en tortillería`.
+- **Navegación del admin** (`AdminNav`): Rutas (`/admin`, seguimiento del día), Ventas
+  (`/admin/sales`, captura de mostrador), Reportes (`/admin/reports`, resumen del día y descarga
+  PDF/CSV) y Ajustes (`/admin/settings`, con Precios y Usuarios; `/admin/users` redirige ahí). El
+  selector de día es `DayPicker` + `useDayQuery` (`?date=`).
+- **Reporte diario.** `src/utils/report.ts` arma el modelo del día (rutas y ventas de mostrador) y el CSV (lógica pura, con
+  tests). Cada ruta lista todos sus movimientos en orden (salida, cada entrega y recolección, cierre) y un
+  balance por tienda (dejó, recogió, sin recoger, cobrado); `src/utils/reportPdf.ts` dibuja el PDF carta con jsPDF, importado bajo demanda. Las
   dependencias opcionales de jsPDF (`html2canvas`, `dompurify`, `canvg`) quedan fuera del precache
   del service worker (`globIgnores` en `vite.config.ts`).
 

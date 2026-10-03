@@ -4,7 +4,7 @@ Proyecto Supabase: `gmbixckrajmrpovsrymi` (Postgres 17).
 El esquema vive en `supabase/migrations/` (la primera migración está en español; la segunda,
 `*_english_names.sql`, renombró todo a inglés conservando los datos; la tercera,
 `*_departure_and_payments.sql`, agregó hora de salida, dinero cobrado y precio base; la cuarta,
-`*_pickups_and_notes.sql`, agregó el tipo de parada y las notas, y renombró `delivered_kg` a `kg`). La gestión de usuarios está en
+`*_pickups_and_notes.sql`, agregó el tipo de parada y las notas, y renombró `delivered_kg` a `kg`; la quinta y la sexta, `*_settle_route_at_close.sql` y `*_money_on_pickups.sql`, probaron y revirtieron un cierre con totales por ruta: el dinero va por recolección, no en `routes`; la séptima, `*_sales.sql`, agregó las ventas de mostrador; la octava, `*_counter_price.sql`, el precio en tortillería). La gestión de usuarios está en
 `supabase/functions/admin-users/`.
 
 ## Modelo de datos
@@ -54,15 +54,37 @@ kilos que el repartidor recoge de una tienda). La tabla conserva el nombre `deli
 | `stop_name`    | text          | texto libre, 1–120 caracteres            |
 | `kind`         | enum `stop_kind` | `delivery` (default) o `pickup`       |
 | `kg`           | numeric(8,2)  | `> 0`; dejados en una entrega, recogidos en una recolección |
-| `received_amount` | numeric(10,2) | pesos cobrados, `>= 0` (0 = no pagó), default 0; siempre 0 en una recolección |
+| `received_amount` | numeric(10,2) | pesos recibidos de la tienda, `>= 0`, default 0; solo una recolección puede tener dinero (`deliveries_delivery_amount_check`) |
 | `notes`        | text          | opcional, hasta 500 caracteres           |
 | `created_at`   | timestamptz   |                                          |
 
+### `sales`
+
+Ventas de mostrador: lo que se vende en el propio negocio durante el día, sin relación con las
+rutas. Una fila por venta.
+
+| Columna      | Tipo          | Notas                                         |
+| ------------ | ------------- | --------------------------------------------- |
+| `id`         | uuid PK       | se puede generar en el cliente                |
+| `sale_date`  | date          | default `business_today()`                    |
+| `kg`         | numeric(8,2)  | `> 0`                                         |
+| `amount`     | numeric(10,2) | pesos recibidos, `>= 0`                       |
+| `notes`      | text          | opcional, hasta 500 caracteres                |
+| `created_by` | uuid          | quien la registró (default `auth.uid()`)      |
+| `created_at` | timestamptz   |                                               |
+
+No lleva método de pago. Solo quien pasa `private.can_register_sales()` (hoy el admin; después se
+agrega el cajero ahí) las lee o escribe, y solo se crean, editan o borran las del día de negocio
+actual; las de días pasados quedan fijas.
+
 ### `settings`
 
-Una sola fila (`id = true`) con `price_per_kg` (numeric(8,2), `> 0` o `null` = sin precio). Todo
-usuario con sesión la lee; solo el admin la actualiza. La app sugiere al repartidor
-`kg × price_per_kg` como monto cobrado, pero lo que se guarda es lo que él captura.
+Una sola fila (`id = true`) con dos precios globales por kilo (numeric(8,2), `> 0` o `null` = sin
+precio): `price_per_kg` es el **precio a tienda** (recolecciones de los repartidores) y
+`counter_price_per_kg` el **precio en tortillería** (ventas de mostrador). Todo usuario con sesión
+la lee; solo el admin la actualiza. En una recolección la app sugiere el dinero
+de lo que se dejó en esa tienda (entregas de hoy con el mismo nombre menos lo ya recogido) por
+`price_per_kg`, pero lo que se guarda es lo que el repartidor captura.
 
 ### Vista `route_summaries`
 
@@ -96,6 +118,7 @@ El schema `private` no está expuesto por la API REST.
 | Editar ruta (`initial_kg`, salir, cerrarla)   | la suya, de hoy, abierta                   | no             | no         |
 | Reabrir ruta                                  | no                                         | `reopen_route` | no         |
 | Crear / editar / borrar deliveries            | en su ruta de hoy abierta y ya salida, si está activo | no  | no         |
+| Ver / crear / editar / borrar `sales`         | no                                         | sí, solo las de hoy para escribir | no |
 | Ver `settings`                                | sí                                         | sí             | no         |
 | Cambiar el precio base                        | no                                         | sí             | no         |
 | Borrar rutas                                  | no                                         | no             | no         |

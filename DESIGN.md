@@ -286,7 +286,7 @@ Interruptores de lámina: grandes, en oración normal, sin adornos.
 ### Tablero de renglones
 - Encabezado de columnas en gris rótulo 600 de 0.8125rem sobre costura; renglones de 3.25rem separados por costura.
 - Número en gris rótulo, hora en gris claro tabular, nombre en blanco 600, kg en cifra 800 alineada a la derecha y cobrado en blanco 700 tabular a su derecha.
-- Una recolección lleva antes del nombre la etiqueta "Recolección" (contorno de costura, gris claro 700), sus kg en gris claro y "—" en cobrado. La nota de una parada va como segunda línea en gris rótulo, recortada.
+- Una recolección lleva antes del nombre la etiqueta "Recolección" (contorno de costura, gris claro 700), sus kg en gris claro y el dinero recibido; una entrega lleva "—" en cobrado. La nota de una parada va como segunda línea en gris rótulo, recortada.
 - Todo renglón tocable termina en una flecha › de trazo (2.2px, gris rótulo; amarilla si está seleccionado), con 2.1rem reservados a la derecha. Los renglones de solo lectura no la llevan.
 - El renglón tocado para corregir se selecciona: fondo amarillo apagado con contorno interior amarillo de 1px.
 - Vacío y pista ("Toca una parada para corregirla o borrarla.") en gris rótulo.
@@ -296,8 +296,10 @@ Interruptores de lámina: grandes, en oración normal, sin adornos.
 - Rejilla 3×4 (7-8-9 arriba; ½ / 0 / borrar abajo; en pesos el ½ se vuelve punto decimal), teclas de lámina alzada con costura, 6px, dígitos blancos 700 tabulares.
 - Al presionar la tecla se enciende en amarillo al instante y vuelve en 140ms; deshabilitado al 40%.
 - La lectura de kg es una ventanilla de asfalto con costura: rótulo a la izquierda, cifra a la derecha (gris rótulo en cero, blanca con valor) y "kg" en gris claro. La de pesos lleva "$" antes de la cifra.
-- En la parada, "Kilos que dejas" y "Cobrado" son dos ventanillas lado a lado (rótulo arriba, cifra abajo) que comparten un teclado; la activa lleva contorno amarillo y la otra contorno de control con un lápiz junto al rótulo. Cobrado sigue a kg × precio base ("Cobrado (sugerido)") hasta que el repartidor teclea: la primera tecla reemplaza la sugerencia y "Usar $X" (botón secundario) la recupera.
-- Arriba de la captura, un selector Entrega / Recolección (dos mitades con costura; la elegida en amarillo apagado con contorno amarillo). En recolección solo queda la ventanilla "Kilos que recoges". "+ Nota" en el encabezado abre un campo de nota.
+- En una entrega solo hay la ventanilla "Kilos que dejas". En una recolección, "Kilos que recoges" y "Dinero recibido" son dos ventanillas lado a lado (rótulo arriba, cifra abajo) que comparten un teclado; la activa lleva contorno amarillo y la otra contorno de control con un lápiz junto al rótulo. El dinero sigue a lo que se dejó en esa tienda × precio base ("Dinero (sugerido)") hasta que el repartidor teclea: la primera tecla reemplaza la sugerencia y "Usar $X" (botón secundario) la recupera.
+- Pestañas del encargado: Rutas, Ventas, Reportes y Ajustes. Reportes muestra, junto al selector de día, dos grupos de cifras (Rutas y Mostrador), el tablero de repartidores y un recuadro con el dinero del día y los botones de descarga. Ajustes tiene dos secciones (Precios y Usuarios) con pestañas propias; Precios son dos ventanillas (A tienda, En tortillería) que comparten un teclado.
+- La pantalla de ventas de mostrador (`/admin/sales`, pestaña "Ventas") sigue el mismo patrón que la captura del repartidor: tablero con cifras (Vendido, Cobrado, Ventas) y lista a la izquierda; a la derecha, "Kilos vendidos" y "Dinero recibido" como ventanillas que comparten teclado, con el dinero siguiendo kg × precio base hasta que se teclea.
+- Arriba de la captura, un selector Entrega / Recolección (dos mitades con costura; la elegida en amarillo apagado con contorno amarillo). En recolección aparecen las ventanillas de kg y dinero. "+ Nota" en el encabezado abre un campo de nota.
 - Antes de la primera parada, "Listo para salir" con el botón principal "Salir a ruta"; la hora queda en el rótulo de la cifra ("Salió 06:42").
 
 ### Destello de señal (firma)
